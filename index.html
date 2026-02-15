@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.478</title>
+    <title>SlimeHearth v0.480</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.478</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.480</div>
     </div>
     
     <script>
@@ -668,7 +668,8 @@
                 './slimehearth-assets/images/basket1.png',
                 './slimehearth-assets/images/slime1.png',
                 './slimehearth-assets/images/slime2.png',
-                './slimehearth-assets/images/slime3.png'
+                './slimehearth-assets/images/slime3.png',
+                './slimehearth-assets/images/hat1.png'
             ];
             
             let loadedCount = 0;
@@ -836,6 +837,9 @@
             <!-- Home Room -->
             <div class="room active" id="home-room" style="background-image:url('./slimehearth-assets/images/home-background.png');background-size:cover;background-position:center -100px;">
                 <div id="slime-square"></div>
+                <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:25;display:none;">
+                    <img id="slime-hat-image" src="" style="width:80px;height:80px;object-fit:contain;transform:translateY(-80px);" />
+                </div>
                 <div id="slime-mouth"></div>
             </div>
             
@@ -1701,6 +1705,7 @@
                 description: 'Fit for royalty',
                 cost: 500,
                 icon: '👑',
+                image: 'hat1.png',
                 unlockType: 'shop'
             },
             'cowboy_hat': {
@@ -1994,6 +1999,31 @@
             
             // Update last skill display
             updateLastSkillDisplay();
+            
+            // Update slime hat display
+            updateSlimeHat();
+        }
+        
+        function updateSlimeHat() {
+            const hatDisplay = document.getElementById('slime-hat');
+            const hatImage = document.getElementById('slime-hat-image');
+            
+            if (!hatDisplay || !hatImage) return;
+            
+            // Check if a hat is equipped
+            if (gs.equippedHat && HATS_DATA[gs.equippedHat]) {
+                const hat = HATS_DATA[gs.equippedHat];
+                
+                // Only show if hat has an image
+                if (hat.image) {
+                    hatImage.src = `./slimehearth-assets/images/${hat.image}`;
+                    hatDisplay.style.display = 'block';
+                } else {
+                    hatDisplay.style.display = 'none';
+                }
+            } else {
+                hatDisplay.style.display = 'none';
+            }
         }
         
         function addSkillXP(skillName, amount) {
@@ -5529,7 +5559,10 @@ function initKitchenGame() {
                 
                 hatCard.innerHTML = `
                     <div style="font-size:32px;margin-bottom:4px;">
-                        ${hat.icon}
+                        ${hat.image ? 
+                            `<img src="./slimehearth-assets/images/${hat.image}" style="width:50px;height:50px;object-fit:contain;" />` : 
+                            hat.icon
+                        }
                     </div>
                     <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
                         ${hat.name}
@@ -5564,6 +5597,7 @@ function initKitchenGame() {
             gs.equippedHat = hatId;
             save();
             displayHats();
+            updateSlimeHat(); // Update hat on slime
             notify(`Equipped ${HATS_DATA[hatId].icon} ${HATS_DATA[hatId].name}!`);
         }
         
@@ -5571,6 +5605,7 @@ function initKitchenGame() {
             gs.equippedHat = null;
             save();
             displayHats();
+            updateSlimeHat(); // Remove hat from slime
             notify('Hat removed!');
         }
         
@@ -5642,8 +5677,12 @@ function initKitchenGame() {
                 hatDiv.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <div style="flex:1;">
-                            <div style="font-size:18px;font-weight:bold;margin-bottom:5px;">
-                                ${hat.icon} ${hat.name}
+                            <div style="font-size:18px;font-weight:bold;margin-bottom:5px;display:flex;align-items:center;gap:8px;">
+                                ${hat.image ? 
+                                    `<img src="./slimehearth-assets/images/${hat.image}" style="width:30px;height:30px;object-fit:contain;" />` : 
+                                    hat.icon
+                                }
+                                ${hat.name}
                             </div>
                             <div style="color:#666;font-size:13px;margin-bottom:8px;">
                                 ${hat.description}
