@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.491</title>
+    <title>SlimeHearth v0.493</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.491</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.493</div>
     </div>
     
     <script>
@@ -1313,16 +1313,45 @@
             <div id="basket-bg-image" style="position:absolute !important;bottom:-30px !important;left:-40px !important;width:250px !important;height:250px !important;z-index:5 !important;pointer-events:none;display:block !important;">
                 <img src="./slimehearth-assets/images/bag1.png?v=7" style="width:100%;height:100%;object-fit:contain;" />
             </div>
+            <!-- Yellow sell area indicators - RESPONSIVE -->
+            <!-- Mobile (350px): X=210-390 (180px wide, centered at 300) -->
+            <!-- Desktop (820px): X=680-820 (140px wide, centered at 750) -->
+            <canvas id="basket-canvas" width="820" height="1200"></canvas>
+            <div id="sell-area-left" class="sell-wall" style="position:absolute;bottom:6px;width:15px;height:112px;background:#ffd700;z-index:500;pointer-events:none;display:none;opacity:0.9;"></div>
+            <div id="sell-area-right" class="sell-wall" style="position:absolute;bottom:6px;width:15px;height:112px;background:#ffd700;z-index:500;pointer-events:none;display:none;opacity:0.9;"></div>
+            <div id="sell-area-bottom" class="sell-wall" style="position:absolute;bottom:6px;height:20px;background:#ffd700;z-index:500;pointer-events:none;display:none;opacity:0.9;"></div>
+            <script>
+                // Position sell walls responsively
+                function positionSellWalls() {
+                    const isMobile = window.innerWidth <= 700;
+                    const leftWall = document.getElementById('sell-area-left');
+                    const rightWall = document.getElementById('sell-area-right');
+                    const bottomWall = document.getElementById('sell-area-bottom');
+                    
+                    if (isMobile) {
+                        // Mobile: 210-390 (180px wide)
+                        if (leftWall) leftWall.style.left = '210px';
+                        if (rightWall) rightWall.style.left = '390px';
+                        if (bottomWall) {
+                            bottomWall.style.left = '210px';
+                            bottomWall.style.width = '180px';
+                        }
+                    } else {
+                        // Desktop: 680-820 (140px wide)
+                        if (leftWall) leftWall.style.left = '680px';
+                        if (rightWall) rightWall.style.left = '820px';
+                        if (bottomWall) {
+                            bottomWall.style.left = '680px';
+                            bottomWall.style.width = '140px';
+                        }
+                    }
+                }
+                positionSellWalls();
+                window.addEventListener('resize', positionSellWalls);
+            </script>
             <div id="sell-bag-image" style="position:absolute !important;bottom:-30px !important;right:-100px !important;width:250px !important;height:250px !important;z-index:5 !important;pointer-events:none;display:none !important;">
                 <img src="./slimehearth-assets/images/sellbag1.png?v=1" style="width:100%;height:100%;object-fit:contain;" />
             </div>
-            <!-- Yellow sell area indicators (scaled with container at 0.8) -->
-            <!-- Canvas is 1200px tall, Y=1194 is bottom, so from top: 1200-1194=6px from bottom -->
-            <!-- Sell area: X=680-820 (140px wide), Height=112px -->
-            <div id="sell-area-left" style="position:absolute;left:680px;bottom:6px;width:15px;height:112px;background:#ffd700;z-index:300;pointer-events:none;display:none;opacity:0.7;"></div>
-            <div id="sell-area-right" style="position:absolute;left:820px;bottom:6px;width:15px;height:112px;background:#ffd700;z-index:300;pointer-events:none;display:none;opacity:0.7;"></div>
-            <div id="sell-area-bottom" style="position:absolute;left:680px;bottom:6px;width:140px;height:20px;background:#ffd700;z-index:300;pointer-events:none;display:none;opacity:0.7;"></div>
-            <canvas id="basket-canvas" width="820" height="1200"></canvas>
             <button class="basket-close-btn" id="basket-close">×</button>
             <div id="inventory-counter">0/6</div>
             <div id="basket-coins-display" style="position:absolute;left:70px;bottom:6px;color:#ffd700;font-size:14px;font-weight:bold;z-index:201;pointer-events:none;text-shadow:2px 2px 4px rgba(0,0,0,0.9);">💰 <span id="basket-coins">0</span></div>
