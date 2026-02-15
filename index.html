@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.496</title>
+    <title>SlimeHearth v0.497</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.496</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.497</div>
     </div>
     
     <script>
@@ -1327,12 +1327,12 @@
                     const bottomWall = document.getElementById('sell-area-bottom');
                     
                     if (isMobile) {
-                        // Mobile: 250-430 (180px wide, moved 40px right)
+                        // Mobile: 250-376 (126px wide, smaller)
                         if (leftWall) leftWall.style.left = '250px';
-                        if (rightWall) rightWall.style.left = '430px';
+                        if (rightWall) rightWall.style.left = '376px';
                         if (bottomWall) {
                             bottomWall.style.left = '250px';
-                            bottomWall.style.width = '180px';
+                            bottomWall.style.width = '126px';
                         }
                     } else {
                         // Desktop: 680-820 (140px wide)
@@ -2235,11 +2235,11 @@
                     const isMobile = window.innerWidth <= 700;
                     
                     // Match the sell detection area exactly
-                    // Desktop: 680-820 (140px wide), Mobile: 250-430 (180px wide)
+                    // Desktop: 680-820 (140px wide), Mobile: 250-376 (126px wide, ~30% smaller)
                     const sellMinX = isMobile ? 250 : 680;
-                    const sellMaxX = isMobile ? 430 : 820;
-                    const sellBasketCenterX = (sellMinX + sellMaxX) / 2; // 750 for desktop, 340 for mobile
-                    const sellBasketWidth = sellMaxX - sellMinX; // 140 for desktop, 180 for mobile
+                    const sellMaxX = isMobile ? 376 : 820;
+                    const sellBasketCenterX = (sellMinX + sellMaxX) / 2; // 750 for desktop, 313 for mobile
+                    const sellBasketWidth = sellMaxX - sellMinX; // 140 for desktop, 126 for mobile
                     
                     const sellBasketBottom = 1194;
                     const sellWallHeight = 112;
@@ -2757,10 +2757,10 @@
                 if (!shopActive) return;
                 
                 // Sell basket area: responsive positioning
-                // Desktop: 680-820 (centered at 750), Mobile: 250-430 (centered at 340)
+                // Desktop: 680-820 (centered at 750), Mobile: 250-376 (centered at 313)
                 const isMobile = window.innerWidth <= 700;
                 const sellMinX = isMobile ? 250 : 680;
-                const sellMaxX = isMobile ? 430 : 820;
+                const sellMaxX = isMobile ? 376 : 820;
                 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const body = basketBodies[i];
