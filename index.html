@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.499</title>
+    <title>SlimeHearth v0.500</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -74,7 +74,6 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            z-index: 150; /* Above basket canvas (140) */
         }
         
         .room.active {
@@ -640,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.499</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.500</div>
     </div>
     
     <script>
@@ -1234,7 +1233,7 @@
                 <h2>👔 Wardrobe</h2>
                 
                 <h3 style="margin-top:20px;margin-bottom:15px;">🎩 Hats</h3>
-                <div id="hats-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:600px;margin:0 auto;padding:20px;">
+                <div id="hats-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:600px;margin:0 auto;padding:20px;position:relative;z-index:200;">
                     <!-- Hats will be displayed here as grid items -->
                 </div>
                 
@@ -5607,6 +5606,8 @@ function initKitchenGame() {
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
+                    position: relative;
+                    z-index: 200;
                 `;
                 
                 hatCard.innerHTML = `
