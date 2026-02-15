@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.490</title>
+    <title>SlimeHearth v0.491</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.490</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.491</div>
     </div>
     
     <script>
@@ -1316,10 +1316,12 @@
             <div id="sell-bag-image" style="position:absolute !important;bottom:-30px !important;right:-100px !important;width:250px !important;height:250px !important;z-index:5 !important;pointer-events:none;display:none !important;">
                 <img src="./slimehearth-assets/images/sellbag1.png?v=1" style="width:100%;height:100%;object-fit:contain;" />
             </div>
-            <!-- Yellow sell area indicators (HTML overlays) -->
-            <div id="sell-area-left" style="position:absolute;left:680px;bottom:0px;width:15px;height:112px;background:#ffd700;z-index:300;pointer-events:none;display:none;"></div>
-            <div id="sell-area-right" style="position:absolute;right:0px;bottom:0px;width:15px;height:112px;background:#ffd700;z-index:300;pointer-events:none;display:none;"></div>
-            <div id="sell-area-bottom" style="position:absolute;left:680px;bottom:0px;width:140px;height:20px;background:#ffd700;z-index:300;pointer-events:none;display:none;"></div>
+            <!-- Yellow sell area indicators (scaled with container at 0.8) -->
+            <!-- Canvas is 1200px tall, Y=1194 is bottom, so from top: 1200-1194=6px from bottom -->
+            <!-- Sell area: X=680-820 (140px wide), Height=112px -->
+            <div id="sell-area-left" style="position:absolute;left:680px;bottom:6px;width:15px;height:112px;background:#ffd700;z-index:300;pointer-events:none;display:none;opacity:0.7;"></div>
+            <div id="sell-area-right" style="position:absolute;left:820px;bottom:6px;width:15px;height:112px;background:#ffd700;z-index:300;pointer-events:none;display:none;opacity:0.7;"></div>
+            <div id="sell-area-bottom" style="position:absolute;left:680px;bottom:6px;width:140px;height:20px;background:#ffd700;z-index:300;pointer-events:none;display:none;opacity:0.7;"></div>
             <canvas id="basket-canvas" width="820" height="1200"></canvas>
             <button class="basket-close-btn" id="basket-close">×</button>
             <div id="inventory-counter">0/6</div>
