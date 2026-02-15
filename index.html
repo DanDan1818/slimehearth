@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.459</title>
+    <title>SlimeHearth v0.462</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -569,7 +569,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.459</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.462</div>
     </div>
     
     <!-- Hatch Screen Overlay (Simple) -->
@@ -732,6 +732,7 @@
                 <button id="goto-fishing-menu">🎣 Fishing</button>
                 <button id="goto-farming-menu">🌾 Farming</button>
                 <button id="goto-cooking-menu">🍳 Cooking</button>
+                <button id="goto-shack">⛏️ Prospecting</button>
                 <button id="goto-adventure">🗝️ Adventure</button>
             </div>
             
@@ -1216,9 +1217,8 @@
     <!-- Bottom Navigation -->
     <div id="bottom-nav">
         <button class="nav-btn" id="nav-home">🏠</button>
-        <button class="nav-btn" id="nav-area">🎮</button>
+        <button class="nav-btn" id="nav-area">🎣</button>
         <button class="nav-btn" id="nav-shop">🛒</button>
-        <button class="nav-btn" id="nav-shack">🛖</button>
         <button class="nav-btn" id="nav-room">🚪</button>
         <button class="nav-btn" id="nav-settings">⚙️</button>
     </div>
@@ -2009,11 +2009,6 @@
             switchRoom('shop-room');
             displayShopGrid();
         };
-        document.getElementById('nav-shack').onclick = () => {
-            switchRoom('shack-room');
-            updateCrackButton();
-            updateProspectingDisplay();
-        };
         document.getElementById('nav-room').onclick = () => switchRoom('room-room');
         document.getElementById('nav-settings').onclick = () => {
             const overlay = document.getElementById('settings-overlay');
@@ -2163,7 +2158,7 @@
             });
             
             // Create basket walls (no top)
-            const basketCenterX = 120;  // Moved left from 150
+            const basketCenterX = 90;  // Moved left to align with bag image
             const basketBottom = 1194;
             const basketWidth = 180;
             const wallHeight = 112;
@@ -4929,6 +4924,11 @@ function initKitchenGame() {
         document.getElementById('goto-cooking-menu').onclick = () => {
             switchRoom('cooking-menu-room');
             setTimeout(() => initHearth(), 0);
+        };
+        document.getElementById('goto-shack').onclick = () => {
+            switchRoom('shack-room');
+            updateCrackButton();
+            updateProspectingDisplay();
         };
         document.getElementById('back-to-area-cook').onclick = () => switchRoom('area-room');
         
