@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.464</title>
+    <title>SlimeHearth v0.478</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -88,6 +88,10 @@
             padding-top: 10px;
         }
         
+        #area-room {
+            background-image: url('./slimehearth-assets/images/activities-background.png');
+        }
+        
         #area-room.active {
             justify-content: flex-start;
             padding-top: 40px;
@@ -126,8 +130,23 @@
             padding-top: 40px;
         }
         
+        #wardrobe-room.active {
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
+        
+        #trophies-room.active {
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
+        
         #cooking-menu-room {
             background-image: url('./slimehearth-assets/images/hearth-background.png');
+        }
+        
+        #cooking-menu-room.active {
+            justify-content: flex-start;
+            padding-top: 40px;
         }
         
         #farming-garden-room, #farming-field-room {
@@ -159,6 +178,34 @@
         @keyframes slimeBounce {
             0%, 100% { transform: translate(-50%, -50%) translateY(0) scale(1, 1); }
             50% { transform: translate(-50%, -50%) translateY(-3px) scale(1.05, 0.95); }
+        }
+        
+        /* Back/Leave Button - Bottom Center */
+        .back-btn {
+            position: fixed !important;
+            bottom: 85px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 50px !important;
+            height: 50px !important;
+            padding: 0 !important;
+            font-size: 24px !important;
+            background: rgba(153, 153, 153, 0.9) !important;
+            color: #fff !important;
+            border: 3px solid #666 !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+            z-index: 300 !important;
+            font-weight: bold !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .back-btn:active {
+            transform: translateX(-50%) scale(0.95) !important;
         }
         
         /* Bottom Navigation */
@@ -451,10 +498,23 @@
         
         #fish-pond-btn:active {
             transform: scale(0.95);
+            background: #0891b2 !important;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3) !important;
+            filter: brightness(0.85);
         }
         
         #cast-river:active {
             transform: scale(0.95);
+            background: #0891b2 !important;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3) !important;
+            filter: brightness(0.85);
+        }
+        
+        #water-garden-btn:active {
+            transform: scale(0.95);
+            background: #0891b2 !important;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3) !important;
+            filter: brightness(0.85);
         }
         
         #fishing-bar-river {
@@ -564,26 +624,90 @@
 <body>
     
     <!-- Title Screen Overlay (Simple) -->
+    <!-- Loading Screen -->
+    <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="font-size:32px;font-weight:bold;color:#fff;margin-bottom:20px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);">SlimeHearth</div>
+        <div style="font-size:18px;color:rgba(255,255,255,0.9);margin-bottom:30px;">Loading...</div>
+        <div style="width:200px;height:10px;background:rgba(255,255,255,0.3);border-radius:5px;overflow:hidden;">
+            <div id="loading-bar" style="width:0%;height:100%;background:#fff;transition:width 0.3s;"></div>
+        </div>
+    </div>
+    
+    <!-- Title Screen -->
     <div id="title-overlay" 
-         style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:cover;background-position:center;background-repeat:no-repeat;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
+         style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.464</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.478</div>
     </div>
+    
+    <script>
+        // Preload all game images
+        (function() {
+            const imagesToPreload = [
+                './slimehearth-assets/images/titlescreen-background.png',
+                './slimehearth-assets/images/egg1.png',
+                './slimehearth-assets/images/home-background.png',
+                './slimehearth-assets/images/activities-background.png',
+                './slimehearth-assets/images/shop-background.png',
+                './slimehearth-assets/images/shack-background.png',
+                './slimehearth-assets/images/pond-background.png',
+                './slimehearth-assets/images/hearth-background.png',
+                './slimehearth-assets/images/farm-background.png',
+                './slimehearth-assets/images/bag1.png',
+                './slimehearth-assets/images/sellbag1.png',
+                './slimehearth-assets/images/fish1.png',
+                './slimehearth-assets/images/fish2.png',
+                './slimehearth-assets/images/fish3.png',
+                './slimehearth-assets/images/fish4.png',
+                './slimehearth-assets/images/gem1.png',
+                './slimehearth-assets/images/geode1.png',
+                './slimehearth-assets/images/carrot1.png',
+                './slimehearth-assets/images/food1.png',
+                './slimehearth-assets/images/basket1.png',
+                './slimehearth-assets/images/slime1.png',
+                './slimehearth-assets/images/slime2.png',
+                './slimehearth-assets/images/slime3.png'
+            ];
+            
+            let loadedCount = 0;
+            const totalImages = imagesToPreload.length;
+            const loadingBar = document.getElementById('loading-bar');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const titleOverlay = document.getElementById('title-overlay');
+            
+            function updateProgress() {
+                loadedCount++;
+                const percent = (loadedCount / totalImages) * 100;
+                if (loadingBar) loadingBar.style.width = percent + '%';
+                
+                if (loadedCount >= totalImages) {
+                    // All images loaded, show title screen
+                    setTimeout(() => {
+                        if (loadingOverlay) loadingOverlay.style.display = 'none';
+                        if (titleOverlay) titleOverlay.style.display = 'flex';
+                    }, 300);
+                }
+            }
+            
+            // Preload each image
+            imagesToPreload.forEach(src => {
+                const img = new Image();
+                img.onload = updateProgress;
+                img.onerror = updateProgress; // Continue even if image fails
+                img.src = src;
+            });
+        })();
+    </script>
     
     <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="text-align:center;">
-            <h2 id="hatch-instruction" style="font-size:32px;color:#333;margin-bottom:30px;">🥚 Tap the egg to hatch!</h2>
-            
+        <div style="text-align:center;position:relative;">
             <!-- Tappable Egg -->
-            <div id="hatch-egg" style="width:180px;height:180px;cursor:pointer;user-select:none;transition:transform 0.1s, opacity 0.5s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;background-image:url('./slimehearth-assets/images/egg1.png');background-size:contain;background-repeat:no-repeat;background-position:center;margin:0 auto;">
-            </div>
-            
-            <!-- Tap Counter -->
-            <div id="tap-counter" style="font-size:24px;color:#333;margin-top:20px;font-weight:bold;">
-                <span id="tap-count">0</span> / 10 taps
+            <div id="hatch-egg" style="width:180px;height:180px;cursor:pointer;user-select:none;transition:transform 0.1s, opacity 0.5s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;background-image:url('./slimehearth-assets/images/egg1.png');background-size:contain;background-repeat:no-repeat;background-position:center;margin:0 auto;position:relative;">
+                <!-- TAP! indicator -->
+                <div class="pulse-text" style="position:absolute;top:-10px;right:-10px;font-size:20px;color:#ff6b9d;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">TAP!</div>
             </div>
         </div>
     </div>
@@ -593,13 +717,10 @@
         (function() {
             const hatchOverlay = document.getElementById('hatch-overlay');
             const hatchEgg = document.getElementById('hatch-egg');
-            const tapCountDisplay = document.getElementById('tap-count');
-            const hatchInstruction = document.getElementById('hatch-instruction');
             let tapCount = 0;
             
             function tapEgg() {
                 tapCount++;
-                tapCountDisplay.textContent = tapCount;
                 
                 // Egg shake animation
                 hatchEgg.style.transform = 'scale(1.1) rotate(' + (Math.random() * 20 - 10) + 'deg)';
@@ -607,16 +728,8 @@
                     hatchEgg.style.transform = 'scale(1) rotate(0deg)';
                 }, 100);
                 
-                // Crack effects at milestones
-                if (tapCount === 5) {
-                    hatchInstruction.textContent = '🥚 Keep tapping! It\'s cracking!';
-                } else if (tapCount === 8) {
-                    hatchInstruction.textContent = '🥚 Almost there!';
-                }
-                
                 // Hatch at 10 taps
                 if (tapCount >= 10) {
-                    hatchInstruction.textContent = '✨ Hatching!';
                     hatchEgg.style.transform = 'scale(1.5)';
                     hatchEgg.style.opacity = '0'; // Fade out the egg
                     
@@ -745,7 +858,7 @@
                     <!-- Doors will be displayed here -->
                 </div>
                 
-                <button id="back-to-area-adventure" style="background:#999;margin-top:20px;">← Back</button>
+                <button id="back-to-area-adventure" class="back-btn">←</button>
             </div>
             
             <!-- Fishing Menu - Select Area -->
@@ -753,7 +866,7 @@
                 <h2>🎣 Fishing Areas</h2>
                 <button id="goto-pond">🪷 The Pond</button>
                 <button id="goto-river">🌊 The River</button>
-                <button id="back-to-area" style="background:#999;">← Back</button>
+                <button id="back-to-area" class="back-btn">←</button>
             </div>
             
             <!-- Fishing Minigame - The Pond -->
@@ -769,7 +882,7 @@
                     <button id="fish-pond-btn" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;">🎣</button>
                     <div id="fishing-result-pond" style="min-height:30px;font-size:18px;font-weight:bold;"></div>
                 </div>
-                <button id="leave-pond" style="background:#999;">← Leave</button>
+                <button id="leave-pond" class="back-btn">←</button>
             </div>
             
             <!-- Fishing Minigame - The River -->
@@ -783,7 +896,7 @@
                     <button id="cast-river" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;">🎣</button>
                     <div id="fishing-timer-river"></div>
                 </div>
-                <button id="leave-river" style="background:#999;">← Leave</button>
+                <button id="leave-river" class="back-btn">←</button>
             </div>
             
             
@@ -792,7 +905,7 @@
                 <h2>🌾 Farming Areas</h2>
                 <button id="goto-garden">🌻 The Garden</button>
                 <button id="goto-field">🌾 The Field</button>
-                <button id="back-to-area-farm" style="background:#999;">← Back</button>
+                <button id="back-to-area-farm" class="back-btn">←</button>
             </div>
             
             <!-- Farming - The Garden (Rapid Tap) -->
@@ -851,24 +964,16 @@
                     </div>
                     
                     <!-- Water Button -->
-                    <button id="water-garden-btn" style="width:130px;height:50px;font-size:20px;background:#4dd0e1;border:2px solid #333;border-radius:8px;cursor:pointer;font-weight:bold;margin:15px 0;padding:0;">
-                        💧 Water
-                    </button>
+                    <button id="water-garden-btn" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;margin:15px auto;">💧</button>
                     
                     <!-- Timer Display -->
                     <div id="garden-timer-display" style="font-size:24px;font-weight:bold;margin:15px 0;color:#8bc34a;min-height:30px;"></div>
                     
                     <!-- Result/Status -->
                     <div id="garden-result" style="min-height:30px;font-size:18px;font-weight:bold;margin:15px 0;"></div>
-                    
-                    <!-- Growing Info -->
-                    <div style="background:#fef3c7;padding:12px;border-radius:8px;margin-top:20px;border:2px solid #f59e0b;">
-                        <div style="font-size:13px;font-weight:bold;color:#92400e;margin-bottom:5px;">📖 How to Garden:</div>
-                        <div style="font-size:12px;color:#78716c;">1. Click slots to select seeds<br>2. Click 💧 Water to start growing<br>3. Wait 1 minute<br>4. Harvest for 3x carrots per seed!</div>
-                    </div>
                 </div>
                 
-                <button id="leave-garden" style="background:#999;margin-top:20px;">← Leave</button>
+                <button id="leave-garden" class="back-btn">←</button>
             </div>
             
             <!-- Farming - The Field (Pattern Match) -->
@@ -886,7 +991,7 @@
                     <button id="reset-field-btn" style="background:#ff9800;">Reset</button>
                     <div id="field-result" style="min-height:30px;font-size:18px;font-weight:bold;margin-top:10px;"></div>
                 </div>
-                <button id="leave-field" style="background:#999;">← Leave</button>
+                <button id="leave-field" class="back-btn">←</button>
             </div>
             
             <!-- Cooking Menu - Select Area -->
@@ -936,7 +1041,7 @@
                     </div>
                 </div>
                 
-                <button id="back-to-area-cook" style="background:#999;margin-top:20px;">← Back</button>
+                <button id="back-to-area-cook" class="back-btn">←</button>
             </div>
             
             <!-- Cooking - The Kitchen (Rhythm Game) -->
@@ -1096,7 +1201,7 @@
                     <div id="shack-result" style="min-height:25px;font-size:14px;font-weight:bold;margin:12px 0;"></div>
                 </div>
                 
-                <button id="leave-shack" style="background:#999;margin-top:20px;">← Leave</button>
+                <button id="leave-shack" class="back-btn">←</button>
             </div>
             
             <!-- Shop Room -->
@@ -1123,29 +1228,29 @@
             <div class="room" id="wardrobe-room">
                 <h2>👔 Wardrobe</h2>
                 
-                <h3 style="margin-top:20px;">🎩 Hats</h3>
-                <div id="hats-display" style="max-width:500px;margin:10px auto;padding:15px;background:rgba(255,255,255,0.9);border:3px solid #333;border-radius:10px;max-height:400px;overflow-y:auto;">
-                    <!-- Hats will be displayed here -->
+                <h3 style="margin-top:20px;margin-bottom:15px;">🎩 Hats</h3>
+                <div id="hats-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:600px;margin:0 auto;padding:20px;">
+                    <!-- Hats will be displayed here as grid items -->
                 </div>
                 
-                <button id="leave-wardrobe" style="background:#999;margin-top:20px;">← Leave</button>
+                <button id="leave-wardrobe" class="back-btn">←</button>
             </div>
             
             <!-- Collection Room (formerly Trophies) -->
             <div class="room" id="trophies-room">
                 <h2>📦 Collection</h2>
                 
-                <h3 style="margin-top:20px;">🛠️ Tools</h3>
-                <div id="trophies-display" style="max-width:500px;margin:10px auto;padding:15px;background:rgba(255,255,255,0.9);border:3px solid #333;border-radius:10px;max-height:300px;overflow-y:auto;">
+                <h3 style="margin-top:20px;margin-bottom:10px;">🛠️ Tools</h3>
+                <div id="trophies-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:600px;margin:0 auto 30px auto;padding:10px;">
                     <!-- Tools will be displayed here -->
                 </div>
                 
-                <h3 style="margin-top:20px;">🔑 Keys</h3>
-                <div id="keys-display" style="max-width:500px;margin:10px auto;padding:15px;background:rgba(255,255,255,0.9);border:3px solid #333;border-radius:10px;max-height:300px;overflow-y:auto;">
+                <h3 style="margin-top:10px;margin-bottom:10px;">🔑 Keys</h3>
+                <div id="keys-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:600px;margin:0 auto;padding:10px;">
                     <!-- Keys will be displayed here -->
                 </div>
                 
-                <button id="leave-trophies" style="background:#999;margin-top:20px;">← Leave</button>
+                <button id="leave-trophies" class="back-btn">←</button>
             </div>
             
             <!-- Settings Overlay (not a room) -->
@@ -1231,12 +1336,67 @@
          - hut-strings.mp3 (available for future use)
          - lakeside-bounce.mp3 (available for future use)
     -->
-    <audio id="bg-music" loop>
-        <source src="./slimehearth-assets/music/fishing-lights.mp3" type="audio/mpeg">
+    <audio id="bg-music">
+        <source src="./slimehearth-assets/music/hut-strings.mp3" type="audio/mpeg">
     </audio>
-    <audio id="bg-music" loop>
-        <source src="./slimekeeper-assets/music/fishing-lights.mp3" type="audio/mpeg">
-    </audio>
+    
+    <script>
+        // Music playlist system
+        const musicPlaylist = [
+            './slimehearth-assets/music/hut-strings.mp3',
+            './slimehearth-assets/music/fishing-lights.mp3',
+            './slimehearth-assets/music/town-theme.mp3'
+        ];
+        
+        let currentTrackIndex = 0;
+        let playlistShuffled = false;
+        
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        function playNextTrack() {
+            const bgMusic = document.getElementById('bg-music');
+            if (!bgMusic) return;
+            
+            // After first song, shuffle the playlist
+            if (currentTrackIndex === 0 && !playlistShuffled) {
+                // Keep hut-strings first, shuffle the rest
+                const restOfPlaylist = musicPlaylist.slice(1);
+                const shuffledRest = shuffleArray(restOfPlaylist);
+                musicPlaylist.splice(1, musicPlaylist.length - 1, ...shuffledRest);
+                playlistShuffled = true;
+            }
+            
+            currentTrackIndex++;
+            if (currentTrackIndex >= musicPlaylist.length) {
+                currentTrackIndex = 0;
+                // Re-shuffle for next loop (excluding first track)
+                const restOfPlaylist = musicPlaylist.slice(1);
+                const shuffledRest = shuffleArray(restOfPlaylist);
+                musicPlaylist.splice(1, musicPlaylist.length - 1, ...shuffledRest);
+            }
+            
+            const currentVolume = bgMusic.volume;
+            bgMusic.src = musicPlaylist[currentTrackIndex];
+            bgMusic.load();
+            bgMusic.volume = currentVolume; // Maintain volume
+            bgMusic.play().catch(() => {});
+        }
+        
+        // Setup music event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) {
+                bgMusic.addEventListener('ended', playNextTrack);
+            }
+        });
+    </script>
     
     <!-- Eating Sound Effects -->
     <audio id="eat-sound-1" preload="auto">
@@ -2199,7 +2359,7 @@
             // Sell basket solid walls (responsive positioning)
             // Desktop: far right corner, Mobile: centered to be fully visible
             const isMobile = window.innerWidth <= 700;
-            const sellBasketCenterX = isMobile ? 300 : 790; // Mobile: 300 (centered), Desktop: 790 (moved further right)
+            const sellBasketCenterX = isMobile ? 300 : 800; // Mobile: 300 (centered), Desktop: 800 (moved 40px more right)
             const sellBasketBottom = 1194;
             const sellBasketWidth = 180;
             const sellWallHeight = 112;
@@ -5116,7 +5276,7 @@ function initKitchenGame() {
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
-            const display = document.getElementById('trophies-display');
+            const display = document.getElementById('trophies-grid');
             if (!display) return;
             
             display.innerHTML = '';
@@ -5125,33 +5285,43 @@ function initKitchenGame() {
                 const tool = TOOLS_DATA[toolId];
                 const owned = gs.tools[toolId] || false;
                 
-                const toolDiv = document.createElement('div');
-                toolDiv.style.cssText = 'padding:15px;margin:10px 0;border:3px solid ' + (owned ? '#4ade80' : '#d1d5db') + ';border-radius:10px;background:' + (owned ? '#f0fdf4' : '#f3f4f6') + ';' + (owned ? '' : 'opacity:0.5;');
+                const toolCard = document.createElement('div');
+                toolCard.style.cssText = `
+                    background: ${owned ? '#f0fdf4' : '#f3f4f6'};
+                    border: 3px solid ${owned ? '#4ade80' : '#d1d5db'};
+                    border-radius: 10px;
+                    padding: 8px;
+                    text-align: center;
+                    opacity: ${owned ? '1' : '0.5'};
+                    min-height: 100px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                `;
                 
-                toolDiv.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <div style="flex:1;">
-                            <div style="font-size:20px;font-weight:bold;margin-bottom:5px;color:${owned ? '#000' : '#9ca3af'};">
-                                ${tool.icon} ${tool.name}
-                            </div>
-                            <div style="color:#666;font-size:14px;margin-bottom:8px;">
-                                ${tool.description}
-                            </div>
-                        </div>
-                        <div style="margin-left:15px;">
-                            ${owned ? 
-                                '<div style="background:#4ade80;color:#fff;padding:10px 20px;border-radius:8px;font-weight:bold;font-size:16px;">✓ UNLOCKED</div>' :
-                                '<div style="background:#9ca3af;color:#fff;padding:10px 20px;border-radius:8px;font-weight:bold;font-size:16px;">🔒 LOCKED</div>'
-                            }
-                        </div>
+                toolCard.innerHTML = `
+                    <div style="font-size:32px;margin-bottom:4px;">
+                        ${tool.icon}
+                    </div>
+                    <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
+                        ${tool.name}
+                    </div>
+                    <div style="font-size:9px;color:#666;margin-bottom:4px;">
+                        ${tool.description}
+                    </div>
+                    <div style="margin-top:auto;">
+                        ${owned ? 
+                            '<div style="background:#4ade80;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">✓ UNLOCKED</div>' :
+                            '<div style="background:#9ca3af;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">🔒 LOCKED</div>'
+                        }
                     </div>
                 `;
                 
-                display.appendChild(toolDiv);
+                display.appendChild(toolCard);
             }
             
             if (Object.keys(TOOLS_DATA).length === 0) {
-                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;">No tools available yet...</p>';
+                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;grid-column:1/-1;">No tools available yet...</p>';
             }
         }
         
@@ -5324,7 +5494,7 @@ function initKitchenGame() {
         
         // ===== HATS (COSMETICS) =====
         function displayHats() {
-            const display = document.getElementById('hats-display');
+            const display = document.getElementById('hats-grid');
             if (!display) return;
             
             display.innerHTML = '';
@@ -5334,35 +5504,54 @@ function initKitchenGame() {
                 const owned = gs.hats[hatId] || false;
                 const equipped = gs.equippedHat === hatId;
                 
-                const hatDiv = document.createElement('div');
-                hatDiv.style.cssText = 'padding:12px;margin:8px 0;border:3px solid ' + (equipped ? '#fbbf24' : (owned ? '#4ade80' : '#d1d5db')) + ';border-radius:10px;background:' + (equipped ? '#fef3c7' : (owned ? '#f0fdf4' : '#f3f4f6')) + ';' + (owned ? '' : 'opacity:0.5;');
+                const hatCard = document.createElement('div');
+                hatCard.style.cssText = `
+                    background: ${equipped ? '#fef3c7' : (owned ? '#f0fdf4' : '#f3f4f6')};
+                    border: 3px solid ${equipped ? '#fbbf24' : (owned ? '#4ade80' : '#d1d5db')};
+                    border-radius: 10px;
+                    padding: 8px;
+                    text-align: center;
+                    cursor: ${owned ? 'pointer' : 'default'};
+                    opacity: ${owned ? '1' : '0.5'};
+                    transition: transform 0.1s;
+                    min-height: 100px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                `;
                 
-                hatDiv.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <div style="flex:1;">
-                            <div style="font-size:18px;font-weight:bold;margin-bottom:3px;color:${owned ? '#000' : '#9ca3af'};">
-                                ${hat.icon} ${hat.name}
-                            </div>
-                            <div style="color:#666;font-size:13px;">
-                                ${hat.description}
-                            </div>
-                        </div>
-                        <div style="margin-left:15px;">
-                            ${equipped ? 
-                                '<div style="background:#fbbf24;color:#fff;padding:8px 16px;border-radius:8px;font-weight:bold;font-size:14px;">✓ EQUIPPED</div>' :
-                                (owned ?
-                                    '<button onclick="equipHat(\'' + hatId + '\')" style="background:#4ade80;color:#fff;padding:8px 16px;border:2px solid #22c55e;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;">EQUIP</button>' :
-                                    '<div style="background:#9ca3af;color:#fff;padding:8px 16px;border-radius:8px;font-weight:bold;font-size:14px;">🔒 LOCKED</div>')
-                            }
-                        </div>
+                if (owned && !equipped) {
+                    hatCard.style.cursor = 'pointer';
+                    hatCard.onmouseover = () => hatCard.style.transform = 'scale(1.05)';
+                    hatCard.onmouseout = () => hatCard.style.transform = 'scale(1)';
+                    hatCard.onclick = () => equipHat(hatId);
+                }
+                
+                hatCard.innerHTML = `
+                    <div style="font-size:32px;margin-bottom:4px;">
+                        ${hat.icon}
+                    </div>
+                    <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
+                        ${hat.name}
+                    </div>
+                    <div style="font-size:9px;color:#666;margin-bottom:4px;">
+                        ${hat.description}
+                    </div>
+                    <div style="margin-top:auto;">
+                        ${equipped ? 
+                            '<div style="background:#fbbf24;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">✓ EQUIPPED</div>' :
+                            (owned ?
+                                '<div style="background:#4ade80;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">TAP TO EQUIP</div>' :
+                                '<div style="background:#9ca3af;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">🔒 LOCKED</div>')
+                        }
                     </div>
                 `;
                 
-                display.appendChild(hatDiv);
+                display.appendChild(hatCard);
             }
             
             if (Object.keys(HATS_DATA).length === 0) {
-                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;">No hats available yet...</p>';
+                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;grid-column:1/-1;">No hats available yet...</p>';
             }
         }
         
@@ -5387,13 +5576,13 @@ function initKitchenGame() {
         
         // ===== KEYS =====
         function displayKeys() {
-            const display = document.getElementById('keys-display');
+            const display = document.getElementById('keys-grid');
             if (!display) return;
             
             display.innerHTML = '';
             
             if (Object.keys(KEYS_DATA).length === 0) {
-                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;">No keys yet... More areas coming soon!</p>';
+                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;grid-column:1/-1;">No keys yet... More areas coming soon!</p>';
                 return;
             }
             
@@ -5401,29 +5590,39 @@ function initKitchenGame() {
                 const key = KEYS_DATA[keyId];
                 const owned = gs.keys[keyId] || false;
                 
-                const keyDiv = document.createElement('div');
-                keyDiv.style.cssText = 'padding:15px;margin:10px 0;border:3px solid ' + (owned ? '#fbbf24' : '#d1d5db') + ';border-radius:10px;background:' + (owned ? '#fef3c7' : '#f3f4f6') + ';' + (owned ? '' : 'opacity:0.5;');
+                const keyCard = document.createElement('div');
+                keyCard.style.cssText = `
+                    background: ${owned ? '#fef3c7' : '#f3f4f6'};
+                    border: 3px solid ${owned ? '#fbbf24' : '#d1d5db'};
+                    border-radius: 10px;
+                    padding: 8px;
+                    text-align: center;
+                    opacity: ${owned ? '1' : '0.5'};
+                    min-height: 100px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                `;
                 
-                keyDiv.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <div style="flex:1;">
-                            <div style="font-size:20px;font-weight:bold;margin-bottom:5px;color:${owned ? '#000' : '#9ca3af'};">
-                                ${key.icon} ${key.name}
-                            </div>
-                            <div style="color:#666;font-size:14px;margin-bottom:8px;">
-                                ${key.description}
-                            </div>
-                        </div>
-                        <div style="margin-left:15px;">
-                            ${owned ? 
-                                '<div style="background:#fbbf24;color:#fff;padding:10px 20px;border-radius:8px;font-weight:bold;font-size:16px;">✓ OBTAINED</div>' :
-                                '<div style="background:#9ca3af;color:#fff;padding:10px 20px;border-radius:8px;font-weight:bold;font-size:16px;">🔒 LOCKED</div>'
-                            }
-                        </div>
+                keyCard.innerHTML = `
+                    <div style="font-size:32px;margin-bottom:4px;">
+                        ${key.icon}
+                    </div>
+                    <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
+                        ${key.name}
+                    </div>
+                    <div style="font-size:9px;color:#666;margin-bottom:4px;">
+                        ${key.description}
+                    </div>
+                    <div style="margin-top:auto;">
+                        ${owned ? 
+                            '<div style="background:#fbbf24;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">✓ OBTAINED</div>' :
+                            '<div style="background:#9ca3af;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">🔒 LOCKED</div>'
+                        }
                     </div>
                 `;
                 
-                display.appendChild(keyDiv);
+                display.appendChild(keyCard);
             }
         }
         
