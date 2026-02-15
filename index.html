@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.457</title>
+    <title>SlimeHearth v0.459</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -442,10 +442,11 @@
             position: relative;
             width: 300px;
             height: 40px;
-            background: #ddd;
+            background: linear-gradient(to bottom, #e5e7eb, #d1d5db);
             border: 3px solid #333;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         
         #fish-pond-btn:active {
@@ -462,16 +463,20 @@
             top: 0;
             width: 30px;
             height: 100%;
-            background: #4dd0e1;
-            border-right: 3px solid #333;
+            background: linear-gradient(to right, #06b6d4, #0891b2);
+            border-right: 3px solid #0e7490;
+            border-radius: 8px 0 0 8px;
+            box-shadow: 2px 0 6px rgba(6, 182, 212, 0.5);
         }
         
         #fishing-target-river {
             position: absolute;
-            width: 80px;
+            width: 50px;
             height: 100%;
-            background: rgba(76, 175, 80, 0.5);
-            border: 3px solid #4caf50;
+            background: linear-gradient(to bottom, rgba(34, 197, 94, 0.4), rgba(22, 163, 74, 0.5));
+            border: 3px solid #16a34a;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
         }
         
         #fishing-timer-river {
@@ -564,7 +569,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.457</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.459</div>
     </div>
     
     <!-- Hatch Screen Overlay (Simple) -->
@@ -1213,7 +1218,6 @@
         <button class="nav-btn" id="nav-home">🏠</button>
         <button class="nav-btn" id="nav-area">🎮</button>
         <button class="nav-btn" id="nav-shop">🛒</button>
-        <button class="nav-btn" id="floating-bag-btn">🎒</button>
         <button class="nav-btn" id="nav-shack">🛖</button>
         <button class="nav-btn" id="nav-room">🚪</button>
         <button class="nav-btn" id="nav-settings">⚙️</button>
@@ -2098,21 +2102,30 @@
             }
         }
         
-        const bagBtn = document.getElementById('floating-bag-btn');
+        // Bag is now always open after hatching - no button needed
+        // Open basket automatically when game loads (after hatching)
+        function openBasketPermanently() {
+            const container = document.getElementById('basket-container');
+            container.classList.add('active');
+            
+            // Show inventory bag by default
+            const inventoryBag = document.getElementById('basket-bg-image');
+            const sellBag = document.getElementById('sell-bag-image');
+            if (inventoryBag) inventoryBag.style.display = 'block';
+            if (sellBag) sellBag.style.display = 'none';
+            
+            // Initialize basket physics
+            if (!basketEngine) {
+                initBasket();
+            } else {
+                populateBasket();
+            }
+        }
         
-        // Use mousedown for faster response
-        bagBtn.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleBasket();
-        });
-        
-        // Use touchstart for mobile (faster than touchend)
-        bagBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleBasket();
-        }, { passive: false });
+        // Open basket on page load (if hatched)
+        if (gs.hatched) {
+            setTimeout(() => openBasketPermanently(), 100);
+        }
         
         // ===== BASKET SYSTEM =====
         function initBasket() {
@@ -3083,7 +3096,7 @@ function stopBasket() {
             
             const barLeft = parseInt(bar.style.left) || 0;
             const targetLeft = riverTargetPos;
-            const targetRight = targetLeft + 80;
+            const targetRight = targetLeft + 50;
             
             const hit = barLeft >= targetLeft && barLeft <= targetRight;
             endRiverFishing(hit);
@@ -4713,6 +4726,9 @@ function initKitchenGame() {
                 }
                 save();
                 updateUI();
+                
+                // Open basket permanently after hatching
+                openBasketPermanently();
             }, 600);
             
             // Check if image loaded
