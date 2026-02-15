@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.484</title>
+    <title>SlimeHearth v0.486</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.484</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.486</div>
     </div>
     
     <script>
@@ -2188,6 +2188,40 @@
                 
                 // Add sell walls only if in shop
                 if (roomId === 'shop-room') {
+                    // Recreate sell walls with current position
+                    const { Bodies } = Matter;
+                    const isMobile = window.innerWidth <= 700;
+                    const sellBasketCenterX = isMobile ? 300 : 770;
+                    const sellBasketBottom = 1194;
+                    const sellBasketWidth = 180;
+                    const sellWallHeight = 112;
+                    const sellWallThickness = 6;
+                    
+                    const sellLeftWall = Bodies.rectangle(
+                        sellBasketCenterX - sellBasketWidth/2 + sellWallThickness/2,
+                        sellBasketBottom - sellWallHeight/2,
+                        sellWallThickness,
+                        sellWallHeight,
+                        { isStatic: true, render: { fillStyle: '#ffd700' } }
+                    );
+                    
+                    const sellRightWall = Bodies.rectangle(
+                        sellBasketCenterX + sellBasketWidth/2 - sellWallThickness/2,
+                        sellBasketBottom - sellWallHeight/2,
+                        sellWallThickness,
+                        sellWallHeight,
+                        { isStatic: true, render: { fillStyle: '#ffd700' } }
+                    );
+                    
+                    const sellBottom = Bodies.rectangle(
+                        sellBasketCenterX,
+                        sellBasketBottom - 10,
+                        sellBasketWidth,
+                        20,
+                        { isStatic: true, render: { fillStyle: '#ffd700' } }
+                    );
+                    
+                    sellWalls = [sellLeftWall, sellRightWall, sellBottom];
                     World.add(basketEngine.world, sellWalls);
                 }
             }
@@ -2386,47 +2420,8 @@
             
             World.add(basketEngine.world, [leftWall, rightWall, bottom, invisibleFloor]);
             
-            // Sell basket solid walls (responsive positioning)
-            // Desktop: far right corner, Mobile: centered to be fully visible
-            const isMobile = window.innerWidth <= 700;
-            const sellBasketCenterX = isMobile ? 300 : 770; // Mobile: 300 (centered), Desktop: 770 (40px right from 730)
-            const sellBasketBottom = 1194;
-            const sellBasketWidth = 180;
-            const sellWallHeight = 112;
-            const sellWallThickness = 6;
-            
-            const sellLeftWall = Bodies.rectangle(
-                sellBasketCenterX - sellBasketWidth/2 + sellWallThickness/2,
-                sellBasketBottom - sellWallHeight/2,
-                sellWallThickness,
-                sellWallHeight,
-                { isStatic: true, render: { fillStyle: '#ffd700' } }
-            );
-            
-            const sellRightWall = Bodies.rectangle(
-                sellBasketCenterX + sellBasketWidth/2 - sellWallThickness/2,
-                sellBasketBottom - sellWallHeight/2,
-                sellWallThickness,
-                sellWallHeight,
-                { isStatic: true, render: { fillStyle: '#ffd700' } }
-            );
-            
-            const sellBottom = Bodies.rectangle(
-                sellBasketCenterX,
-                sellBasketBottom - 10,
-                sellBasketWidth,
-                20,
-                { isStatic: true, render: { fillStyle: '#ffd700' } }
-            );
-            
-            // Store sell walls for later removal
-            sellWalls = [sellLeftWall, sellRightWall, sellBottom];
-            
-            // Only add sell walls if we're in the shop
-            const shopActive = document.getElementById('shop-room').classList.contains('active');
-            if (shopActive) {
-                World.add(basketEngine.world, sellWalls);
-            }
+            // Sell walls are now created dynamically in switchRoom()
+            sellWalls = [];
             
             // Velocity limiter
             Events.on(basketEngine, 'beforeUpdate', () => {
