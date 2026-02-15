@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.501</title>
+    <title>SlimeHearth v0.503</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,7 +639,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.501</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.503</div>
     </div>
     
     <script>
@@ -838,7 +838,7 @@
             <div class="room active" id="home-room" style="background-image:url('./slimehearth-assets/images/home-background.png');background-size:cover;background-position:center -100px;">
                 <div id="slime-square"></div>
                 <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:25;display:none;">
-                    <img id="slime-hat-image" src="" style="width:60px;height:60px;object-fit:contain;transform:translate(25px, -70px) rotate(15deg);" />
+                    <img id="slime-hat-image" src="" style="width:60px;height:60px;object-fit:contain;transform:translate(10px, -50px) rotate(15deg);" />
                 </div>
                 <div id="slime-mouth"></div>
             </div>
@@ -1476,9 +1476,9 @@
             equippedHat: null, // Currently equipped hat (null = no hat)
             keys: {}, // Format: { 'bronze_key': true, 'silver_key': true }
             skills: { // Skill levels and XP
-                fishing: { level: 1, xp: 0, xpNeeded: 100 },
-                farming: { level: 1, xp: 0, xpNeeded: 100 },
-                cooking: { level: 1, xp: 0, xpNeeded: 100 }
+                fishing: { level: 1, xp: 0, xpNeeded: 10 },
+                farming: { level: 1, xp: 0, xpNeeded: 10 },
+                cooking: { level: 1, xp: 0, xpNeeded: 10 }
             },
             lastSkillUsed: null, // Track the last skill that gained XP
             stats: { // Permanent buffs from eating food
@@ -1946,9 +1946,9 @@
                 // Initialize skills if they don't exist (old saves)
                 if (!gs.skills) {
                     gs.skills = {
-                        fishing: { level: 1, xp: 0, xpNeeded: 100 },
-                        farming: { level: 1, xp: 0, xpNeeded: 100 },
-                        cooking: { level: 1, xp: 0, xpNeeded: 100 }
+                        fishing: { level: 1, xp: 0, xpNeeded: 10 },
+                        farming: { level: 1, xp: 0, xpNeeded: 10 },
+                        cooking: { level: 1, xp: 0, xpNeeded: 10 }
                     };
                 }
                 
@@ -2066,9 +2066,9 @@
             if (!gs.skills) {
                 console.error('gs.skills is undefined! Initializing...');
                 gs.skills = {
-                    fishing: { level: 1, xp: 0, xpNeeded: 100 },
-                    farming: { level: 1, xp: 0, xpNeeded: 100 },
-                    cooking: { level: 1, xp: 0, xpNeeded: 100 }
+                    fishing: { level: 1, xp: 0, xpNeeded: 10 },
+                    farming: { level: 1, xp: 0, xpNeeded: 10 },
+                    cooking: { level: 1, xp: 0, xpNeeded: 10 }
                 };
             }
             
@@ -2089,7 +2089,7 @@
             while (skill.xp >= skill.xpNeeded) {
                 skill.xp -= skill.xpNeeded;
                 skill.level++;
-                skill.xpNeeded = Math.floor(skill.xpNeeded * 1.5);
+                skill.xpNeeded = Math.floor(skill.xpNeeded * 1.2); // Same as slime
                 notify('🎉 ' + skillName.charAt(0).toUpperCase() + skillName.slice(1) + ' Level ' + skill.level + '!');
             }
             
@@ -2205,17 +2205,11 @@
             
             if (inventoryBag && sellBag) {
                 if (isInShop) {
-                    // In shop - show BOTH bags and yellow indicators
+                    // In shop - show BOTH bags (HTML walls stay hidden)
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'block';
-                    if (sellAreaLeft) sellAreaLeft.style.display = 'block';
-                    if (sellAreaRight) sellAreaRight.style.display = 'block';
-                    if (sellAreaBottom) sellAreaBottom.style.display = 'block';
                 } else {
                     // Not in shop - show only inventory bag
-                    if (sellAreaLeft) sellAreaLeft.style.display = 'none';
-                    if (sellAreaRight) sellAreaRight.style.display = 'none';
-                    if (sellAreaBottom) sellAreaBottom.style.display = 'none';
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'none';
                 }
