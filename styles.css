@@ -341,6 +341,14 @@
                 box-shadow: none !important;  /* No glow */
             }
             
+            /* Ensure backgrounds fill entire screen on mobile */
+            .room {
+                background-size: cover;
+                background-position: center center;
+                min-height: 100%;
+                min-width: 100%;
+            }
+            
             #skills-overlay {
                 right: 10px;
                 width: auto;
