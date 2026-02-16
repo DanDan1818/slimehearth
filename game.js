@@ -879,14 +879,13 @@
                 if (roomId === 'shop-room') {
                     // Recreate sell walls with current position
                     const { Bodies } = Matter;
-                    const isMobile = window.innerWidth <= 700;
                     
-                    // Match the sell detection area exactly
-                    // Desktop: 680-820 (140px wide, right edge), Mobile: 280-406 (126px wide)
-                    const sellMinX = isMobile ? 280 : 680;
-                    const sellMaxX = isMobile ? 406 : 820;
-                    const sellBasketCenterX = (sellMinX + sellMaxX) / 2; // 750 for desktop, 343 for mobile
-                    const sellBasketWidth = sellMaxX - sellMinX; // 140 for desktop, 126 for mobile
+                    // Use same position for all devices now that canvas is 700px
+                    // Right side: 550-676 (126px wide)
+                    const sellMinX = 550;
+                    const sellMaxX = 676;
+                    const sellBasketCenterX = (sellMinX + sellMaxX) / 2;
+                    const sellBasketWidth = sellMaxX - sellMinX;
                     
                     const sellBasketBottom = 1194;
                     const sellWallHeight = 60;  // Shorter walls
@@ -1092,7 +1091,7 @@
             
             // Create engine
             basketEngine = Engine.create();
-            basketEngine.world.bounds = { min: { x: -1000, y: -1000 }, max: { x: 1820, y: 1700 } };
+            basketEngine.world.bounds = { min: { x: -1000, y: -1000 }, max: { x: 1700, y: 1700 } };
             basketEngine.gravity.y = 0.5;
             
             // Create renderer
@@ -1100,7 +1099,7 @@
                 canvas: canvas,
                 engine: basketEngine,
                 options: {
-                    width: 820,
+                    width: 700,  // Match mobile width
                     height: 1200,
                     wireframes: false,
                     background: 'transparent'
@@ -1138,9 +1137,9 @@
                 { isStatic: true, render: { visible: false } }
             );
             
-            // Invisible floor at canvas bottom - sized for 820px canvas
+            // Invisible floor at canvas bottom - sized for 700px canvas
             const invisibleFloor = Bodies.rectangle(
-                410, 1230, 1100, 100,  // Centered at 410 (middle of 820)
+                350, 1230, 900, 100,  // Centered at 350 (middle of 700)
                 { isStatic: true, render: { visible: false } }
             );
             
@@ -1423,11 +1422,10 @@
                 const shopActive = document.getElementById('shop-room').classList.contains('active');
                 if (!shopActive) return;
                 
-                // Sell basket area: responsive positioning
-                // Desktop: 680-820 (centered at 750, right edge), Mobile: 280-406 (centered at 343)
-                const isMobile = window.innerWidth <= 700;
-                const sellMinX = isMobile ? 280 : 680;
-                const sellMaxX = isMobile ? 406 : 820;
+                // Sell basket area: same position for all devices (canvas is 700px)
+                // Right side: 550-676
+                const sellMinX = 550;
+                const sellMaxX = 676;
                 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const body = basketBodies[i];
