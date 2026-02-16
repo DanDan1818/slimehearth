@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.510</title>
+    <title>SlimeHearth v0.511</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -108,6 +108,14 @@
         
         #fishing-pond-room {
             background-image: url('./slimehearth-assets/images/pond-background.png');
+        }
+        
+        #fishing-river-room {
+            background-image: url('./slimehearth-assets/images/river-background.png');
+        }
+        
+        #fishing-menu-room {
+            background-image: url('./slimehearth-assets/images/fishing-background.png');
         }
         
         #fishing-pond-room.active {
@@ -639,7 +647,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.510</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.511</div>
     </div>
     
     <script>
@@ -653,6 +661,8 @@
                 './slimehearth-assets/images/shop-background.png',
                 './slimehearth-assets/images/shack-background.png',
                 './slimehearth-assets/images/pond-background.png',
+                './slimehearth-assets/images/river-background.png',
+                './slimehearth-assets/images/fishing-background.png',
                 './slimehearth-assets/images/hearth-background.png',
                 './slimehearth-assets/images/farm-background.png',
                 './slimehearth-assets/images/bag1.png',
@@ -661,9 +671,14 @@
                 './slimehearth-assets/images/fish2.png',
                 './slimehearth-assets/images/fish3.png',
                 './slimehearth-assets/images/fish4.png',
+                './slimehearth-assets/images/fish5.png',
+                './slimehearth-assets/images/fish6.png',
+                './slimehearth-assets/images/fish7.png',
+                './slimehearth-assets/images/fish8.png',
                 './slimehearth-assets/images/gem1.png',
                 './slimehearth-assets/images/geode1.png',
                 './slimehearth-assets/images/carrot1.png',
+                './slimehearth-assets/images/seeds1.png',
                 './slimehearth-assets/images/food1.png',
                 './slimehearth-assets/images/basket1.png',
                 './slimehearth-assets/images/slime1.png',
@@ -1517,9 +1532,14 @@
             'fish2': './slimehearth-assets/images/fish2.png',
             'fish3': './slimehearth-assets/images/fish3.png',
             'fish4': './slimehearth-assets/images/fish4.png',
+            'fish5': './slimehearth-assets/images/fish5.png',
+            'fish6': './slimehearth-assets/images/fish6.png',
+            'fish7': './slimehearth-assets/images/fish7.png',
+            'fish8': './slimehearth-assets/images/fish8.png',
             'gem': './slimehearth-assets/images/gem1.png',
             'small_geode': './slimehearth-assets/images/geode1.png',
             'carrot': './slimehearth-assets/images/carrot1.png',
+            'carrot_seeds': './slimehearth-assets/images/seeds1.png',
             'food': './slimehearth-assets/images/food1.png',
             'basket': './slimehearth-assets/images/basket1.png'
         };
@@ -1573,6 +1593,54 @@
                 cookable: true,
                 feedable: true
             },
+            'fish5': {
+                name: 'Lobster',
+                emoji: '🦞',
+                image: 'fish5.png',
+                rarity: 'Common',
+                rarityColor: '#9ca3af',
+                description: 'A tasty lobster from the river.',
+                foodValue: 3,
+                sellValue: 5,
+                cookable: true,
+                feedable: true
+            },
+            'fish6': {
+                name: 'Shrimp',
+                emoji: '🦐',
+                image: 'fish6.png',
+                rarity: 'Uncommon',
+                rarityColor: '#4ade80',
+                description: 'Fresh river shrimp.',
+                foodValue: 4,
+                sellValue: 8,
+                cookable: true,
+                feedable: true
+            },
+            'fish7': {
+                name: 'Crab',
+                emoji: '🦀',
+                image: 'fish7.png',
+                rarity: 'Rare',
+                rarityColor: '#fbbf24',
+                description: 'A rare river crab!',
+                foodValue: 5,
+                sellValue: 12,
+                cookable: true,
+                feedable: true
+            },
+            'fish8': {
+                name: 'Shark',
+                emoji: '🦈',
+                image: 'fish8.png',
+                rarity: 'Epic',
+                rarityColor: '#a855f7',
+                description: 'An epic shark caught in the river!',
+                foodValue: 8,
+                sellValue: 25,
+                cookable: true,
+                feedable: true
+            },
             'fish': {
                 name: 'Fish',
                 rarity: 'Uncommon',
@@ -1597,6 +1665,7 @@
             },
             'carrot_seeds': {
                 name: '🌱 Carrot Seeds',
+                image: 'seeds1.png',
                 rarity: 'Common',
                 rarityColor: '#8bc34a',
                 description: 'Plant in the garden. Grows in 1 minute.',
@@ -3348,18 +3417,18 @@ function stopBasket() {
             const castBtn = document.getElementById('cast-river');
             
             if (success) {
-                // Same item pool as Pond
+                // River fish pool: fish5-8 (Lobster, Shrimp, Crab, Shark)
                 const rand = Math.random();
                 let caughtFish;
                 
                 if (rand < 0.50) {
-                    caughtFish = 'fish1'; // Common - 50%
+                    caughtFish = 'fish5'; // Lobster (Common) - 50%
                 } else if (rand < 0.80) {
-                    caughtFish = 'fish2'; // Uncommon - 30%
+                    caughtFish = 'fish6'; // Shrimp (Uncommon) - 30%
                 } else if (rand < 0.95) {
-                    caughtFish = 'fish3'; // Rare - 15%
+                    caughtFish = 'fish7'; // Crab (Rare) - 15%
                 } else {
-                    caughtFish = 'fish4'; // Epic - 5%
+                    caughtFish = 'fish8'; // Shark (Epic) - 5%
                 }
                 
                 const fishName = ITEM_DATA[caughtFish].name;
