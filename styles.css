@@ -329,13 +329,14 @@
             
             /* Move sell bag and green box to the right on mobile */
             .basket-container #sell-bag-image {
-                right: -110px !important;  /* Was -140px, moved 30px left */
-                bottom: -40px !important;  /* Was -30px, moved 10px down */
+                right: -100px !important;  /* Was -110px, moved 10px more left */
+                bottom: -40px !important;
             }
             
             .basket-container #green-sell-box {
-                right: -80px !important;  /* Was -110px, moved 30px left */
-                bottom: 10px !important;  /* Was 20px, moved 10px down */
+                right: -70px !important;  /* Was -80px, moved 10px more left */
+                bottom: 10px !important;
+                display: none !important;  /* Hide green box on mobile */
             }
             
             #skills-overlay {
