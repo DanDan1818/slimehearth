@@ -854,6 +854,7 @@
             const sellAreaLeft = document.getElementById('sell-area-left');
             const sellAreaRight = document.getElementById('sell-area-right');
             const sellAreaBottom = document.getElementById('sell-area-bottom');
+            const sellCanvas = document.getElementById('sell-basket-canvas');
             const isInShop = (roomId === 'shop-room');
             
             if (inventoryBag && sellBag) {
@@ -861,10 +862,12 @@
                     // In shop - show BOTH bags (HTML walls stay hidden)
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'block';
+                    if (sellCanvas) sellCanvas.style.display = 'block';
                 } else {
                     // Not in shop - show only inventory bag
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'none';
+                    if (sellCanvas) sellCanvas.style.display = 'none';
                 }
             }
             
