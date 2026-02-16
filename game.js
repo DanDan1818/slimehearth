@@ -889,9 +889,10 @@
                     const sellBasketWidth = sellMaxX - sellMinX; // 140 for desktop, 126 for mobile
                     
                     const sellBasketBottom = 1194;
-                    const sellWallHeight = 60;  // Shorter walls like bag inventory
+                    const sellWallHeight = 60;  // Shorter walls
                     const sellWallThickness = 6;
                     
+                    // Create LEFT wall
                     const sellLeftWall = Bodies.rectangle(
                         sellMinX + sellWallThickness/2,
                         sellBasketBottom - sellWallHeight/2,
@@ -905,6 +906,7 @@
                         }
                     );
                     
+                    // Create RIGHT wall
                     const sellRightWall = Bodies.rectangle(
                         sellMaxX - sellWallThickness/2,
                         sellBasketBottom - sellWallHeight/2,
@@ -918,6 +920,7 @@
                         }
                     );
                     
+                    // Create BOTTOM bar
                     const sellBottom = Bodies.rectangle(
                         sellBasketCenterX,
                         sellBasketBottom - 10,
@@ -931,7 +934,20 @@
                         }
                     );
                     
-                    sellWalls = [sellLeftWall, sellRightWall, sellBottom];
+                    // Create BIG VISIBLE GREEN BACKGROUND BOX (for visibility)
+                    const greenBox = Bodies.rectangle(
+                        sellBasketCenterX,
+                        sellBasketBottom - sellWallHeight/2,
+                        sellBasketWidth - 12,
+                        sellWallHeight - 10,
+                        {
+                            isStatic: true,
+                            isSensor: true,  // Doesn't block items
+                            render: { fillStyle: 'rgba(0, 255, 0, 0.3)', visible: true }
+                        }
+                    );
+                    
+                    sellWalls = [sellLeftWall, sellRightWall, sellBottom, greenBox];
                     World.add(basketEngine.world, sellWalls);
                 }
             }
