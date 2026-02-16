@@ -1431,17 +1431,30 @@
                 const shopActive = document.getElementById('shop-room').classList.contains('active');
                 if (!shopActive) return;
                 
-                // Sell basket area: wider area to catch items on mobile
-                // Right side: 500-700 (wider than visual box to ensure it works)
-                const sellMinX = 500;
-                const sellMaxX = 700;
+                // Get the green box position dynamically
+                const greenBox = document.getElementById('green-sell-box');
+                if (!greenBox) return;
+                
+                const boxRect = greenBox.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                // Convert screen coordinates to canvas physics coordinates
+                // Account for container scaling (0.8x) and positioning
+                const scale = 0.8;
+                const containerLeft = canvasRect.left;
+                
+                // Calculate physics coordinates from green box position
+                const sellMinX = (boxRect.left - containerLeft) / scale;
+                const sellMaxX = (boxRect.right - containerLeft) / scale;
+                const sellMinY = (boxRect.top - canvasRect.top) / scale;
+                const sellMaxY = (boxRect.bottom - canvasRect.top) / scale;
                 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const body = basketBodies[i];
                     if (!body || !body.itemKey) continue;
                     
                     const inSellX = body.position.x > sellMinX && body.position.x < sellMaxX;
-                    const inSellY = body.position.y > 1050;  // Lower threshold too
+                    const inSellY = body.position.y > sellMinY && body.position.y < sellMaxY;
                     
                     if (inSellX && inSellY) {
                         // Get sell price from ITEM_DATA
