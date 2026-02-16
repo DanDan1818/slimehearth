@@ -3665,6 +3665,12 @@ function initKitchenGame() {
         
 // ===== GAME ACTIONS =====
         function hatchSlime() {
+            // Guard: Don't hatch if already hatched
+            if (gs.hatched) {
+                console.log('Slime already hatched, ignoring duplicate call');
+                return;
+            }
+            
             console.log('Hatching slime');
             
             // Randomly select one of 5 slimes (equal chances)
@@ -3679,9 +3685,10 @@ function initKitchenGame() {
             const randomIndex = Math.floor(Math.random() * slimeVariants.length);
             const chosenSlime = slimeVariants[randomIndex];
             
-            // Save which slime was chosen
+            // Save which slime was chosen - SET THIS IMMEDIATELY to prevent duplicate calls
             gs.hatched = true;
             gs.slimeVariant = chosenSlime;
+            save(); // Save immediately to persist the hatched state
             
             // Set the slime image
             const slimeElement = document.getElementById('slime-square');
