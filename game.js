@@ -1091,11 +1091,11 @@
                 }
             });
             
-            // Create basket walls (no top)
+            // Create basket walls (no top) - SHORTER walls so items can fly over
             const basketCenterX = 90;  // Moved left to align with bag image
             const basketBottom = 1194;
             const basketWidth = 180;
-            const wallHeight = 112;
+            const wallHeight = 60;  // Reduced from 112 to 60 - items can fly over!
             const wallThickness = 6;
             
             const leftWall = Bodies.rectangle(
