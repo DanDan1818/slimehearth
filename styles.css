@@ -329,11 +329,13 @@
             
             /* Move sell bag and green box to the right on mobile */
             .basket-container #sell-bag-image {
-                right: -140px !important;  /* Move 100px more to the right - more specific selector */
+                right: -110px !important;  /* Was -140px, moved 30px left */
+                bottom: -40px !important;  /* Was -30px, moved 10px down */
             }
             
             .basket-container #green-sell-box {
-                right: -110px !important;  /* Move 100px more to the right */
+                right: -80px !important;  /* Was -110px, moved 30px left */
+                bottom: 10px !important;  /* Was 20px, moved 10px down */
             }
             
             #skills-overlay {
