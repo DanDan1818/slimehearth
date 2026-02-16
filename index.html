@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.511</title>
+    <title>SlimeHearth v0.518</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -647,7 +647,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.511</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.518</div>
     </div>
     
     <script>
@@ -852,8 +852,8 @@
             <!-- Home Room -->
             <div class="room active" id="home-room" style="background-image:url('./slimehearth-assets/images/home-background.png');background-size:cover;background-position:center -100px;">
                 <div id="slime-square"></div>
-                <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:25;display:none;">
-                    <img id="slime-hat-image" src="" style="width:60px;height:60px;object-fit:contain;transform:translate(10px, -50px) rotate(15deg);" />
+                <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:30;display:none;">
+                    <img id="slime-hat-image" src="" style="width:120px;height:120px;object-fit:contain;transform:translate(0px, -90px) rotate(15deg);" />
                 </div>
                 <div id="slime-mouth"></div>
             </div>
@@ -884,7 +884,7 @@
             <div class="room" id="fishing-menu-room">
                 <h2>🎣 Fishing Areas</h2>
                 <button id="goto-pond">🪷 The Pond</button>
-                <button id="goto-river">🌊 The River</button>
+                <button id="goto-river">🌊 The River<br><span style="font-size:10px;opacity:0.7;">Req: Fishing Net</span></button>
                 <button id="back-to-area" class="back-btn">←</button>
             </div>
             
@@ -923,7 +923,7 @@
             <div class="room" id="farming-menu-room">
                 <h2>🌾 Farming Areas</h2>
                 <button id="goto-garden">🌻 The Garden</button>
-                <button id="goto-field">🌾 The Field</button>
+                <button id="goto-field">🌾 The Field<br><span style="font-size:10px;opacity:0.7;">Req: Golden Hoe</span></button>
                 <button id="back-to-area-farm" class="back-btn">←</button>
             </div>
             
@@ -1514,7 +1514,10 @@
             'fish2': '#4ade80',
             'fish3': '#fbbf24',
             'fish4': '#a855f7',
-            'fish': '#4dd0e1',
+            'fish5': '#9ca3af',
+            'fish6': '#4ade80',
+            'fish7': '#fbbf24',
+            'fish8': '#a855f7',
             'carrot': '#ffaa44',
             'carrot_seeds': '#8bc34a',
             'food': '#ff6b9d',
@@ -1527,7 +1530,6 @@
         };
         
         const ITEM_IMAGES = {
-            'fish': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAA8ADwDASIAAhEBAxEB/8QAGgABAAMBAQEAAAAAAAAAAAAAAAQFBgEDAv/EAC8QAAIBAwMBBwIGAwAAAAAAAAECAwAEEQUSITEiQVFhcYGRE7EUMjNSofBC0uH/xAAZAQADAQEBAAAAAAAAAAAAAAAAAwQCAQX/xAApEQACAQMCBQIHAAAAAAAAAAABAgADERIhMQQTIkFRgfAUMmGhsdHh/9oADAMBAAIRAxEAPwDGUpXVUswVQSxOAB1NEJyu7TtLYO0HBPd/eKsLXS3Y/UvQ0EG0ncSAT7f8q1hgswmI1t0OeAyh29yTx6UlqyqZhWao2NIX/EzNK0F1p8NwGjjSKK4BG1lyqsPSqB0aN2RxhlJBHnWqdQPtAN1FWFiO05SlKZNxWj0y2W1t1YlUldd8kjf4L3dft5elQtHso3JkmRZMquwMeBuYrz8VbXNk11HdwxyoXSQd23cAB0HzUtU5nEbRapz3K26V3+p8S0tHtFVZbQCRsdp5AH3H17q872JLgs0qJhuuFAFQIXu7O3ee4JnkcquCQMADA6e1LyW6uLeKeCBSMsGjkG4dMA4+amKsz2DdN956iWppkFkqfT420yK5t2CSRuomQHKnng+WeOnjVcdMtbm7JMTfWbmRGchVJOck/bHXwr306Oe0sJY5UbEyEIuPTHXpyDUi5coYFIaOcIyyIRg4B7J+Ceac99SNx7+8mfhlrMpJI9e3j0MiaroEdpFsaKPe6MY2iY/mAzg5/vWsrWw1OeaTdvY4jtmMPmccn16Vj6dRbK5EkCcuoyeLSXp97+DlbegeKQbXXHOPKrm0mjnkd7Z5GkABaORgSR3EHxGe/wBDWboCVIKkgjkEd1dekG1ncWVs6Zsfe82CXSuDG2G8UYYPuDXoszySxQQp2nYADHCjvPoBWbXV5ypE4jm/aHjB+2MV9tqUSoGS1g3t1GWOPUdP5qYcPY6iVfHVMbFNfIP7mg1K4iiu1WKb6yRoBKDIAc+IPTPj7V4398l1cR3E7/QkKKsMS9s7T+4d+aphq57eUiAX9ICAf7cfzUC5uZLqZpZmyx+APAU7BmJ0tJWq1qth8tu9/wCTQ6rqwdCLiRmlEbLGqwGMLkYzzyelZmlKcq47m84iY6k3MUpStxkUpSiEUpSiEUpSiE//2Q==',
             'fish1': './slimehearth-assets/images/fish1.png',
             'fish2': './slimehearth-assets/images/fish2.png',
             'fish3': './slimehearth-assets/images/fish3.png',
@@ -1638,16 +1640,6 @@
                 description: 'An epic shark caught in the river!',
                 foodValue: 8,
                 sellValue: 25,
-                cookable: true,
-                feedable: true
-            },
-            'fish': {
-                name: 'Fish',
-                rarity: 'Uncommon',
-                rarityColor: '#4ade80',
-                description: 'A fresh catch from the pond.',
-                foodValue: 3,
-                sellValue: 5,
                 cookable: true,
                 feedable: true
             },
@@ -1774,14 +1766,14 @@
                 icon: '🎣'
             },
             'better_net': {
-                name: '🥅 Better Net',
-                description: 'Improved catch rate at the river',
+                name: '🥅 Fishing Net',
+                description: 'Required to fish at the River. Unlocks River fishing!',
                 cost: 250,
                 icon: '🥅'
             },
             'golden_hoe': {
                 name: '⚒️ Golden Hoe',
-                description: 'Faster farming in the garden',
+                description: 'Required to farm at the Fields. Unlocks Fields farming!',
                 cost: 500,
                 icon: '⚒️'
             }
@@ -1912,20 +1904,9 @@
         function openBasket() {
             notify('🧺 Opening Basket!', 'achievement');
             
-            // Get all possible item drops (exclude basket itself)
-            const possibleItems = ['fish', 'carrot', 'food', 'small_geode', 'rock', 'gem'];
-            
-            // Random number of items (1-3)
-            const numItems = Math.floor(Math.random() * 3) + 1;
-            
-            let itemsFound = [];
-            for (let i = 0; i < numItems; i++) {
-                const randomItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
-                addItem(randomItem, 1);
-                itemsFound.push(ITEM_DATA[randomItem].name);
-            }
-            
-            notify('Found: ' + itemsFound.join(', ') + '!');
+            // Basket now drops 3 Gems
+            addItem('gem', 3);
+            notify('Found: 3 Gems! 💎');
         }
         
         function notifyInventoryFull() {
@@ -2240,10 +2221,13 @@
             }
             save();
             
+            // Get proper item name from ITEM_DATA
+            const itemName = ITEM_DATA[itemId] ? ITEM_DATA[itemId].name : itemId;
+            
             if (toAdd < quantity) {
-                notify(`+${toAdd} ${itemId} (inventory full!)`);
+                notify(`+${toAdd} ${itemName} (inventory full!)`);
             } else {
-                notify(`+${toAdd} ${itemId}`);
+                notify(`+${toAdd} ${itemName}`);
             }
             
             updateInventoryCounter();
@@ -5061,7 +5045,13 @@ function initKitchenGame() {
         document.getElementById('goto-fishing-menu').onclick = () => switchRoom('fishing-menu-room');
         document.getElementById('back-to-area').onclick = () => switchRoom('area-room');
         document.getElementById('goto-pond').onclick = () => switchRoom('fishing-pond-room');
-        document.getElementById('goto-river').onclick = () => switchRoom('fishing-river-room');
+        document.getElementById('goto-river').onclick = () => {
+            if (!gs.tools.better_net) {
+                notify('❌ You need a Fishing Net to fish at the River! Buy it from the shop.');
+                return;
+            }
+            switchRoom('fishing-river-room');
+        };
         document.getElementById('leave-pond').onclick = () => {
             stopFishing();
             switchRoom('fishing-menu-room');
@@ -5132,6 +5122,10 @@ function initKitchenGame() {
             setTimeout(() => initGardenPlots(), 0);
         };
         document.getElementById('goto-field').onclick = () => {
+            if (!gs.tools.golden_hoe) {
+                notify('❌ You need a Golden Hoe to farm at the Fields! Buy it from the shop.');
+                return;
+            }
             switchRoom('farming-field-room');
             initFieldGame();
         };
@@ -5169,9 +5163,10 @@ function initKitchenGame() {
         
         // Debug functions
         document.getElementById('fill-bag').onclick = () => {
-            addItem('fish', 5);
-            addItem('carrot', 5);
-            addItem('food', 5);
+            addItem('fish5', 2);  // Lobster
+            addItem('fish6', 2);  // Shrimp
+            addItem('fish7', 1);  // Crab
+            addItem('fish8', 1);  // Shark
         };
         
         document.getElementById('toggle-debug-console').onclick = () => {
@@ -5488,7 +5483,7 @@ function initKitchenGame() {
                 { id: 'carrot_seeds', name: '🌱 Carrot Seeds', icon: '🌱', price: 3, type: 'item' },
                 { id: 'hammer', name: 'Hammer', icon: '🔨', price: 50, type: 'tool', data: TOOLS_DATA.hammer },
                 { id: 'fishing_rod', name: 'Fishing Rod', icon: '🎣', price: 100, type: 'tool', data: TOOLS_DATA.fishing_rod },
-                { id: 'better_net', name: 'Better Net', icon: '🥅', price: 250, type: 'tool', data: TOOLS_DATA.better_net },
+                { id: 'better_net', name: 'Fishing Net', icon: '🥅', price: 250, type: 'tool', data: TOOLS_DATA.better_net },
                 { id: 'golden_hoe', name: 'Golden Hoe', icon: '⚒️', price: 500, type: 'tool', data: TOOLS_DATA.golden_hoe },
                 { id: 'top_hat', name: 'Top Hat', icon: '🎩', price: 100, type: 'hat', data: HATS_DATA.top_hat },
                 { id: 'party_hat', name: 'Party Hat', icon: '🎉', price: 150, type: 'hat', data: HATS_DATA.party_hat },
