@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.518</title>
+    <title>SlimeHearth v0.525</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -647,7 +647,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.518</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.525</div>
     </div>
     
     <script>
@@ -723,7 +723,7 @@
             <!-- Tappable Egg -->
             <div id="hatch-egg" style="width:180px;height:180px;cursor:pointer;user-select:none;transition:transform 0.1s, opacity 0.5s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;background-image:url('./slimehearth-assets/images/egg1.png');background-size:contain;background-repeat:no-repeat;background-position:center;margin:0 auto;position:relative;">
                 <!-- TAP! indicator -->
-                <div class="pulse-text" style="position:absolute;top:-10px;right:-10px;font-size:20px;color:#ff6b9d;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">TAP!</div>
+                <div class="fast-pulse-text" style="position:absolute;top:-10px;right:-10px;font-size:20px;color:#ff6b9d;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">TAP!</div>
             </div>
         </div>
     </div>
@@ -786,6 +786,11 @@
             50% { opacity: 0.6; transform: scale(1.05); }
         }
         
+        @keyframes fastPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.15); }
+        }
+        
         @keyframes splash {
             0% { opacity: 0; transform: scale(0.5) translateY(0); }
             50% { opacity: 1; transform: scale(1.2) translateY(-5px); }
@@ -794,6 +799,10 @@
         
         .pulse-text {
             animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .fast-pulse-text {
+            animation: fastPulse 0.8s ease-in-out infinite;
         }
     </style>
     
@@ -853,7 +862,7 @@
             <div class="room active" id="home-room" style="background-image:url('./slimehearth-assets/images/home-background.png');background-size:cover;background-position:center -100px;">
                 <div id="slime-square"></div>
                 <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:30;display:none;">
-                    <img id="slime-hat-image" src="" style="width:120px;height:120px;object-fit:contain;transform:translate(0px, -90px) rotate(15deg);" />
+                    <img id="slime-hat-image" src="" style="width:120px;height:120px;object-fit:contain;transform:translate(0px, -40px) rotate(15deg);" />
                 </div>
                 <div id="slime-mouth"></div>
             </div>
@@ -864,8 +873,30 @@
                 <button id="goto-fishing-menu">🎣 Fishing</button>
                 <button id="goto-farming-menu">🌾 Farming</button>
                 <button id="goto-cooking-menu">🍳 Cooking</button>
-                <button id="goto-shack">⛏️ Prospecting</button>
+                <button id="goto-mining-menu">⛏️ Mining</button>
+                <button id="goto-shack">💎 Prospecting</button>
                 <button id="goto-adventure">🗝️ Adventure</button>
+            </div>
+            
+            <!-- Mining Menu - Select Area -->
+            <div class="room" id="mining-menu-room">
+                <h2>⛏️ Mining Areas</h2>
+                <button id="goto-cave">🕳️ The Cave</button>
+                <button id="back-to-area-mining" class="back-btn">←</button>
+            </div>
+            
+            <!-- Mining - The Cave (Automine) -->
+            <div class="room" id="mining-cave-room">
+                <h2>🕳️ The Cave</h2>
+                <div id="mining-game-cave" style="display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:40px;">
+                    <button id="start-automine" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #8b7355 0%, #5d4e37 100%);color:#fff;border:4px solid #fff;font-size:18px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;font-weight:bold;">
+                        <div style="font-size:40px;">⛏️</div>
+                        <div style="font-size:14px;">START</div>
+                    </button>
+                    <div id="automine-timer" style="font-size:18px;font-weight:bold;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.5);min-height:30px;"></div>
+                    <div id="automine-result" style="font-size:16px;color:#4caf50;font-weight:bold;min-height:25px;"></div>
+                </div>
+                <button id="leave-cave" class="back-btn">←</button>
             </div>
             
             <!-- Adventure Room -->
@@ -1526,6 +1557,7 @@
             'small_geode': '#8b7355',
             'rock': '#666666',
             'gem': '#9333ea',
+            'ore': '#cd7f32',
             'basket': '#d97706'
         };
         
@@ -1674,8 +1706,8 @@
                 rarity: 'Rare',
                 rarityColor: '#a78bfa',
                 description: 'A delicious prepared meal.',
-                foodValue: 10,
-                sellValue: 8,
+                foodValue: 100,
+                sellValue: 50,
                 cookable: false,
                 feedable: true
             },
@@ -1732,6 +1764,20 @@
                 description: 'A beautiful sparkling gem!',
                 foodValue: 0,
                 sellValue: 50,
+                cookable: false,
+                feedable: false
+            },
+            'ore': {
+                name: 'Ore',
+                emoji: '⛏️',
+                rarity: 'Uncommon',
+                rarityColor: '#4ade80',
+                description: 'Valuable ore mined from The Cave.',
+                foodValue: 0,
+                sellValue: 20,
+                cookable: false,
+                feedable: false
+            },
                 cookable: false,
                 feedable: false,
                 crackable: false
@@ -4185,6 +4231,27 @@ function stopBasket() {
             'carrot+fish': { result: 'food', name: '🍖 Cooked Food' }
         };
         
+        // Helper function to check if item is a fish
+        function isFish(itemId) {
+            return ['fish1', 'fish2', 'fish3', 'fish4', 'fish5', 'fish6', 'fish7', 'fish8'].includes(itemId);
+        }
+        
+        // Check if two items match a recipe (supports "any fish")
+        function checkRecipe(item1, item2) {
+            // Direct match
+            const directKey1 = item1 + '+' + item2;
+            const directKey2 = item2 + '+' + item1;
+            if (RECIPES[directKey1]) return RECIPES[directKey1];
+            if (RECIPES[directKey2]) return RECIPES[directKey2];
+            
+            // Check for fish + carrot combo (any fish works)
+            if ((isFish(item1) && item2 === 'carrot') || (item1 === 'carrot' && isFish(item2))) {
+                return RECIPES['fish+carrot'];
+            }
+            
+            return null;
+        }
+        
         function initHearth() {
             hearthSlot1ItemId = null;
             hearthSlot2ItemId = null;
@@ -4303,8 +4370,7 @@ function stopBasket() {
                 return;
             }
             
-            const recipeKey = hearthSlot1ItemId + '+' + hearthSlot2ItemId;
-            const recipe = RECIPES[recipeKey];
+            const recipe = checkRecipe(hearthSlot1ItemId, hearthSlot2ItemId);
             
             const resultDiv = document.getElementById('hearth-result');
             
@@ -4339,12 +4405,36 @@ function stopBasket() {
                 updateHearthDisplay();
                 save();
             } else {
-                // Invalid recipe
+                // Invalid recipe - Make burnt food!
+                // Remove the ingredients
+                let removed1 = false, removed2 = false;
+                
+                for (const key in gs.inventory) {
+                    if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) {
+                        delete gs.inventory[key];
+                        removed1 = true;
+                    } else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) {
+                        delete gs.inventory[key];
+                        removed2 = true;
+                    }
+                    if (removed1 && removed2) break;
+                }
+                
+                addItem('burnt_food', 1);
+                addSkillXP('cooking', 5); // Half XP for burnt food
+                
                 if (resultDiv) {
-                    resultDiv.textContent = '❌ These ingredients don\'t make anything!';
+                    resultDiv.textContent = '🔥 OH NO! Food burnt!';
                     resultDiv.style.color = '#f44336';
                     setTimeout(() => resultDiv.textContent = '', 3000);
                 }
+                
+                notify('💀 Burnt the food!');
+                
+                hearthSlot1ItemId = null;
+                hearthSlot2ItemId = null;
+                updateHearthDisplay();
+                save();
             }
         }
 
@@ -5043,8 +5133,11 @@ function initKitchenGame() {
         
         // Navigation - Fishing menu
         document.getElementById('goto-fishing-menu').onclick = () => switchRoom('fishing-menu-room');
+        document.getElementById('goto-mining-menu').onclick = () => switchRoom('mining-menu-room');
         document.getElementById('back-to-area').onclick = () => switchRoom('area-room');
+        document.getElementById('back-to-area-mining').onclick = () => switchRoom('area-room');
         document.getElementById('goto-pond').onclick = () => switchRoom('fishing-pond-room');
+        document.getElementById('goto-cave').onclick = () => switchRoom('mining-cave-room');
         document.getElementById('goto-river').onclick = () => {
             if (!gs.tools.better_net) {
                 notify('❌ You need a Fishing Net to fish at the River! Buy it from the shop.');
@@ -5056,12 +5149,75 @@ function initKitchenGame() {
             stopFishing();
             switchRoom('fishing-menu-room');
         };
+        document.getElementById('leave-cave').onclick = () => {
+            stopAutomine();
+            switchRoom('mining-menu-room');
+        };
         document.getElementById('leave-river').onclick = () => {
             stopFishing();
             riverActive = false;
             clearInterval(riverFishingInterval);
             switchRoom('fishing-menu-room');
         };
+        
+        // Mining - Automine system
+        let automineInterval = null;
+        let automineTimeLeft = 0;
+        
+        function startAutomine() {
+            if (automineInterval) return; // Already mining
+            
+            const button = document.getElementById('start-automine');
+            const timer = document.getElementById('automine-timer');
+            const result = document.getElementById('automine-result');
+            
+            button.disabled = true;
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+            
+            automineTimeLeft = 60; // 60 seconds
+            timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
+            result.textContent = '';
+            
+            notify('⛏️ Started automining!');
+            
+            automineInterval = setInterval(() => {
+                automineTimeLeft--;
+                timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
+                
+                // 5% chance per second to mine ore
+                if (Math.random() < 0.05) {
+                    addItem('ore', 1);
+                    result.textContent = '⛏️ Mined Ore!';
+                    setTimeout(() => result.textContent = '', 1000);
+                }
+                
+                if (automineTimeLeft <= 0) {
+                    stopAutomine();
+                    timer.textContent = '✅ Mining complete!';
+                    notify('✅ Automining finished!');
+                    setTimeout(() => timer.textContent = '', 3000);
+                }
+            }, 1000);
+        }
+        
+        function stopAutomine() {
+            if (automineInterval) {
+                clearInterval(automineInterval);
+                automineInterval = null;
+            }
+            
+            const button = document.getElementById('start-automine');
+            if (button) {
+                button.disabled = false;
+                button.style.opacity = '1';
+                button.style.cursor = 'pointer';
+            }
+            
+            automineTimeLeft = 0;
+        }
+        
+        document.getElementById('start-automine').onclick = startAutomine;
         
         // Fishing buttons
         // Pond: hold to fish
