@@ -267,7 +267,7 @@
         .basket-container canvas {
             pointer-events: auto;
             position: relative;
-            z-index: 10;
+            z-index: 150;  /* Higher than most elements */
         }
         
         /* Basket Close Button - HIDDEN (bag button closes it now) */
