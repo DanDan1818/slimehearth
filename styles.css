@@ -327,6 +327,15 @@
                 transform-origin: left bottom;  /* Scale from left on mobile */
             }
             
+            /* Move sell bag and green box to the right on mobile */
+            #sell-bag-image {
+                right: -140px !important;  /* Move 100px more to the right */
+            }
+            
+            #green-sell-box {
+                right: -110px !important;  /* Move 100px more to the right */
+            }
+            
             #skills-overlay {
                 right: 10px;
                 width: auto;
