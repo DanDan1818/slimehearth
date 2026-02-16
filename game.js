@@ -1159,10 +1159,20 @@
                     const nearFloor = body.position.y > 1150;
                     const aboveBasket = body.position.y < basketTop;
                     
-                    // Remove horizontal pulling - let gravity do its work
-                    // Items will naturally fall to the bottom bar
+                    // Pull items back INTO the basket if they escape horizontally
+                    if (body.position.x < basketLeft) {
+                        // Item escaped to the LEFT - pull it RIGHT (back into basket)
+                        const pullStrength = nearFloor ? 0.06 : 0.00002;
+                        const upForce = nearFloor ? -0.07 : 0;
+                        Matter.Body.applyForce(body, body.position, { x: pullStrength, y: upForce });
+                    } else if (body.position.x > basketRight) {
+                        // Item escaped to the RIGHT - pull it LEFT (back into basket)
+                        const pullStrength = nearFloor ? 0.06 : 0.00002;
+                        const upForce = nearFloor ? -0.07 : 0;
+                        Matter.Body.applyForce(body, body.position, { x: -pullStrength, y: upForce });
+                    }
                     
-                    // Only apply downward force if item is above the basket and within horizontal bounds
+                    // Apply downward force if item is above the basket and within horizontal bounds
                     if (aboveBasket && body.position.x > basketLeft && body.position.x < basketRight) {
                         Matter.Body.applyForce(body, body.position, { x: 0, y: 0.01 });
                     }
