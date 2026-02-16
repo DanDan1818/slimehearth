@@ -1883,7 +1883,7 @@ function stopBasket() {
             
             result.textContent = '🎣 Casting...';
             bar.style.width = '0%';
-            bar.style.background = '#4dd0e1';
+            bar.style.background = 'linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%)';
             
             // Random wait time 1-20 seconds
             const totalTime = 1000 + Math.random() * 19000; // 1-20 seconds in ms
@@ -1906,7 +1906,7 @@ function stopBasket() {
                 // Check if we're in catch window
                 if (pondElapsedTime >= pondCatchStart && pondElapsedTime <= pondCatchEnd) {
                     // CATCH WINDOW!
-                    bar.style.background = '#4ade80'; // Green
+                    bar.style.background = 'linear-gradient(to bottom, #6fffb0 0%, #4ade80 50%, #2db860 100%)'; // Green 3D gradient
                     bar.style.animation = 'fishFlash 0.3s infinite'; // Add flash
                     result.textContent = '💦 NOW! Hold to catch!';
                     
@@ -1927,7 +1927,7 @@ function stopBasket() {
                         }, 600);
                     }
                 } else {
-                    bar.style.background = '#4dd0e1'; // Blue
+                    bar.style.background = 'linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%)'; // Blue 3D gradient
                     bar.style.animation = 'none'; // Remove flash
                 }
                 
@@ -1978,7 +1978,8 @@ function stopBasket() {
                 if (result) result.textContent = '';
                 if (bar) {
                     bar.style.width = '0%';
-                    bar.style.background = '#4dd0e1';
+                    bar.style.background = 'linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%)';
+                    bar.style.animation = 'none';
                 }
                 if (splash) splash.style.display = 'none';
             }, 1500);
