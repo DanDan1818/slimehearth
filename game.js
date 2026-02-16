@@ -1907,6 +1907,7 @@ function stopBasket() {
                 if (pondElapsedTime >= pondCatchStart && pondElapsedTime <= pondCatchEnd) {
                     // CATCH WINDOW!
                     bar.style.background = '#4ade80'; // Green
+                    bar.style.animation = 'fishFlash 0.3s infinite'; // Add flash
                     result.textContent = '💦 NOW! Hold to catch!';
                     
                     // Show splash on first frame of catch window
@@ -1927,6 +1928,7 @@ function stopBasket() {
                     }
                 } else {
                     bar.style.background = '#4dd0e1'; // Blue
+                    bar.style.animation = 'none'; // Remove flash
                 }
                 
                 // Time's up

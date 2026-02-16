@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.555</title>
+    <title>SlimeHearth v0.556</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow:2px 2px 4px rgba(0,0,0,0.3);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.555</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.556</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -234,13 +234,13 @@
                 <h2>🪷 The Pond</h2>
                 <div id="fishing-game-pond">
                     <div style="position:relative;display:inline-block;">
-                        <div id="fishing-progress-pond" style="width:200px;height:30px;background:#ddd;border:3px solid #333;border-radius:8px;position:relative;overflow:hidden;">
+                        <div id="fishing-progress-pond" style="width:200px;height:20px;background:#ddd;border:3px solid #333;border-radius:8px;position:relative;overflow:hidden;">
                             <div id="fishing-bar-pond" style="width:0%;height:100%;background:#4dd0e1;transition:width 0.1s;"></div>
                         </div>
                         <div id="pond-splash" style="position:absolute;top:-10px;right:-20px;font-size:24px;display:none;animation:splash 0.6s ease-out;">💦</div>
                     </div>
                     <div id="fishing-result-pond" style="min-height:30px;font-size:18px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
-                    <button id="fish-pond-btn" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;">🎣</button>
+                    <button id="fish-pond-btn" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">🎣</button>
                 </div>
                 <button id="leave-pond" class="back-btn">←</button>
             </div>
@@ -254,7 +254,7 @@
                         <div id="fishing-target-river"></div>
                     </div>
                     <div id="fishing-timer-river" style="color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
-                    <button id="cast-river" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;">🎣</button>
+                    <button id="cast-river" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">🎣</button>
                 </div>
                 <button id="leave-river" class="back-btn">←</button>
             </div>
