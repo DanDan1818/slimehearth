@@ -336,7 +336,9 @@
             .basket-container #green-sell-box {
                 right: -70px !important;  /* Was -80px, moved 10px more left */
                 bottom: 10px !important;
-                display: none !important;  /* Hide green box on mobile */
+                background: transparent !important;  /* Invisible but still exists */
+                border: none !important;  /* No border */
+                box-shadow: none !important;  /* No glow */
             }
             
             #skills-overlay {
