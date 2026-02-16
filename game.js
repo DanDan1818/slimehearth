@@ -109,7 +109,7 @@
             'fish8': '#a855f7',
             'carrot': '#ffaa44',
             'carrot_seeds': '#8bc34a',
-            'food': '#ff6b9d',
+            'food': '#ff69b4',  // Pink for cooked food
             'burnt_food': '#1a1a1a',
             'burnt': '#1a1a1a',
             'small_geode': '#8b7355',
@@ -132,8 +132,8 @@
             'small_geode': './slimehearth-assets/images/geode1.png',
             'carrot': './slimehearth-assets/images/carrot1.png',
             'carrot_seeds': './slimehearth-assets/images/seeds1.png',
-            'food': './slimehearth-assets/images/food1.png',
             'basket': './slimehearth-assets/images/basket1.png'
+            // 'food' removed - uses pink color from ITEM_COLORS instead
         };
         
         const ITEM_DATA = {
@@ -260,12 +260,11 @@
             'food': {
                 name: 'Cooked Food',
                 emoji: '🍖',
-                image: 'food1.png',
                 rarity: 'Rare',
-                rarityColor: '#a78bfa',
-                description: 'A delicious prepared meal.',
-                foodValue: 100,
-                sellValue: 50,
+                rarityColor: '#ff69b4',  // Pink
+                description: 'A delicious prepared meal. Restores 100 hunger!',
+                foodValue: 100,  // Gives 100 slime XP when eaten
+                sellValue: 50,   // Sells for 50 coins
                 cookable: false,
                 feedable: true
             },

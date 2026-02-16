@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.562</title>
+    <title>SlimeHearth v0.564</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.562</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.564</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -357,34 +357,34 @@
             <!-- Cooking Menu - Select Area -->
             <!-- The Hearth - Cooking Area (Mix 2 Items) -->
             <div class="room" id="cooking-menu-room">
-                <h2>🔥 The Hearth</h2>
+                <h2 style="font-size:28px;margin-bottom:10px;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;">The Hearth</h2>
                 
-                <div style="text-align:center;max-width:500px;margin:0 auto;">
-                    <p style="margin-bottom:20px;color:#666;">Select two ingredients to cook together!</p>
+                <div style="text-align:center;max-width:500px;margin:0 auto;margin-top:30px;">
+                    <p style="margin-bottom:15px;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;font-size:14px;">Select two ingredients to cook together!</p>
                     
                     <!-- Two Ingredient Slots + Cook Button (Like Shack) -->
-                    <div style="display:flex;gap:20px;align-items:center;justify-content:center;margin:20px 0;">
+                    <div style="display:flex;gap:20px;align-items:center;justify-content:center;margin:10px 0;">
                         <!-- Slot 1 -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;">Ingredient 1</div>
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Ingredient 1</div>
                             <button id="hearth-slot-1" style="width:80px;height:80px;border:3px dashed #f59e0b;background:#fff;border-radius:8px;font-size:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                                 <span id="hearth-slot-1-icon">+</span>
                             </button>
-                            <div id="hearth-slot-1-name" style="font-size:10px;margin-top:3px;color:#666;min-height:12px;"></div>
+                            <div id="hearth-slot-1-name" style="font-size:10px;margin-top:3px;color:#000;min-height:12px;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;"></div>
                         </div>
                         
                         <!-- Slot 2 -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;">Ingredient 2</div>
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Ingredient 2</div>
                             <button id="hearth-slot-2" style="width:80px;height:80px;border:3px dashed #f59e0b;background:#fff;border-radius:8px;font-size:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                                 <span id="hearth-slot-2-icon">+</span>
                             </button>
-                            <div id="hearth-slot-2-name" style="font-size:10px;margin-top:3px;color:#666;min-height:12px;"></div>
+                            <div id="hearth-slot-2-name" style="font-size:10px;margin-top:3px;color:#000;min-height:12px;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;"></div>
                         </div>
                         
                         <!-- Cook Button -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;">Cook!</div>
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Cook!</div>
                             <button id="cook-hearth-btn" style="width:80px;height:80px;border:3px solid #ff6b6b;background:#ffe0e0;border-radius:8px;font-size:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                                 <span>🔥</span>
                             </button>
@@ -392,10 +392,10 @@
                     </div>
                     
                     <!-- Result -->
-                    <div id="hearth-result" style="min-height:25px;font-size:16px;font-weight:bold;margin:15px 0;"></div>
+                    <div id="hearth-result" style="min-height:25px;font-size:16px;font-weight:bold;margin:15px 0;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
                     
                     <!-- Recipe Hint -->
-                    <div style="background:#fef3c7;padding:10px;border-radius:8px;margin-top:15px;border:2px solid #f59e0b;">
+                    <div style="background:#fef3c7;padding:10px;border-radius:8px;margin-top:20px;border:2px solid #f59e0b;">
                         <div style="font-size:12px;font-weight:bold;color:#92400e;margin-bottom:4px;">📖 Known Recipes:</div>
                         <div style="font-size:12px;color:#78716c;">🐟 Fish + 🥕 Carrot = 🍖 Cooked Food</div>
                     </div>
