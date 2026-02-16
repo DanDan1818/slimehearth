@@ -1151,24 +1151,18 @@
             
             // Return forces for items outside basket
             Events.on(basketEngine, 'afterUpdate', () => {
-                const basketLeft = 65;
-                const basketRight = 235;
+                const basketLeft = basketCenterX - basketWidth/2;  // 90 - 90 = 0
+                const basketRight = basketCenterX + basketWidth/2; // 90 + 90 = 180
                 const basketTop = 1080;
                 
                 basketBodies.forEach(body => {
                     const nearFloor = body.position.y > 1150;
                     const aboveBasket = body.position.y < basketTop;
                     
-                    if (body.position.x < basketLeft) {
-                        const pullStrength = nearFloor ? 0.06 : 0.00002;
-                        const upForce = nearFloor ? -0.07 : 0;
-                        Matter.Body.applyForce(body, body.position, { x: pullStrength, y: upForce });
-                    } else if (body.position.x > basketRight) {
-                        const pullStrength = nearFloor ? 0.06 : 0.00002;
-                        const upForce = nearFloor ? -0.07 : 0;
-                        Matter.Body.applyForce(body, body.position, { x: -pullStrength, y: upForce });
-                    }
+                    // Remove horizontal pulling - let gravity do its work
+                    // Items will naturally fall to the bottom bar
                     
+                    // Only apply downward force if item is above the basket and within horizontal bounds
                     if (aboveBasket && body.position.x > basketLeft && body.position.x < basketRight) {
                         Matter.Body.applyForce(body, body.position, { x: 0, y: 0.01 });
                     }
