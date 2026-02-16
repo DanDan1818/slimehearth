@@ -1431,17 +1431,17 @@
                 const shopActive = document.getElementById('shop-room').classList.contains('active');
                 if (!shopActive) return;
                 
-                // Sell basket area: same position for all devices (canvas is 700px)
-                // Right side: 550-676
-                const sellMinX = 550;
-                const sellMaxX = 676;
+                // Sell basket area: wider area to catch items on mobile
+                // Right side: 500-700 (wider than visual box to ensure it works)
+                const sellMinX = 500;
+                const sellMaxX = 700;
                 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const body = basketBodies[i];
                     if (!body || !body.itemKey) continue;
                     
                     const inSellX = body.position.x > sellMinX && body.position.x < sellMaxX;
-                    const inSellY = body.position.y > 1082;
+                    const inSellY = body.position.y > 1050;  // Lower threshold too
                     
                     if (inSellX && inSellY) {
                         // Get sell price from ITEM_DATA
