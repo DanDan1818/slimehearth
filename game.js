@@ -1103,7 +1103,7 @@
                 basketBottom - wallHeight/2,
                 wallThickness,
                 wallHeight,
-                { isStatic: true, render: { visible: true, fillStyle: 'red', strokeStyle: 'red', lineWidth: 2 } }
+                { isStatic: true, render: { visible: false } }
             );
             
             const rightWall = Bodies.rectangle(
@@ -1111,7 +1111,7 @@
                 basketBottom - wallHeight/2,
                 wallThickness,
                 wallHeight,
-                { isStatic: true, render: { visible: true, fillStyle: 'red', strokeStyle: 'red', lineWidth: 2 } }
+                { isStatic: true, render: { visible: false } }
             );
             
             const bottom = Bodies.rectangle(
@@ -1119,13 +1119,13 @@
                 basketBottom - 10,
                 basketWidth,
                 20,
-                { isStatic: true, render: { visible: true, fillStyle: 'red', strokeStyle: 'red', lineWidth: 2 } }
+                { isStatic: true, render: { visible: false } }
             );
             
             // Invisible floor at canvas bottom - sized for 820px canvas
             const invisibleFloor = Bodies.rectangle(
                 410, 1230, 1100, 100,  // Centered at 410 (middle of 820)
-                { isStatic: true, render: { visible: true, fillStyle: 'rgba(255, 0, 0, 0.3)', strokeStyle: 'red', lineWidth: 2 } }
+                { isStatic: true, render: { visible: false } }
             );
             
             World.add(basketEngine.world, [leftWall, rightWall, bottom, invisibleFloor]);
@@ -1614,7 +1614,7 @@
             const basketCenterX = 175;
             const basketBottom = 580;
             const basketWidth = 180;
-            const wallHeight = 112;
+            const wallHeight = 60;  // Shorter walls like bag inventory
             const wallThickness = 6;
             
             const leftWall = Bodies.rectangle(
@@ -1622,7 +1622,7 @@
                 basketBottom - wallHeight/2,
                 wallThickness,
                 wallHeight,
-                { isStatic: true, render: { fillStyle: '#888' } }
+                { isStatic: true, render: { visible: true, fillStyle: 'green', strokeStyle: 'green', lineWidth: 2 } }
             );
             
             const rightWall = Bodies.rectangle(
@@ -1630,7 +1630,7 @@
                 basketBottom - wallHeight/2,
                 wallThickness,
                 wallHeight,
-                { isStatic: true, render: { fillStyle: '#888' } }
+                { isStatic: true, render: { visible: true, fillStyle: 'green', strokeStyle: 'green', lineWidth: 2 } }
             );
             
             const bottom = Bodies.rectangle(
@@ -1638,12 +1638,12 @@
                 basketBottom - 10,
                 basketWidth,
                 20,
-                { isStatic: true, render: { fillStyle: '#888' } }
+                { isStatic: true, render: { visible: true, fillStyle: 'green', strokeStyle: 'green', lineWidth: 2 } }
             );
             
             const invisibleFloor = Bodies.rectangle(
                 175, 620, 400, 100,
-                { isStatic: true, render: { visible: false } }
+                { isStatic: true, render: { visible: true, fillStyle: 'rgba(0, 255, 0, 0.3)', strokeStyle: 'green', lineWidth: 2 } }
             );
             
             World.add(sellBasketEngine.world, [leftWall, rightWall, bottom, invisibleFloor]);
