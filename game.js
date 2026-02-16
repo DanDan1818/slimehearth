@@ -854,7 +854,6 @@
             const sellAreaLeft = document.getElementById('sell-area-left');
             const sellAreaRight = document.getElementById('sell-area-right');
             const sellAreaBottom = document.getElementById('sell-area-bottom');
-            const sellCanvas = document.getElementById('sell-basket-canvas');
             const isInShop = (roomId === 'shop-room');
             
             if (inventoryBag && sellBag) {
@@ -862,12 +861,10 @@
                     // In shop - show BOTH bags (HTML walls stay hidden)
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'block';
-                    if (sellCanvas) sellCanvas.style.display = 'block';
                 } else {
                     // Not in shop - show only inventory bag
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'none';
-                    if (sellCanvas) sellCanvas.style.display = 'none';
                 }
             }
             
@@ -892,8 +889,8 @@
                     const sellBasketWidth = sellMaxX - sellMinX; // 140 for desktop, 126 for mobile
                     
                     const sellBasketBottom = 1194;
-                    const sellWallHeight = 112;
-                    const sellWallThickness = 15; // Much thicker to be visible
+                    const sellWallHeight = 60;  // Shorter walls like bag inventory
+                    const sellWallThickness = 6;
                     
                     const sellLeftWall = Bodies.rectangle(
                         sellMinX + sellWallThickness/2,
@@ -904,7 +901,7 @@
                             isStatic: true, 
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: '#ffd700', visible: false }
+                            render: { fillStyle: 'green', strokeStyle: 'green', lineWidth: 2, visible: true }
                         }
                     );
                     
@@ -917,7 +914,7 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: '#ffd700', visible: false }
+                            render: { fillStyle: 'green', strokeStyle: 'green', lineWidth: 2, visible: true }
                         }
                     );
                     
@@ -930,7 +927,7 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: '#ffd700', visible: false }
+                            render: { fillStyle: 'green', strokeStyle: 'green', lineWidth: 2, visible: true }
                         }
                     );
                     
