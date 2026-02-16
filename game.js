@@ -901,7 +901,7 @@
                             isStatic: true, 
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: 'green', strokeStyle: 'green', lineWidth: 2, visible: true }
+                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
                         }
                     );
                     
@@ -915,7 +915,7 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: 'green', strokeStyle: 'green', lineWidth: 2, visible: true }
+                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
                         }
                     );
                     
@@ -929,7 +929,7 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: 'green', strokeStyle: 'green', lineWidth: 2, visible: true }
+                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
                         }
                     );
                     
@@ -942,7 +942,13 @@
                         {
                             isStatic: true,
                             isSensor: true,  // Doesn't block items
-                            render: { fillStyle: 'rgba(0, 255, 0, 0.3)', visible: true }
+                            render: { 
+                                fillStyle: 'rgba(0, 255, 0, 0.6)',  // Brighter green
+                                strokeStyle: 'lime', 
+                                lineWidth: 3,
+                                visible: true,
+                                zIndex: 9999  // Over everything
+                            }
                         }
                     );
                     
