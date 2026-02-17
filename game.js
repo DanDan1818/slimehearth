@@ -3268,56 +3268,27 @@ function stopBasket() {
             
             const roll = Math.random();
             const isGem = roll < 0.10;
-            console.log('Gem roll:', roll, 'Is gem:', isGem);
+            const crackedGeodeId = shackGeodeSlot;
             
             const result = document.getElementById('shack-result');
             
-            // FIRST: Remove geode from inventory
-            let removedKey = null;
+            // STEP 1: Remove the locked physics body immediately
+            if (shackLockedBody) {
+                World.remove(basketEngine.world, shackLockedBody);
+                const idx = basketBodies.indexOf(shackLockedBody);
+                if (idx !== -1) basketBodies.splice(idx, 1);
+                shackLockedBody = null;
+            }
+            
+            // STEP 2: Remove geode from inventory data
             for (const key in gs.inventory) {
-                if (gs.inventory[key] === shackGeodeSlot) {
+                if (gs.inventory[key] === crackedGeodeId) {
                     delete gs.inventory[key];
-                    removedKey = key;
-                    console.log('Removed geode from inventory:', key);
                     break;
                 }
             }
             
-            if (removedKey && basketEngine) {
-                const bodyIndex = basketBodies.findIndex(b => b.itemKey === removedKey);
-                if (bodyIndex !== -1) {
-                    const body = basketBodies[bodyIndex];
-                    World.remove(basketEngine.world, body);
-                    basketBodies.splice(bodyIndex, 1);
-                }
-            }
-            
-            save();
-            updateInventoryCounter();
-            
-            // THEN: Add rock or gem
-            if (isGem) {
-                result.textContent = '💎 GEM! +1 Gem (50 coins!)';
-                addItem('gem', 1);
-                notify('✨ Found a GEM!');
-            } else {
-                result.textContent = '🪨 Rock... +1 Rock (1 coin)';
-                addItem('rock', 1);
-                notify('😐 Just a rock...');
-            }
-            
-            // Reset shack - clear the slot properly
-            if (shackLockedBody) {
-                // Remove the locked body from physics world
-                World.remove(basketEngine.world, shackLockedBody);
-                basketBodies.splice(basketBodies.indexOf(shackLockedBody), 1);
-                shackLockedBody = null;
-            }
-            
-            shackGeodeSlot = null;
-            shackCrackCount = 0;
-            
-            // Reset slot UI
+            // STEP 3: Reset slot UI immediately
             const icon = document.getElementById('shack-slot-icon');
             const nameEl = document.getElementById('shack-slot-name');
             const clearBtn = document.getElementById('shack-slot-clear');
@@ -3335,15 +3306,31 @@ function stopBasket() {
                 crackBtn.style.cursor = 'pointer';
             }
             
+            shackGeodeSlot = null;
+            shackCrackCount = 0;
+            
+            save();
             updateInventoryCounter();
             updateShackProgress();
             
-            // Prospecting level-up check
-            checkProspectingLevelUp();
-            
+            // STEP 4: After a short pause, spawn the result item
             setTimeout(() => {
-                result.textContent = '';
-            }, 3000);
+                if (isGem) {
+                    result.textContent = '💎 GEM! +1 Gem (50 coins!)';
+                    addItem('gem', 1);
+                    notify('✨ Found a GEM!');
+                } else {
+                    result.textContent = '🪨 Rock... +1 Rock (1 coin)';
+                    addItem('rock', 1);
+                    notify('😐 Just a rock...');
+                }
+                
+                checkProspectingLevelUp();
+                
+                setTimeout(() => {
+                    result.textContent = '';
+                }, 3000);
+            }, 400);
         }
         
         function updateProspectingDisplay() {
