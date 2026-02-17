@@ -617,6 +617,11 @@
                 }
                 
                 updateUI();
+                
+                // Open basket if already hatched
+                if (gs.hatched) {
+                    setTimeout(() => openBasketPermanently(), 100);
+                }
             }
         }
         
@@ -1144,11 +1149,6 @@
             } else {
                 populateBasket();
             }
-        }
-        
-        // Open basket on page load (if hatched)
-        if (gs.hatched) {
-            setTimeout(() => openBasketPermanently(), 100);
         }
         
         // ===== BASKET SYSTEM =====
