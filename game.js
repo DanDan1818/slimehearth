@@ -4433,14 +4433,14 @@ function initKitchenGame() {
                 const hatCard = document.createElement('div');
                 hatCard.style.cssText = `
                     background: ${equipped ? '#fef3c7' : (owned ? '#f0fdf4' : '#f3f4f6')};
-                    border: 3px solid ${equipped ? '#fbbf24' : (owned ? '#4ade80' : '#d1d5db')};
-                    border-radius: 10px;
-                    padding: 10px;
+                    border: 2px solid ${equipped ? '#fbbf24' : (owned ? '#4ade80' : '#d1d5db')};
+                    border-radius: 8px;
+                    padding: 6px;
                     text-align: center;
                     cursor: ${owned ? 'pointer' : 'default'};
                     opacity: ${owned ? '1' : '0.5'};
                     transition: transform 0.1s;
-                    min-height: 90px;
+                    min-height: 70px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -4453,11 +4453,11 @@ function initKitchenGame() {
                 hatCard.innerHTML = `
                     <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;">
                         ${hat.image ? 
-                            `<img src="./slimehearth-assets/images/${hat.image}" style="width:60px;height:60px;object-fit:contain;" />` : 
-                            `<div style="font-size:48px;">${hat.icon}</div>`
+                            `<img src="./slimehearth-assets/images/${hat.image}" style="width:40px;height:40px;object-fit:contain;" />` : 
+                            `<div style="font-size:32px;">${hat.icon}</div>`
                         }
                     </div>
-                    <button style="width:100%;margin-top:8px;background:${equipped ? '#fbbf24' : '#4ade80'};color:#fff;padding:4px 8px;border:none;border-radius:5px;font-weight:bold;font-size:10px;cursor:pointer;">
+                    <button style="width:100%;margin-top:6px;background:${equipped ? '#fbbf24' : '#4ade80'};color:#fff;padding:3px 6px;border:none;border-radius:4px;font-weight:bold;font-size:9px;cursor:pointer;">
                         ${equipped ? '✓ EQUIPPED' : (owned ? 'EQUIP' : '🔒 LOCKED')}
                     </button>
                 `;
