@@ -469,35 +469,33 @@
             const tooltip = document.createElement('div');
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
-                <div style="color: ${data.rarityColor}; font-size: 8px; font-weight: bold; margin-bottom: 1px;">
+                <div style="color: ${data.rarityColor}; font-size: 11px; font-weight: bold; margin-bottom: 2px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
                     ${data.name}
                 </div>
-                <div style="color: #666; font-size: 7px; font-style: italic; margin-bottom: 2px;">
+                <div style="color: #333; font-size: 9px; margin-bottom: 3px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
                     ${data.description}
                 </div>
-                ${data.feedable ? `<div style="font-size: 7px; margin-bottom: 1px;">
+                ${data.feedable ? `<div style="font-size: 9px; margin-bottom: 2px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
                     +${data.foodValue} <span style="color: #ff6b9d; font-weight: bold;">Food</span>
                 </div>` : ''}
-                <div style="font-size: 7px;">
+                <div style="font-size: 9px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
                     💰 ${data.sellValue}
                 </div>
-                ${data.crackable ? '<div style="font-size: 7px; color: #8b7355; font-weight: bold; margin-top: 1px;">🔨 Crackable</div>' : ''}
+                ${data.crackable ? '<div style="font-size: 9px; color: #8b7355; font-weight: bold; margin-top: 2px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">🔨 Crackable</div>' : ''}
             `;
             
-            // Mobile-aware positioning
-            const isMobile = window.innerWidth <= 700;
-            
+            // Position above inventory bag (bottom-left)
             tooltip.style.cssText = `
                 position: fixed;
-                top: 100px;
+                bottom: 260px;
                 left: 10px;
-                background: rgba(255,255,255,0.95);
-                color: #333;
-                padding: 4px 5px;
-                border-radius: 3px;
+                background: rgba(50,50,50,0.95);
+                color: #fff;
+                padding: 6px 8px;
+                border-radius: 6px;
                 z-index: 135;
-                border: 1px solid ${data.rarityColor};
-                box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+                border: 2px solid ${data.rarityColor};
+                box-shadow: 0 4px 12px rgba(0,0,0,0.6);
                 width: 75px;
                 text-align: left;
                 pointer-events: none;
