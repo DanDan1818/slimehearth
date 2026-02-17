@@ -490,14 +490,14 @@
         #inventory-counter {
             position: absolute;
             bottom: 6px;
-            left: 150px;
+            left: 130px;  /* 20px more to the left (was 150px) */
             transform: translateX(-50%);
             color: #fff;
-            font-size: 14px;
+            font-size: 20px;  /* Larger (was 14px) */
             font-weight: bold;
             z-index: 211;
             pointer-events: none;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, -2px 0 0 #000, 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000;  /* Black outline */
         }
         
         /* Mouse Coordinates Debug */

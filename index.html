@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.564</title>
+    <title>SlimeHearth v0.567</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.564</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.567</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -171,8 +171,8 @@
             <!-- Home Room -->
             <div class="room active" id="home-room" style="background-image:url('./slimehearth-assets/images/home-background.png');background-size:cover;background-position:center -100px;">
                 <div id="slime-square"></div>
-                <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:30;display:none;">
-                    <img id="slime-hat-image" src="" style="width:120px;height:120px;object-fit:contain;transform:translate(0px, -40px) rotate(15deg);" />
+                <div id="slime-hat" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:60;display:none;">
+                    <img id="slime-hat-image" src="" style="width:120px;height:120px;object-fit:contain;transform:translate(15px, -40px) rotate(15deg);" />
                 </div>
                 <div id="slime-mouth"></div>
             </div>
@@ -711,7 +711,7 @@
             </div>
             <button class="basket-close-btn" id="basket-close">×</button>
             <div id="inventory-counter">0/6</div>
-            <div id="basket-coins-display" style="position:absolute;left:70px;bottom:6px;color:#ffd700;font-size:14px;font-weight:bold;z-index:201;pointer-events:none;text-shadow:2px 2px 4px rgba(0,0,0,0.9);">💰 <span id="basket-coins">0</span></div>
+            <div id="basket-coins-display" style="position:absolute;left:50px;bottom:6px;color:#ffd700;font-size:20px;font-weight:bold;z-index:201;pointer-events:none;text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, -2px 0 0 #000, 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000;">💰 <span id="basket-coins">0</span></div>
         </div>
     </div>
     

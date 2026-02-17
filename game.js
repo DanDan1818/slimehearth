@@ -379,20 +379,6 @@
         };
         
         const HATS_DATA = {
-            'top_hat': {
-                name: '🎩 Top Hat',
-                description: 'A classy black top hat',
-                cost: 100,
-                icon: '🎩',
-                unlockType: 'shop' // Can be purchased
-            },
-            'party_hat': {
-                name: '🎉 Party Hat',
-                description: 'Celebrate in style!',
-                cost: 150,
-                icon: '🎉',
-                unlockType: 'shop'
-            },
             'crown': {
                 name: '👑 Crown',
                 description: 'Fit for royalty',
@@ -401,11 +387,36 @@
                 image: 'hat1.png',
                 unlockType: 'shop'
             },
-            'cowboy_hat': {
-                name: '🤠 Cowboy Hat',
-                description: 'Howdy partner!',
+            'fishing_hat': {
+                name: '🎣 Fishing Hat',
+                description: 'Perfect for a day at the pond',
+                cost: 150,
+                icon: '🎣',
+                image: 'hat2.png',
+                unlockType: 'shop'
+            },
+            'blue_fishing_hat': {
+                name: '🎣 Blue Fishing Hat',
+                description: 'Stay cool by the river',
                 cost: 200,
-                icon: '🤠',
+                icon: '🎣',
+                image: 'hat3.png',
+                unlockType: 'shop'
+            },
+            'farmer_hat': {
+                name: '🌾 Farmer\'s Hat',
+                description: 'Essential for working the fields',
+                cost: 250,
+                icon: '🌾',
+                image: 'hat4.png',
+                unlockType: 'shop'
+            },
+            'chef_hat': {
+                name: '👨‍🍳 Chef\'s Hat',
+                description: 'Cook with style!',
+                cost: 300,
+                icon: '👨‍🍳',
+                image: 'hat5.png',
                 unlockType: 'shop'
             }
         };
@@ -4244,9 +4255,10 @@ function initKitchenGame() {
                 { id: 'fishing_rod', name: 'Fishing Rod', icon: '🎣', price: 100, type: 'tool', data: TOOLS_DATA.fishing_rod },
                 { id: 'better_net', name: 'Fishing Net', icon: '🥅', price: 250, type: 'tool', data: TOOLS_DATA.better_net },
                 { id: 'golden_hoe', name: 'Golden Hoe', icon: '⚒️', price: 500, type: 'tool', data: TOOLS_DATA.golden_hoe },
-                { id: 'top_hat', name: 'Top Hat', icon: '🎩', price: 100, type: 'hat', data: HATS_DATA.top_hat },
-                { id: 'party_hat', name: 'Party Hat', icon: '🎉', price: 150, type: 'hat', data: HATS_DATA.party_hat },
-                { id: 'cowboy_hat', name: 'Cowboy Hat', icon: '🤠', price: 200, type: 'hat', data: HATS_DATA.cowboy_hat },
+                { id: 'fishing_hat', name: 'Fishing Hat', icon: '🎣', price: 150, type: 'hat', data: HATS_DATA.fishing_hat },
+                { id: 'blue_fishing_hat', name: 'Blue Fishing Hat', icon: '🎣', price: 200, type: 'hat', data: HATS_DATA.blue_fishing_hat },
+                { id: 'farmer_hat', name: 'Farmer\'s Hat', icon: '🌾', price: 250, type: 'hat', data: HATS_DATA.farmer_hat },
+                { id: 'chef_hat', name: 'Chef\'s Hat', icon: '👨‍🍳', price: 300, type: 'hat', data: HATS_DATA.chef_hat },
                 { id: 'crown', name: 'Crown', icon: '👑', price: 500, type: 'hat', data: HATS_DATA.crown }
             ];
             
