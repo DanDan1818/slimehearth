@@ -116,7 +116,10 @@
             'rock': '#666666',
             'gem': '#9333ea',
             'ore': '#cd7f32',
-            'basket': '#d97706'
+            'basket': '#d97706',
+            'lily_pad': '#4ade80',
+            'old_boot': '#78716c',
+            'seaweed': '#16a34a'
         };
         
         const ITEM_IMAGES = {
@@ -348,7 +351,40 @@
                 cookable: false,
                 feedable: true,
                 crackable: false,
-                isBasket: true // Special flag for treasure basket
+                isBasket: true
+            },
+            'lily_pad': {
+                name: 'Lily Pad',
+                emoji: '🌿',
+                rarity: 'Common',
+                rarityColor: '#9ca3af',
+                description: 'A soggy lily pad. Not much use.',
+                foodValue: 0,
+                sellValue: 1,
+                cookable: false,
+                feedable: false
+            },
+            'old_boot': {
+                name: 'Old Boot',
+                emoji: '👢',
+                rarity: 'Common',
+                rarityColor: '#9ca3af',
+                description: 'Someone lost this long ago.',
+                foodValue: 0,
+                sellValue: 1,
+                cookable: false,
+                feedable: false
+            },
+            'seaweed': {
+                name: 'Seaweed',
+                emoji: '🌿',
+                rarity: 'Common',
+                rarityColor: '#9ca3af',
+                description: 'Slimy river weed.',
+                foodValue: 0,
+                sellValue: 1,
+                cookable: false,
+                feedable: false
             }
         };
         
@@ -835,7 +871,7 @@
             const cy = rect.top + rect.height / 2;
             
             const container = document.createElement('div');
-            container.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:0;height:0;pointer-events:none;z-index:9999;`;
+            container.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:0;height:0;pointer-events:none;z-index:45;`;
             
             // Central glow burst
             const glow = document.createElement('div');
@@ -2173,24 +2209,40 @@ function stopBasket() {
             const castBtn = document.getElementById('cast-river');
             
             if (success) {
-                // River fish pool: fish5-8 (Lobster, Shrimp, Crab, Shark)
+                // Fishing level scales loot
+                const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+                const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30);
+
+                // River drop table
+                const trashChance = Math.max(0.35 - lvBonus * 2, 0.05);
                 const rand = Math.random();
-                let caughtFish;
-                
-                if (rand < 0.50) {
-                    caughtFish = 'fish5'; // Lobster (Common) - 50%
-                } else if (rand < 0.80) {
-                    caughtFish = 'fish6'; // Shrimp (Uncommon) - 30%
-                } else if (rand < 0.95) {
-                    caughtFish = 'fish7'; // Crab (Rare) - 15%
+                let caughtItem;
+                let catchMsg;
+
+                if (rand < trashChance) {
+                    caughtItem = 'seaweed';
+                    catchMsg = '🌿 Pulled up Seaweed...';
+                    addSkillXP('fishing', 1);
                 } else {
-                    caughtFish = 'fish8'; // Shark (Epic) - 5%
+                    const fishRand = Math.random();
+                    const epicCut  = Math.min(0.03 + lvBonus * 0.5, 0.18);
+                    const rareCut  = Math.min(0.10 + lvBonus,       0.35);
+                    const uncomCut = Math.min(0.28 + lvBonus * 0.8, 0.50);
+                    if (fishRand < epicCut) {
+                        caughtItem = 'fish8'; // Shark (Epic)
+                    } else if (fishRand < rareCut) {
+                        caughtItem = 'fish7'; // Crab (Rare)
+                    } else if (fishRand < uncomCut) {
+                        caughtItem = 'fish6'; // Shrimp (Uncommon)
+                    } else {
+                        caughtItem = 'fish5'; // Lobster (Common)
+                    }
+                    catchMsg = `🎣 Caught ${ITEM_DATA[caughtItem].name}!`;
+                    addSkillXP('fishing', 10);
                 }
-                
-                const fishName = ITEM_DATA[caughtFish].name;
-                timer.textContent = `🎣 Caught ${fishName}!`;
-                addItem(caughtFish, 1);
-                addSkillXP('fishing', 10);
+
+                timer.textContent = catchMsg;
+                addItem(caughtItem, 1);
                 
                 // 10% chance to find Water Key (only if not already obtained)
                 if (!gs.keys.water_key && Math.random() < 0.10) {
@@ -2222,24 +2274,46 @@ function stopBasket() {
             const result = document.getElementById('fishing-result-' + fishingArea);
             
             if (success) {
-                // Random fish based on rarity
+                // Fishing level scales loot — higher level = less trash, better fish
+                const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+                const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30); // up to +30% fish chance at lv21+
+
+                // Pond drop table (base rates, scaled by level)
+                // Trash shrinks as level rises; fish chances grow proportionally
+                const trashChance = Math.max(0.35 - lvBonus * 2, 0.05); // 35% → 5% min
                 const rand = Math.random();
-                let caughtFish;
-                
-                if (rand < 0.50) {
-                    caughtFish = 'fish1'; // Common - 50%
-                } else if (rand < 0.80) {
-                    caughtFish = 'fish2'; // Uncommon - 30%
-                } else if (rand < 0.95) {
-                    caughtFish = 'fish3'; // Rare - 15%
+                let caughtItem;
+                let catchMsg;
+
+                if (rand < trashChance * 0.6) {
+                    caughtItem = 'lily_pad';
+                    catchMsg = '🌿 Pulled up a Lily Pad...';
+                    addSkillXP('fishing', 1);
+                } else if (rand < trashChance) {
+                    caughtItem = 'old_boot';
+                    catchMsg = '👢 Fished up an Old Boot...';
+                    addSkillXP('fishing', 1);
                 } else {
-                    caughtFish = 'fish4'; // Epic - 5%
+                    // Fish pool — scaled rates
+                    const fishRand = Math.random();
+                    const epicCut   = Math.min(0.03 + lvBonus * 0.5, 0.18);  // 3%→18%
+                    const rareCut   = Math.min(0.10 + lvBonus,       0.35);  // 10%→35%
+                    const uncomCut  = Math.min(0.28 + lvBonus * 0.8, 0.50);  // 28%→50%
+                    if (fishRand < epicCut) {
+                        caughtItem = 'fish4'; // Golden Fish (Epic)
+                    } else if (fishRand < rareCut) {
+                        caughtItem = 'fish3'; // Tropical (Rare)
+                    } else if (fishRand < uncomCut) {
+                        caughtItem = 'fish2'; // Blue Fish (Uncommon)
+                    } else {
+                        caughtItem = 'fish1'; // Common Fish
+                    }
+                    catchMsg = `🎣 Caught a ${ITEM_DATA[caughtItem].name}!`;
+                    addSkillXP('fishing', 10);
                 }
-                
-                const fishName = ITEM_DATA[caughtFish].name;
-                result.textContent = `🎣 Caught a ${fishName}!`;
-                addItem(caughtFish, 1);
-                addSkillXP('fishing', 10);
+
+                result.textContent = catchMsg;
+                addItem(caughtItem, 1);
                 
                 // 10% chance to find Water Key (only if not already obtained)
                 if (!gs.keys.water_key && Math.random() < 0.10) {
