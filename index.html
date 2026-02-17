@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.584</title>
+    <title>SlimeHearth v0.585</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.584</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.585</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -270,51 +270,43 @@
             
             <!-- Farming - The Garden (Rapid Tap) -->
             <div class="room" id="farming-garden-room">
-                <h2 style="color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;">The Garden</h2>
+                <h2 style="font-size:22px;margin-bottom:5px;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;">The Garden</h2>
                 
-                <div style="text-align:center;max-width:500px;margin:0 auto;margin-top:10px;">
+                <div style="text-align:center;max-width:500px;margin:0 auto;">
                     
-                    <!-- 2x3 Garden Grid (6 plots) -->
-                    <div style="display:grid;grid-template-columns:repeat(2,65px);gap:8px;justify-content:center;margin:10px auto;">
-                        <!-- Plot 1 -->
+                    <!-- 3x2 Garden Grid (6 plots: 3 columns, 2 rows) -->
+                    <div style="display:grid;grid-template-columns:repeat(3,65px);gap:8px;justify-content:center;margin:5px auto;">
+                        <!-- Row 1 -->
                         <button id="garden-plot-slot-0" style="width:65px;height:65px;border:2px dashed #8bc34a;background:#fff;border-radius:8px;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                             <span id="garden-plot-icon-0">+</span>
                         </button>
-                        
-                        <!-- Plot 2 -->
                         <button id="garden-plot-slot-1" style="width:65px;height:65px;border:2px dashed #8bc34a;background:#fff;border-radius:8px;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                             <span id="garden-plot-icon-1">+</span>
                         </button>
-                        
-                        <!-- Plot 3 -->
                         <button id="garden-plot-slot-2" style="width:65px;height:65px;border:2px dashed #8bc34a;background:#fff;border-radius:8px;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                             <span id="garden-plot-icon-2">+</span>
                         </button>
                         
-                        <!-- Plot 4 -->
+                        <!-- Row 2 -->
                         <button id="garden-plot-slot-3" style="width:65px;height:65px;border:2px dashed #8bc34a;background:#fff;border-radius:8px;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                             <span id="garden-plot-icon-3">+</span>
                         </button>
-                        
-                        <!-- Plot 5 -->
                         <button id="garden-plot-slot-4" style="width:65px;height:65px;border:2px dashed #8bc34a;background:#fff;border-radius:8px;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                             <span id="garden-plot-icon-4">+</span>
                         </button>
-                        
-                        <!-- Plot 6 -->
                         <button id="garden-plot-slot-5" style="width:65px;height:65px;border:2px dashed #8bc34a;background:#fff;border-radius:8px;font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                             <span id="garden-plot-icon-5">+</span>
                         </button>
                     </div>
                     
                     <!-- Timer Display -->
-                    <div id="garden-timer-display" style="font-size:24px;font-weight:bold;margin:10px 0;color:#8bc34a;min-height:30px;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
+                    <div id="garden-timer-display" style="font-size:24px;font-weight:bold;margin:5px 0;color:#8bc34a;min-height:30px;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
                     
                     <!-- Result/Status -->
-                    <div id="garden-result" style="min-height:30px;font-size:18px;font-weight:bold;margin:10px 0;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
+                    <div id="garden-result" style="min-height:30px;font-size:18px;font-weight:bold;margin:5px 0;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;"></div>
                     
-                    <!-- Water Button - Just emoji, no text -->
-                    <button id="water-garden-btn" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;margin:10px auto;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">💧</button>
+                    <!-- Water Button - Just emoji, positioned higher -->
+                    <button id="water-garden-btn" style="width:80px;height:80px;border-radius:50%;background:#4dd0e1;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;margin:5px auto 0 auto;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">💧</button>
                 </div>
                 
                 <button id="leave-garden" class="back-btn">←</button>
