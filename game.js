@@ -255,7 +255,8 @@
                 sellValue: 1,
                 cookable: false,
                 feedable: false,
-                isPlantable: true
+                isPlantable: true,
+                harvestItem: 'carrot'
             },
             'food': {
                 name: 'Cooked Food',
@@ -606,8 +607,13 @@
                     gs.skills = {
                         fishing: { level: 1, xp: 0, xpNeeded: 10 },
                         farming: { level: 1, xp: 0, xpNeeded: 10 },
-                        cooking: { level: 1, xp: 0, xpNeeded: 10 }
+                        cooking: { level: 1, xp: 0, xpNeeded: 10 },
+                        mining:  { level: 1, xp: 0, xpNeeded: 10 }
                     };
+                }
+                // Patch old saves missing mining
+                if (!gs.skills.mining) {
+                    gs.skills.mining = { level: 1, xp: 0, xpNeeded: 10 };
                 }
                 
                 updateUI();
@@ -726,7 +732,8 @@
                 gs.skills = {
                     fishing: { level: 1, xp: 0, xpNeeded: 10 },
                     farming: { level: 1, xp: 0, xpNeeded: 10 },
-                    cooking: { level: 1, xp: 0, xpNeeded: 10 }
+                    cooking: { level: 1, xp: 0, xpNeeded: 10 },
+                    mining:  { level: 1, xp: 0, xpNeeded: 10 }
                 };
             }
             
@@ -761,7 +768,7 @@
         function updateSkillsUI() {
             if (!gs.skills) return; // Safety check
             
-            ['fishing', 'farming', 'cooking'].forEach(skillName => {
+            ['fishing', 'farming', 'cooking', 'mining'].forEach(skillName => {
                 const skill = gs.skills[skillName];
                 if (!skill) return; // Safety check
                 
@@ -790,7 +797,8 @@
             const skillIcons = {
                 'fishing': '🎣',
                 'farming': '🌾',
-                'cooking': '🍳'
+                'cooking': '🍳',
+                'mining':  '⛏️'
             };
             
             const icon = skillIcons[gs.lastSkillUsed] || '';
@@ -807,7 +815,8 @@
                 const skillColors = {
                     'fishing': '#4dd0e1',
                     'farming': '#8bc34a',
-                    'cooking': '#ff9800'
+                    'cooking': '#ff9800',
+                    'mining':  '#78716c'
                 };
                 xpBar.style.background = skillColors[gs.lastSkillUsed] || '#9c27b0';
             }
@@ -2453,10 +2462,26 @@ function stopBasket() {
             gardenSlots[slotIndex] = null;
             gs.gardenSlots[slotIndex] = null;
             
-            // Clear locked body for this slot (already harvested, just remove tracking)
+            // Clear locked body for this slot
             if (gardenLockedBodies[slotIndex]) {
                 gardenLockedBodies[slotIndex].render.opacity = 1;
                 gardenLockedBodies[slotIndex] = null;
+            }
+            
+            // Fully reset slot visual immediately
+            const harvestedSlot = document.getElementById(`garden-plot-slot-${slotIndex}`);
+            if (harvestedSlot) {
+                harvestedSlot.innerHTML = `<span id="garden-plot-icon-${slotIndex}">+</span>`;
+                harvestedSlot.style.background = '#fff';
+                harvestedSlot.style.border = '2px dashed #8bc34a';
+                harvestedSlot.style.cursor = 'default';
+                harvestedSlot.style.transform = 'scale(1)';
+                harvestedSlot.style.boxShadow = '';
+                harvestedSlot.onmousedown = null;
+                harvestedSlot.onmouseup = null;
+                harvestedSlot.onmouseleave = null;
+                harvestedSlot.ontouchstart = null;
+                harvestedSlot.ontouchend = null;
             }
             
             // Check if all slots are harvested
@@ -2601,38 +2626,48 @@ function stopBasket() {
                         waterBtn.onclick = null;
                     }
                     
-                    // Update icons to carrots and add hold-to-harvest
-                    for (let i = 0; i < 9; i++) {
+                    // Update slots to show harvest image and add hold-to-harvest
+                    for (let i = 0; i < 6; i++) {
                         if (gardenSlots[i]) {
-                            const icon = document.getElementById(`garden-plot-icon-${i}`);
                             const slot = document.getElementById(`garden-plot-slot-${i}`);
-                            if (icon) icon.textContent = '🥕';
                             if (slot) {
+                                // Show harvest item image (e.g. carrot) instead of seed
+                                const seedData = ITEM_DATA[gardenSlots[i]];
+                                const harvestId = seedData && seedData.harvestItem ? seedData.harvestItem : null;
+                                const harvestImg = harvestId && ITEM_IMAGES[harvestId] ? ITEM_IMAGES[harvestId] : null;
+                                
+                                slot.innerHTML = harvestImg
+                                    ? `<img src="${harvestImg}" style="width:48px;height:48px;object-fit:contain;" />`
+                                    : `<span style="font-size:32px;">🥕</span>`;
+                                
                                 slot.style.background = '#e8f5e9';
                                 slot.style.borderColor = '#4caf50';
+                                slot.style.border = '2px solid #4caf50';
                                 slot.style.cursor = 'pointer';
-                                slot.style.transform = 'scale(1)'; // Reset transform
+                                slot.style.transform = 'scale(1)';
                                 
-                                // Add press-and-hold handlers with slot index
-                                const slotIndex = i; // Capture in closure
+                                const slotIndex = i;
                                 slot.onmousedown = () => startHarvestHold(slotIndex);
                                 slot.onmouseup = stopHarvestHold;
                                 slot.onmouseleave = stopHarvestHold;
-                                slot.ontouchstart = (e) => {
-                                    e.preventDefault();
-                                    startHarvestHold(slotIndex);
-                                };
-                                slot.ontouchend = (e) => {
-                                    e.preventDefault();
-                                    stopHarvestHold();
-                                };
+                                slot.ontouchstart = (e) => { e.preventDefault(); startHarvestHold(slotIndex); };
+                                slot.ontouchend = (e) => { e.preventDefault(); stopHarvestHold(); };
                                 slot.ontouchcancel = stopHarvestHold;
                             }
                         } else {
-                            // Empty slot - reset visual
+                            // Empty / already harvested slot - fully reset
                             const slot = document.getElementById(`garden-plot-slot-${i}`);
                             if (slot) {
+                                slot.innerHTML = `<span id="garden-plot-icon-${i}">+</span>`;
                                 slot.style.transform = 'scale(1)';
+                                slot.style.background = '#fff';
+                                slot.style.border = '2px dashed #8bc34a';
+                                slot.style.cursor = 'default';
+                                slot.onmousedown = null;
+                                slot.onmouseup = null;
+                                slot.onmouseleave = null;
+                                slot.ontouchstart = null;
+                                slot.ontouchend = null;
                             }
                         }
                     }
@@ -4017,18 +4052,27 @@ function initKitchenGame() {
                 automineTimeLeft--;
                 timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
                 
-                // 5% chance per second to mine ore
-                if (Math.random() < 0.05) {
+                const roll = Math.random();
+                
+                if (roll < 0.02) {
+                    // 2% chance: Ore — 10 XP
                     addItem('ore', 1);
+                    addSkillXP('mining', 10);
                     result.textContent = '⛏️ Mined Ore!';
-                    setTimeout(() => result.textContent = '', 1000);
+                    setTimeout(() => { if (result) result.textContent = ''; }, 1500);
+                } else if (roll < 0.07) {
+                    // Next 5% (0.02–0.07): Rock — 1 XP
+                    addItem('rock', 1);
+                    addSkillXP('mining', 1);
+                    result.textContent = '🪨 Mined Rock!';
+                    setTimeout(() => { if (result) result.textContent = ''; }, 1500);
                 }
                 
                 if (automineTimeLeft <= 0) {
                     stopAutomine();
                     timer.textContent = '✅ Mining complete!';
                     notify('✅ Automining finished!');
-                    setTimeout(() => timer.textContent = '', 3000);
+                    setTimeout(() => { if (timer) timer.textContent = ''; }, 3000);
                 }
             }, 1000);
         }
