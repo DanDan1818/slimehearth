@@ -131,6 +131,12 @@
             padding-top: 40px;
         }
         
+        #farming-menu-room {
+            background-image: url('./slimehearth-assets/images/farming-background.png');
+            background-size: cover;
+            background-position: center;
+        }
+        
         #farming-menu-room.active {
             justify-content: flex-start;
             padding-top: 40px;

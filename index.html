@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.607</title>
+    <title>SlimeHearth v0.611</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,10 +25,10 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.607</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.611</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
-    <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
+    <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
         <div style="text-align:center;position:relative;width:180px;height:180px;">
             <!-- Tappable Egg -->
             <div id="hatch-egg" style="width:180px;height:180px;cursor:pointer;user-select:none;transition:transform 0.1s, opacity 0.5s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;background-image:url('./slimehearth-assets/images/egg1.png');background-size:contain;background-repeat:no-repeat;background-position:center;margin:0 auto;">
@@ -199,6 +199,7 @@
             <div class="room" id="mining-cave-room">
                 <h2 style="font-size:22px;margin-bottom:10px;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff;">The Cave</h2>
                 <div id="mining-game-cave" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+                    <div id="automine-instruction" style="font-size:14px;font-weight:bold;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.8);">Press to Automine</div>
                     <button id="start-automine" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #8b7355 0%, #5d4e37 100%);color:#fff;border:4px solid #fff;font-size:18px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;font-weight:bold;">
                         <div style="font-size:40px;">⛏️</div>
                         <div style="font-size:14px;">START</div>
@@ -826,6 +827,35 @@
     <!-- Fishing Bobber Sound -->
     <audio id="bobber-sound" preload="auto">
         <source src="./slimehearth-assets/sounds/bobber1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- New Sound Effects -->
+    <audio id="slime-levelup-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/slimelevel1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="coin-sell-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/coin1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="coin-buy-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/coin2.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="gem-drop-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/gem1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="basket-drop-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/basket1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="cook-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/cook1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="egg-crack-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/eggcrack1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="pickaxe-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/pickaxe1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bounce-sound" preload="auto">
+        <source src="./slimehearth-assets/sounds/bounce1.mp3" type="audio/mpeg">
     </audio>
     
     <div id="debug-console" style="position:fixed;top:70px;left:10px;width:250px;height:400px;background:rgba(0,0,0,0.9);color:#0f0;font-family:monospace;font-size:11px;padding:10px;overflow-y:auto;z-index:500;border:2px solid #0f0;border-radius:5px;display:none;"><div style="color:#fff;font-weight:bold;margin-bottom:5px;">DEBUG CONSOLE</div><div id="debug-log"></div></div>

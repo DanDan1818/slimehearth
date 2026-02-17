@@ -135,8 +135,11 @@
             'small_geode': './slimehearth-assets/images/geode1.png',
             'carrot': './slimehearth-assets/images/carrot1.png',
             'carrot_seeds': './slimehearth-assets/images/seeds1.png',
-            'basket': './slimehearth-assets/images/basket1.png'
-            // 'food' removed - uses pink color from ITEM_COLORS instead
+            'basket': './slimehearth-assets/images/basket1.png',
+            'food': './slimehearth-assets/images/food1.png',
+            'rock': './slimehearth-assets/images/rock1.png',
+            'ore': './slimehearth-assets/images/ore1.png',
+            'lily_pad': './slimehearth-assets/images/trash1.png'
         };
         
         const ITEM_DATA = {
@@ -1250,13 +1253,13 @@
                 basketBottom - 10,
                 basketWidth,
                 20,
-                { isStatic: true, render: { visible: false } }
+                { isStatic: true, render: { visible: false }, label: 'Floor' }
             );
             
             // Invisible floor at canvas bottom - sized for 700px canvas
             const invisibleFloor = Bodies.rectangle(
                 350, 1230, 900, 100,  // Centered at 350 (middle of 700)
-                { isStatic: true, render: { visible: false } }
+                { isStatic: true, render: { visible: false }, label: 'Floor' }
             );
             
             World.add(basketEngine.world, [leftWall, rightWall, bottom, invisibleFloor]);
@@ -1276,6 +1279,29 @@
                             x: body.velocity.x * scale,
                             y: body.velocity.y * scale
                         });
+                    }
+                });
+            });
+            
+            // Bounce sound on collision with floor
+            Events.on(basketEngine, 'collisionStart', (event) => {
+                event.pairs.forEach(pair => {
+                    const { bodyA, bodyB } = pair;
+                    // Check if one body is an item and the other is the floor
+                    const item = basketBodies.includes(bodyA) ? bodyA : (basketBodies.includes(bodyB) ? bodyB : null);
+                    const isFloor = bodyA.label === 'Floor' || bodyB.label === 'Floor';
+                    
+                    if (item && isFloor) {
+                        // Play bounce sound if impact velocity is high enough
+                        const speed = Math.sqrt(item.velocity.x ** 2 + item.velocity.y ** 2);
+                        if (speed > 3) { // Only play for noticeable bounces
+                            const bounceSound = document.getElementById('bounce-sound');
+                            if (bounceSound) {
+                                bounceSound.currentTime = 0;
+                                bounceSound.volume = Math.min(speed / 20, 0.5); // Scale volume with speed
+                                bounceSound.play().catch(() => {});
+                            }
+                        }
                     }
                 });
             });
@@ -1432,6 +1458,8 @@
                                 
                                 notify('🎉 Slime Level Up! Level ' + gs.level, 'levelup');
                                 levelUpBurst();
+                                const levelupSound = document.getElementById('slime-levelup-sound');
+                                if (levelupSound) { levelupSound.currentTime = 0; levelupSound.play().catch(() => {}); }
                                 
                                 // Create a small geode on level up
                                 addItem('small_geode', 1);
@@ -1628,6 +1656,8 @@
                         
                         gs.coins += sellPrice;
                         notify('Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + sellPrice + ' coins! 💰');
+                        const sellSound = document.getElementById('coin-sell-sound');
+                        if (sellSound) { sellSound.currentTime = 0; sellSound.play().catch(() => {}); }
                         
                         // Remove
                         World.remove(basketEngine.world, body);
@@ -1683,6 +1713,15 @@
             
             World.add(basketEngine.world, box);
             basketBodies.push(box);
+            
+            // Play special spawn sounds for gem/basket
+            if (itemId === 'gem') {
+                const gemSound = document.getElementById('gem-drop-sound');
+                if (gemSound) { gemSound.currentTime = 0; gemSound.play().catch(() => {}); }
+            } else if (itemId === 'basket') {
+                const basketSound = document.getElementById('basket-drop-sound');
+                if (basketSound) { basketSound.currentTime = 0; basketSound.play().catch(() => {}); }
+            }
             
             // Add glow effect for rare items
             createItemGlow(box, itemId);
@@ -3243,6 +3282,8 @@ function stopBasket() {
             
             // Lock UI during cooking
             hearthCooking = true;
+            const cookSound = document.getElementById('cook-sound');
+            if (cookSound) { cookSound.currentTime = 0; cookSound.play().catch(() => {}); }
             if (cookBtn) { cookBtn.style.opacity = '0.5'; cookBtn.style.cursor = 'not-allowed'; cookBtn.onclick = null; }
             if (clearBtn1) clearBtn1.style.display = 'none';
             if (clearBtn2) clearBtn2.style.display = 'none';
@@ -4089,6 +4130,9 @@ function initKitchenGame() {
             slimeElement.style.backgroundImage = `url('${imagePath}')`;
             slimeElement.classList.add('visible');
             
+            const crackSound = document.getElementById('egg-crack-sound');
+            if (crackSound) { crackSound.currentTime = 0; crackSound.play().catch(() => {}); }
+            
             notify('🎉 Your slime has hatched!');
             
             // Prompt for slime name after a brief delay
@@ -4165,12 +4209,17 @@ function initKitchenGame() {
             if (automineInterval) return; // Already mining
             
             const button = document.getElementById('start-automine');
+            const instruction = document.getElementById('automine-instruction');
             const timer = document.getElementById('automine-timer');
             const result = document.getElementById('automine-result');
             
-            button.disabled = true;
-            button.style.opacity = '0.5';
-            button.style.cursor = 'not-allowed';
+            // Change button to STOP
+            button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">STOP</div>';
+            button.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
+            button.onclick = stopAutomine;
+            
+            // Update instruction
+            if (instruction) instruction.textContent = 'Stop Automine';
             
             automineTimeLeft = 60;
             automineRunId++; // New run ID — invalidates any stale callbacks
@@ -4194,11 +4243,15 @@ function initKitchenGame() {
                 if (roll < 0.02) {
                     addItem('ore', 1);
                     addSkillXP('mining', 10);
+                    const pickSound = document.getElementById('pickaxe-sound');
+                    if (pickSound) { pickSound.currentTime = 0; pickSound.play().catch(() => {}); }
                     if (resultEl) resultEl.textContent = '⛏️ Mined Ore!';
                     setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
                 } else if (roll < 0.07) {
                     addItem('rock', 1);
                     addSkillXP('mining', 1);
+                    const pickSound = document.getElementById('pickaxe-sound');
+                    if (pickSound) { pickSound.currentTime = 0; pickSound.play().catch(() => {}); }
                     if (resultEl) resultEl.textContent = '🪨 Mined Rock!';
                     setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
                 }
@@ -4220,11 +4273,19 @@ function initKitchenGame() {
             }
             
             const button = document.getElementById('start-automine');
+            const instruction = document.getElementById('automine-instruction');
             if (button) {
+                // Reset to START button
+                button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">START</div>';
+                button.style.background = 'linear-gradient(135deg, #8b7355 0%, #5d4e37 100%)';
+                button.onclick = startAutomine;
                 button.disabled = false;
                 button.style.opacity = '1';
                 button.style.cursor = 'pointer';
             }
+            
+            // Reset instruction
+            if (instruction) instruction.textContent = 'Press to Automine';
             
             automineTimeLeft = 0;
         }
@@ -4722,6 +4783,8 @@ function initKitchenGame() {
                 save();
                 updateUI();
                 notify(`✓ Bought ${item.name}!`);
+                const buySound = document.getElementById('coin-buy-sound');
+                if (buySound) { buySound.currentTime = 0; buySound.play().catch(() => {}); }
             } else if (item.type === 'tool') {
                 // Buy tool
                 if (gs.tools[item.id]) {
@@ -4734,6 +4797,8 @@ function initKitchenGame() {
                 updateUI();
                 displayShopGrid();
                 notify(`✓ Purchased ${item.icon} ${item.name}!`);
+                const buySound = document.getElementById('coin-buy-sound');
+                if (buySound) { buySound.currentTime = 0; buySound.play().catch(() => {}); }
                 
                 // Update crack button if hammer purchased
                 if (item.id === 'hammer') {
@@ -4750,6 +4815,8 @@ function initKitchenGame() {
                 save();
                 updateUI();
                 displayShopGrid();
+                const buySound = document.getElementById('coin-buy-sound');
+                if (buySound) { buySound.currentTime = 0; buySound.play().catch(() => {}); }
                 notify(`✓ Purchased ${item.icon} ${item.name}!`);
             }
         }
