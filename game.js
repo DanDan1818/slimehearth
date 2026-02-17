@@ -2622,7 +2622,7 @@ function stopBasket() {
                 if (timeLeft > 0) {
                     if (timerDisplay) timerDisplay.textContent = `⏱️ Growing: ${timeLeft}s`;
                     if (waterBtn) {
-                        waterBtn.textContent = '🌱 Growing...';
+                        waterBtn.textContent = '🌱';
                         waterBtn.style.background = '#ccc';
                         waterBtn.style.cursor = 'not-allowed';
                         waterBtn.onclick = null;
@@ -2631,7 +2631,7 @@ function stopBasket() {
                     // Ready to harvest!
                     if (timerDisplay) updateHarvestProgressDisplay();
                     if (waterBtn) {
-                        waterBtn.textContent = '💧 Water';
+                        waterBtn.textContent = '💧';
                         waterBtn.style.background = '#ccc';
                         waterBtn.style.cursor = 'not-allowed';
                         waterBtn.onclick = null;
@@ -2676,7 +2676,7 @@ function stopBasket() {
             } else {
                 if (timerDisplay) timerDisplay.textContent = '';
                 if (waterBtn) {
-                    waterBtn.textContent = '💧 Water';
+                    waterBtn.textContent = '💧';
                     waterBtn.style.background = '#4dd0e1';
                     waterBtn.style.cursor = 'pointer';
                     waterBtn.onclick = waterGarden;

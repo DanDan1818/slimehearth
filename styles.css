@@ -159,6 +159,11 @@
             background-image: url('./slimehearth-assets/images/farm-background.png');
         }
         
+        #farming-garden-room.active, #farming-field-room.active {
+            justify-content: flex-start;
+            padding-top: 10px;
+        }
+        
         /* Home Room - Slime Display */
         #slime-square {
             width: 150px;
