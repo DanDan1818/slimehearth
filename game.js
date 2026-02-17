@@ -3153,23 +3153,29 @@ function stopBasket() {
             // We'll show it as a DOM element instead for clean display
             body.render.opacity = 0;
             
-            // Update slot UI - show geode color/icon inside the slot
+            // Update slot UI - show geode image inside the slot
             const icon = document.getElementById('shack-slot-icon');
             const nameEl = document.getElementById('shack-slot-name');
             const clearBtn = document.getElementById('shack-slot-clear');
             const slotDiv = document.getElementById('shack-geode-slot');
-            const color = ITEM_COLORS[itemId] || '#8b7355';
+            const imgSrc = ITEM_IMAGES[itemId];
             
             if (icon) {
-                icon.style.display = 'flex';
-                icon.style.width = '50px';
-                icon.style.height = '50px';
-                icon.style.background = color;
-                icon.style.borderRadius = '8px';
-                icon.style.border = '3px solid rgba(0,0,0,0.3)';
-                icon.style.boxShadow = `0 0 12px ${color}, inset 0 2px 4px rgba(255,255,255,0.4)`;
-                icon.style.animation = 'geodeLock 0.3s ease-out';
-                icon.textContent = '';
+                if (imgSrc) {
+                    icon.style.display = 'flex';
+                    icon.style.width = '52px';
+                    icon.style.height = '52px';
+                    icon.style.background = '';
+                    icon.style.borderRadius = '';
+                    icon.style.border = '';
+                    icon.style.boxShadow = '';
+                    icon.style.animation = 'geodeLock 0.3s ease-out';
+                    icon.innerHTML = `<img src="${imgSrc}" style="width:52px;height:52px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
+                } else {
+                    icon.style.display = 'flex';
+                    icon.style.animation = 'geodeLock 0.3s ease-out';
+                    icon.textContent = '💎';
+                }
             }
             if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
             if (clearBtn) clearBtn.style.display = 'block';
@@ -3220,6 +3226,7 @@ function stopBasket() {
             const slotDiv = document.getElementById('shack-geode-slot');
             
             if (icon) {
+                icon.innerHTML = '';
                 icon.textContent = '🪨';
                 icon.style.display = '';
                 icon.style.width = '';
