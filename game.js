@@ -3180,13 +3180,19 @@ function stopBasket() {
         }
         
         function clearShackSlot() {
-            // Unfreeze the body
+            // Unfreeze the body and fling it back into the basket area
             if (shackLockedBody) {
                 Matter.Body.setStatic(shackLockedBody, false);
+                // Give it a random toss so it bounces away from the slot
+                Matter.Body.setVelocity(shackLockedBody, { 
+                    x: (Math.random() - 0.5) * 10, 
+                    y: -8 
+                });
                 shackLockedBody = null;
             }
             
             shackGeodeSlot = null;
+            shackCrackCount = 0;
             
             // Reset slot UI
             const icon = document.getElementById('shack-slot-icon');
@@ -3203,8 +3209,11 @@ function stopBasket() {
             if (crackBtn) {
                 crackBtn.style.background = '#f5e6d3';
                 crackBtn.style.borderColor = '#8b7355';
+                crackBtn.style.opacity = '1';
+                crackBtn.style.cursor = 'pointer';
             }
             
+            updateShackProgress();
             notify('Geode removed from slot.');
         }
         
