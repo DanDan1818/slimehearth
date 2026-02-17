@@ -2985,6 +2985,7 @@ function stopBasket() {
                 // Valid recipe! Find and remove one of each item
                 let removed1 = false, removed2 = false;
                 
+                // Remove from inventory data
                 for (const key in gs.inventory) {
                     if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) {
                         delete gs.inventory[key];
@@ -2996,6 +2997,10 @@ function stopBasket() {
                     if (removed1 && removed2) break;
                 }
                 
+                // Remove from physics world BEFORE adding result
+                removeIngredientsFromBasket(hearthSlot1ItemId, hearthSlot2ItemId);
+                
+                // NOW add the result
                 addItem(recipe.result, 1);
                 addSkillXP('cooking', 15);
                 
@@ -3016,6 +3021,7 @@ function stopBasket() {
                 // Remove the ingredients
                 let removed1 = false, removed2 = false;
                 
+                // Remove from inventory data
                 for (const key in gs.inventory) {
                     if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) {
                         delete gs.inventory[key];
@@ -3027,6 +3033,10 @@ function stopBasket() {
                     if (removed1 && removed2) break;
                 }
                 
+                // Remove from physics world BEFORE adding result
+                removeIngredientsFromBasket(hearthSlot1ItemId, hearthSlot2ItemId);
+                
+                // NOW add burnt food
                 addItem('burnt_food', 1);
                 addSkillXP('cooking', 5); // Half XP for burnt food
                 
@@ -3043,6 +3053,27 @@ function stopBasket() {
                 updateHearthDisplay();
                 save();
             }
+        }
+        
+        // Helper function to remove ingredients from physics basket
+        function removeIngredientsFromBasket(itemId1, itemId2) {
+            let removed1 = false, removed2 = false;
+            
+            for (let i = basketBodies.length - 1; i >= 0; i--) {
+                const body = basketBodies[i];
+                if (!removed1 && body.itemId === itemId1) {
+                    World.remove(basketEngine.world, body);
+                    basketBodies.splice(i, 1);
+                    removed1 = true;
+                } else if (!removed2 && body.itemId === itemId2) {
+                    World.remove(basketEngine.world, body);
+                    basketBodies.splice(i, 1);
+                    removed2 = true;
+                }
+                if (removed1 && removed2) break;
+            }
+            
+            updateInventoryCounter();
         }
 
         // ===== COOKING MINIGAMES =====
@@ -4280,12 +4311,36 @@ function initKitchenGame() {
                 }
                 
                 itemDiv.innerHTML = `
-                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">${item.icon}</div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">
+                        ${getShopItemDisplay(item)}
+                    </div>
                     <div style="font-size:9px;font-weight:bold;color:#333;margin-bottom:3px;line-height:1.1;">${item.name}</div>
-                    <div style="width:100%;background:#fbbf24;color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;">
-                        ${isOwned ? '✓ OWNED' : `💰 ${item.price}`}
+                    <div style="width:100%;background:${isOwned ? '#10b981' : '#fbbf24'};color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;">
+                        ${isOwned ? '✓ OWNED' : `${item.price} 💰`}
                     </div>
                 `;
+                
+                if (!isOwned) {
+                    itemDiv.onclick = () => buyShopItem(item);
+                }
+                
+                grid.appendChild(itemDiv);
+            });
+        }
+        
+        // Helper function to get shop item display (image or icon)
+        function getShopItemDisplay(item) {
+            // Check if it's a hat with an image
+            if (item.type === 'hat' && item.data && item.data.image) {
+                return `<img src="./slimehearth-assets/images/${item.data.image}" style="width:40px;height:40px;object-fit:contain;" />`;
+            }
+            // Check if it's an item with an image (like carrot seeds)
+            if (ITEM_IMAGES[item.id]) {
+                return `<img src="${ITEM_IMAGES[item.id]}" style="width:40px;height:40px;object-fit:contain;" />`;
+            }
+            // Default to emoji icon
+            return item.icon;
+        }
                 
                 if (!isOwned) {
                     itemDiv.onclick = () => buyShopItem(item);

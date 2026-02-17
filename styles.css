@@ -136,6 +136,11 @@
             padding-top: 10px;  /* Very top of screen */
         }
         
+        #room-room.active {
+            justify-content: flex-start;
+            padding-top: 10px;  /* Very top of screen */
+        }
+        
         #trophies-room.active {
             justify-content: flex-start;
             padding-top: 10px;  /* Very top of screen */
