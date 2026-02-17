@@ -4315,7 +4315,7 @@ function initKitchenGame() {
                         ${getShopItemDisplay(item)}
                     </div>
                     <div style="font-size:9px;font-weight:bold;color:#333;margin-bottom:3px;line-height:1.1;">${item.name}</div>
-                    <div style="width:100%;background:${isOwned ? '#10b981' : '#fbbf24'};color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;">
+                    <div style="font-size:10px;font-weight:bold;color:${isOwned ? '#10b981' : '#f59e0b'};margin-top:3px;">
                         ${isOwned ? '✓ OWNED' : `${item.price} 💰`}
                     </div>
                 `;
