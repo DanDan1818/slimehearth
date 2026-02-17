@@ -4204,32 +4204,24 @@ function initKitchenGame() {
                 const toolCard = document.createElement('div');
                 toolCard.style.cssText = `
                     background: ${owned ? '#f0fdf4' : '#f3f4f6'};
-                    border: 3px solid ${owned ? '#4ade80' : '#d1d5db'};
-                    border-radius: 10px;
-                    padding: 8px;
+                    border: 2px solid ${owned ? '#4ade80' : '#d1d5db'};
+                    border-radius: 8px;
+                    padding: 6px;
                     text-align: center;
                     opacity: ${owned ? '1' : '0.5'};
-                    min-height: 100px;
+                    min-height: 70px;
                     display: flex;
                     flex-direction: column;
+                    align-items: center;
                     justify-content: space-between;
                 `;
                 
                 toolCard.innerHTML = `
-                    <div style="font-size:32px;margin-bottom:4px;">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">
                         ${tool.icon}
                     </div>
-                    <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
-                        ${tool.name}
-                    </div>
-                    <div style="font-size:9px;color:#666;margin-bottom:4px;">
-                        ${tool.description}
-                    </div>
-                    <div style="margin-top:auto;">
-                        ${owned ? 
-                            '<div style="background:#4ade80;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">✓ UNLOCKED</div>' :
-                            '<div style="background:#9ca3af;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">🔒 LOCKED</div>'
-                        }
+                    <div style="width:100%;background:${owned ? '#4ade80' : '#9ca3af'};color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;margin-top:6px;">
+                        ${owned ? '✓ UNLOCKED' : '🔒 LOCKED'}
                     </div>
                 `;
                 
@@ -4275,6 +4267,11 @@ function initKitchenGame() {
                     cursor: ${isOwned ? 'default' : 'pointer'};
                     transition: all 0.2s;
                     position: relative;
+                    min-height: 70px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
                 `;
                 
                 if (!isOwned) {
@@ -4283,10 +4280,11 @@ function initKitchenGame() {
                 }
                 
                 itemDiv.innerHTML = `
-                    <div style="font-size: 24px; margin-bottom: 2px;">${item.icon}</div>
-                    <div style="font-size: 8px; font-weight: bold; margin-bottom: 1px; color: #333; line-height: 1.1;">${item.name}</div>
-                    <div style="font-size: 9px; font-weight: bold; color: #f59e0b;">💰 ${item.price}</div>
-                    ${isOwned ? '<div style="margin-top:2px;font-size:8px;color:#10b981;font-weight:bold;">✓</div>' : ''}
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">${item.icon}</div>
+                    <div style="font-size:9px;font-weight:bold;color:#333;margin-bottom:3px;line-height:1.1;">${item.name}</div>
+                    <div style="width:100%;background:#fbbf24;color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;">
+                        ${isOwned ? '✓ OWNED' : `💰 ${item.price}`}
+                    </div>
                 `;
                 
                 if (!isOwned) {
@@ -4533,32 +4531,24 @@ function initKitchenGame() {
                 const keyCard = document.createElement('div');
                 keyCard.style.cssText = `
                     background: ${owned ? '#fef3c7' : '#f3f4f6'};
-                    border: 3px solid ${owned ? '#fbbf24' : '#d1d5db'};
-                    border-radius: 10px;
-                    padding: 8px;
+                    border: 2px solid ${owned ? '#fbbf24' : '#d1d5db'};
+                    border-radius: 8px;
+                    padding: 6px;
                     text-align: center;
                     opacity: ${owned ? '1' : '0.5'};
-                    min-height: 100px;
+                    min-height: 70px;
                     display: flex;
                     flex-direction: column;
+                    align-items: center;
                     justify-content: space-between;
                 `;
                 
                 keyCard.innerHTML = `
-                    <div style="font-size:32px;margin-bottom:4px;">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">
                         ${key.icon}
                     </div>
-                    <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
-                        ${key.name}
-                    </div>
-                    <div style="font-size:9px;color:#666;margin-bottom:4px;">
-                        ${key.description}
-                    </div>
-                    <div style="margin-top:auto;">
-                        ${owned ? 
-                            '<div style="background:#fbbf24;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">✓ OBTAINED</div>' :
-                            '<div style="background:#9ca3af;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">🔒 LOCKED</div>'
-                        }
+                    <div style="width:100%;background:${owned ? '#fbbf24' : '#9ca3af'};color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;margin-top:6px;">
+                        ${owned ? '✓ OBTAINED' : '🔒 LOCKED'}
                     </div>
                 `;
                 

@@ -87,7 +87,7 @@
         
         #area-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 10px;  /* Very top of screen */
         }
         
         /* Room Backgrounds */
@@ -133,12 +133,12 @@
         
         #wardrobe-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 10px;  /* Very top of screen */
         }
         
         #trophies-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 10px;  /* Very top of screen */
         }
         
         #cooking-menu-room {
