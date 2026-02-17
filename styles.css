@@ -222,6 +222,17 @@
             100% { box-shadow: 0 0 10px rgba(74,222,128,0.5); }
         }
         
+        @keyframes levelUpBurstGlow {
+            0%   { transform: translate(-50%,-50%) scale(0);   opacity: 1; }
+            40%  { transform: translate(-50%,-50%) scale(1.6); opacity: 0.85; }
+            100% { transform: translate(-50%,-50%) scale(2.4); opacity: 0; }
+        }
+        
+        @keyframes levelUpStar {
+            0%   { transform: translate(0,0) scale(1) rotate(0deg);   opacity: 1; }
+            100% { transform: translate(var(--tx),var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+        }
+        
         /* Back/Leave Button - Bottom Center */
         .back-btn {
             position: fixed !important;

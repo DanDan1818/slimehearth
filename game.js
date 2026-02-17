@@ -822,7 +822,59 @@
             }
         }
         
-        function addItem(itemId, quantity = 1) {
+        function levelUpBurst() {
+            const slime = document.getElementById('slime-square');
+            if (!slime) return;
+            const rect = slime.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            
+            const container = document.createElement('div');
+            container.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:0;height:0;pointer-events:none;z-index:9999;`;
+            
+            // Central glow burst
+            const glow = document.createElement('div');
+            glow.style.cssText = `position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,240,0,0.95) 0%,rgba(255,180,0,0.7) 40%,rgba(255,120,0,0) 70%);animation:levelUpBurstGlow 0.8s ease-out forwards;pointer-events:none;`;
+            container.appendChild(glow);
+            
+            // Stars / sparks
+            const starChars = ['★','✦','✸','✺','⭐','💫'];
+            const count = 18;
+            for (let i = 0; i < count; i++) {
+                const angle = (i / count) * 360;
+                const dist = 55 + Math.random() * 55;
+                const tx = Math.cos(angle * Math.PI / 180) * dist;
+                const ty = Math.sin(angle * Math.PI / 180) * dist;
+                const tr = (Math.random() - 0.5) * 360;
+                const delay = Math.random() * 0.15;
+                const duration = 0.6 + Math.random() * 0.5;
+                const size = 10 + Math.floor(Math.random() * 14);
+                const colors = ['#ffe600','#ffd000','#ffb800','#fff200','#ffec4f','#fffacd'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const char = starChars[Math.floor(Math.random() * starChars.length)];
+                
+                const star = document.createElement('div');
+                star.textContent = char;
+                star.style.cssText = `
+                    position:absolute;
+                    font-size:${size}px;
+                    color:${color};
+                    text-shadow:0 0 6px rgba(255,220,0,0.9), 0 0 12px rgba(255,180,0,0.6);
+                    left:-${size/2}px;
+                    top:-${size/2}px;
+                    --tx:${tx}px;
+                    --ty:${ty}px;
+                    --tr:${tr}deg;
+                    animation:levelUpStar ${duration}s ease-out ${delay}s forwards;
+                    opacity:1;
+                    pointer-events:none;
+                `;
+                container.appendChild(star);
+            }
+            
+            document.body.appendChild(container);
+            setTimeout(() => container.remove(), 2000);
+        }
             const currentCount = Object.keys(gs.inventory).length;
             const spaceLeft = MAX_INVENTORY - currentCount;
             
@@ -1341,6 +1393,7 @@
                                 gs.slimeXPNeeded = Math.floor(gs.slimeXPNeeded * 1.2);
                                 
                                 notify('🎉 Slime Level Up! Level ' + gs.level, 'levelup');
+                                levelUpBurst();
                                 
                                 // Create a small geode on level up
                                 addItem('small_geode', 1);
@@ -4030,6 +4083,7 @@ function initKitchenGame() {
         // Mining - Automine system
         let automineInterval = null;
         let automineTimeLeft = 0;
+        let automineRunId = 0; // increments each run to invalidate stale callbacks
         
         function startAutomine() {
             if (automineInterval) return; // Already mining
@@ -4042,42 +4096,48 @@ function initKitchenGame() {
             button.style.opacity = '0.5';
             button.style.cursor = 'not-allowed';
             
-            automineTimeLeft = 60; // 60 seconds
+            automineTimeLeft = 60;
+            automineRunId++; // New run ID — invalidates any stale callbacks
+            const myRunId = automineRunId;
+            
             timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
             result.textContent = '';
             
             notify('⛏️ Started automining!');
             
             automineInterval = setInterval(() => {
+                // Guard: bail if this interval belongs to a stopped run
+                if (myRunId !== automineRunId) { clearInterval(automineInterval); return; }
+                
                 automineTimeLeft--;
-                timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
+                const timerEl = document.getElementById('automine-timer');
+                const resultEl = document.getElementById('automine-result');
+                if (timerEl) timerEl.textContent = `⏱️ ${automineTimeLeft}s remaining`;
                 
                 const roll = Math.random();
-                
                 if (roll < 0.02) {
-                    // 2% chance: Ore — 10 XP
                     addItem('ore', 1);
                     addSkillXP('mining', 10);
-                    result.textContent = '⛏️ Mined Ore!';
-                    setTimeout(() => { if (result) result.textContent = ''; }, 1500);
+                    if (resultEl) resultEl.textContent = '⛏️ Mined Ore!';
+                    setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
                 } else if (roll < 0.07) {
-                    // Next 5% (0.02–0.07): Rock — 1 XP
                     addItem('rock', 1);
                     addSkillXP('mining', 1);
-                    result.textContent = '🪨 Mined Rock!';
-                    setTimeout(() => { if (result) result.textContent = ''; }, 1500);
+                    if (resultEl) resultEl.textContent = '🪨 Mined Rock!';
+                    setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
                 }
                 
                 if (automineTimeLeft <= 0) {
                     stopAutomine();
-                    timer.textContent = '✅ Mining complete!';
+                    const t = document.getElementById('automine-timer');
+                    if (t) { t.textContent = '✅ Mining complete!'; setTimeout(() => { if (t) t.textContent = ''; }, 3000); }
                     notify('✅ Automining finished!');
-                    setTimeout(() => { if (timer) timer.textContent = ''; }, 3000);
                 }
             }, 1000);
         }
         
         function stopAutomine() {
+            automineRunId++; // Invalidate any stale interval ticks or setTimeout callbacks
             if (automineInterval) {
                 clearInterval(automineInterval);
                 automineInterval = null;
