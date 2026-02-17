@@ -99,6 +99,11 @@
             background-image: url('./slimehearth-assets/images/shack-background.png');
         }
         
+        #shack-room.active {
+            justify-content: flex-start;
+            padding-top: 10px;
+        }
+        
         #fishing-pond-room {
             background-image: url('./slimehearth-assets/images/pond-background.png');
         }

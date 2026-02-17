@@ -1397,18 +1397,24 @@
                         const slotEl = document.getElementById('shack-geode-slot');
                         if (slotEl) {
                             const slotRect = slotEl.getBoundingClientRect();
-                            const canvas = document.getElementById('basket-canvas');
-                            const canvasRect = canvas.getBoundingClientRect();
+                            const containerEl = document.getElementById('basket-container');
+                            const containerRect = containerEl.getBoundingClientRect();
                             
-                            // Convert body position to screen coords
-                            const scale = parseFloat(document.getElementById('basket-container').style.transform?.match(/scale\(([^)]+)\)/)?.[1] || 1);
-                            const containerRect = document.getElementById('basket-container').getBoundingClientRect();
+                            // Get the actual CSS scale value
+                            const styleScale = containerEl.style.transform || '';
+                            const scaleMatch = styleScale.match(/scale\(([^)]+)\)/);
+                            const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 0.8;
+                            
+                            // Convert physics body coords → screen coords
                             const bodyScreenX = containerRect.left + body.position.x * scale;
                             const bodyScreenY = containerRect.top + body.position.y * scale;
                             
-                            // Check if body center is over the slot
-                            if (bodyScreenX >= slotRect.left && bodyScreenX <= slotRect.right &&
-                                bodyScreenY >= slotRect.top && bodyScreenY <= slotRect.bottom) {
+                            console.log('Body screen pos:', bodyScreenX, bodyScreenY);
+                            console.log('Slot rect:', slotRect);
+                            
+                            // Generous hit area - expand slot detection by 30px
+                            if (bodyScreenX >= slotRect.left - 30 && bodyScreenX <= slotRect.right + 30 &&
+                                bodyScreenY >= slotRect.top - 30 && bodyScreenY <= slotRect.bottom + 30) {
                                 lockGeodeInShackSlot(body);
                             }
                         }
@@ -3118,20 +3124,29 @@ function stopBasket() {
             const data = ITEM_DATA[itemId];
             if (!data || !data.crackable) return;
             
-            // Store reference to the locked body so we can remove it later
+            // If already something locked, clear it first
+            if (shackLockedBody) clearShackSlot();
+            
+            // Store reference to the locked body
             shackLockedBody = body;
             shackGeodeSlot = itemId;
             
-            // Freeze the body in place at the slot position
+            // Compute slot center in physics coordinates
             const slotEl = document.getElementById('shack-geode-slot');
             const slotRect = slotEl.getBoundingClientRect();
-            const containerRect = document.getElementById('basket-container').getBoundingClientRect();
-            const scale = parseFloat(document.getElementById('basket-container').style.transform?.match(/scale\(([^)]+)\)/)?.[1] || 1);
+            const containerEl = document.getElementById('basket-container');
+            const containerRect = containerEl.getBoundingClientRect();
+            const styleScale = containerEl.style.transform || '';
+            const scaleMatch = styleScale.match(/scale\(([^)]+)\)/);
+            const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 0.8;
+            
             const slotCenterX = (slotRect.left + slotRect.width / 2 - containerRect.left) / scale;
             const slotCenterY = (slotRect.top + slotRect.height / 2 - containerRect.top) / scale;
             
+            // Snap and freeze
             Matter.Body.setPosition(body, { x: slotCenterX, y: slotCenterY });
             Matter.Body.setVelocity(body, { x: 0, y: 0 });
+            Matter.Body.setAngularVelocity(body, 0);
             Matter.Body.setStatic(body, true);
             
             // Update slot UI
@@ -3140,7 +3155,7 @@ function stopBasket() {
             const clearBtn = document.getElementById('shack-slot-clear');
             const slotDiv = document.getElementById('shack-geode-slot');
             
-            if (icon) icon.style.display = 'none'; // hide placeholder, body renders on canvas
+            if (icon) icon.style.display = 'none';
             if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
             if (clearBtn) clearBtn.style.display = 'block';
             if (slotDiv) slotDiv.style.border = '3px solid #4ade80';
@@ -3150,6 +3165,8 @@ function stopBasket() {
             if (crackBtn) {
                 crackBtn.style.background = '#4ade80';
                 crackBtn.style.borderColor = '#22c55e';
+                crackBtn.style.opacity = '1';
+                crackBtn.style.cursor = 'pointer';
             }
             
             shackCrackCount = 0;

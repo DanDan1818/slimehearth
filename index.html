@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.587</title>
+    <title>SlimeHearth v0.588</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.587</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.588</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -506,15 +506,15 @@
             <!-- Shack Room -->
             <div class="room" id="shack-room">
                 <!-- Prospecting Info Box -->
-                <div style="background:rgba(222, 184, 135, 0.95);padding:15px 20px;border-radius:12px;border:3px solid #8b7355;max-width:350px;margin:20px auto 30px auto;box-shadow:0 4px 8px rgba(0,0,0,0.3);">
-                    <h2 id="shack-title" style="color:#3e2723;margin:0 0 8px 0;text-shadow:1px 1px 2px rgba(255,255,255,0.3);">⛏️ Prospecting Level 1</h2>
-                    <p id="shack-levelup-info" style="margin:0;font-size:14px;color:#3e2723;font-weight:500;">90% chance to level up with Small Geode</p>
+                <div style="background:rgba(222, 184, 135, 0.95);padding:8px 15px;border-radius:10px;border:3px solid #8b7355;max-width:350px;margin:8px auto 8px auto;box-shadow:0 4px 8px rgba(0,0,0,0.3);">
+                    <h2 id="shack-title" style="color:#3e2723;margin:0 0 4px 0;font-size:18px;text-shadow:1px 1px 2px rgba(255,255,255,0.3);">⛏️ Prospecting Level 1</h2>
+                    <p id="shack-levelup-info" style="margin:0;font-size:12px;color:#3e2723;font-weight:500;">90% chance to level up with Small Geode</p>
                 </div>
                 
                 <div style="text-align:center;max-width:400px;margin:0 auto;">
                     
                     <!-- Geode Slot and Crack Button -->
-                    <div style="display:flex;gap:20px;align-items:center;justify-content:center;margin:20px 0;">
+                    <div style="display:flex;gap:20px;align-items:center;justify-content:center;margin:8px 0;">
                         <!-- Geode Drop Zone (LEFT) -->
                         <div style="text-align:center;">
                             <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;">Drop Geode</div>
@@ -536,10 +536,10 @@
                     </div>
                     
                     <!-- Progress -->
-                    <div id="shack-progress-display" style="font-size:16px;font-weight:bold;margin:12px 0;">Cracks: 0 / 20</div>
+                    <div id="shack-progress-display" style="font-size:16px;font-weight:bold;margin:8px 0;">Cracks: 0 / 20</div>
                     
                     <!-- Result -->
-                    <div id="shack-result" style="min-height:25px;font-size:14px;font-weight:bold;margin:12px 0;"></div>
+                    <div id="shack-result" style="min-height:25px;font-size:14px;font-weight:bold;margin:8px 0;"></div>
                 </div>
                 
                 <button id="leave-shack" class="back-btn">←</button>
