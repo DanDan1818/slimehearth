@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.586</title>
+    <title>SlimeHearth v0.587</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.586</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.587</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -515,17 +515,20 @@
                     
                     <!-- Geode Slot and Crack Button -->
                     <div style="display:flex;gap:20px;align-items:center;justify-content:center;margin:20px 0;">
-                        <!-- Geode Slot (LEFT) -->
+                        <!-- Geode Drop Zone (LEFT) -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;">Geode</div>
-                            <button id="shack-geode-slot" style="width:75px;height:75px;border:3px dashed #999;background:#fff;border-radius:8px;font-size:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
-                                <span id="shack-slot-icon">+</span>
-                            </button>
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;">Drop Geode</div>
+                            <div id="shack-geode-slot" style="width:75px;height:75px;border:3px dashed #8b7355;background:rgba(255,255,255,0.85);border-radius:8px;font-size:40px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;margin:0;position:relative;">
+                                <span id="shack-slot-icon" style="font-size:32px;">🪨</span>
+                                <span id="shack-slot-name" style="font-size:8px;color:#666;margin-top:2px;"></span>
+                            </div>
+                            <!-- Clear button -->
+                            <div id="shack-slot-clear" onclick="clearShackSlot()" style="display:none;font-size:10px;color:#e53935;cursor:pointer;margin-top:3px;font-weight:bold;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;">✕ clear</div>
                         </div>
                         
                         <!-- Crack Button (RIGHT) -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;">Crack!</div>
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;">Crack!</div>
                             <button id="crack-geode-btn" style="width:75px;height:75px;border:3px solid #8b7355;background:#f5e6d3;border-radius:8px;font-size:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                                 <span>🔨</span>
                             </button>

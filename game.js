@@ -1388,6 +1388,32 @@
             Events.on(mouseConstraint, 'enddrag', function(event) {
                 console.log('End drag event fired!');
                 hideItemTooltip();
+                
+                // Check if we're on the shack room and dropped a crackable item on the slot
+                const shackRoom = document.getElementById('shack-room');
+                if (shackRoom && shackRoom.classList.contains('active')) {
+                    const body = event.body;
+                    if (body && body.itemId && ITEM_DATA[body.itemId] && ITEM_DATA[body.itemId].crackable) {
+                        const slotEl = document.getElementById('shack-geode-slot');
+                        if (slotEl) {
+                            const slotRect = slotEl.getBoundingClientRect();
+                            const canvas = document.getElementById('basket-canvas');
+                            const canvasRect = canvas.getBoundingClientRect();
+                            
+                            // Convert body position to screen coords
+                            const scale = parseFloat(document.getElementById('basket-container').style.transform?.match(/scale\(([^)]+)\)/)?.[1] || 1);
+                            const containerRect = document.getElementById('basket-container').getBoundingClientRect();
+                            const bodyScreenX = containerRect.left + body.position.x * scale;
+                            const bodyScreenY = containerRect.top + body.position.y * scale;
+                            
+                            // Check if body center is over the slot
+                            if (bodyScreenX >= slotRect.left && bodyScreenX <= slotRect.right &&
+                                bodyScreenY >= slotRect.top && bodyScreenY <= slotRect.bottom) {
+                                lockGeodeInShackSlot(body);
+                            }
+                        }
+                    }
+                }
             });
             
             // Hover tooltip - check what's under mouse
@@ -3085,69 +3111,41 @@ function stopBasket() {
         // Shack geode cracking functions
         let shackGeodeSlot = null;
         let shackCrackCount = 0;
+        let shackLockedBody = null;
         
-        function showShackInventoryMenu() {
-            console.log('showShackInventoryMenu called');
+        function lockGeodeInShackSlot(body) {
+            const itemId = body.itemId;
+            const data = ITEM_DATA[itemId];
+            if (!data || !data.crackable) return;
             
-            const itemCounts = {};
-            for (const key in gs.inventory) {
-                const itemId = gs.inventory[key];
-                if (ITEM_DATA[itemId] && ITEM_DATA[itemId].crackable) {
-                    itemCounts[itemId] = (itemCounts[itemId] || 0) + 1;
-                }
-            }
-            
-            console.log('Crackable items:', itemCounts);
-            
-            const existingMenu = document.getElementById('shack-inventory-menu');
-            if (existingMenu) {
-                existingMenu.remove();
-                return;
-            }
-            
-            const menu = document.createElement('div');
-            menu.id = 'shack-inventory-menu';
-            menu.style.cssText = 'position:fixed;bottom:300px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);border:3px solid #333;border-radius:10px;padding:15px;z-index:10001;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
-            
-            const header = document.createElement('div');
-            header.style.cssText = 'font-weight:bold;margin-bottom:10px;color:#333;font-size:16px;';
-            header.textContent = 'Select Geode:';
-            menu.appendChild(header);
-            
-            if (Object.keys(itemCounts).length === 0) {
-                const empty = document.createElement('div');
-                empty.style.cssText = 'color:#999;font-style:italic;padding:10px;';
-                empty.textContent = 'No geodes in inventory';
-                menu.appendChild(empty);
-            } else {
-                for (const itemId in itemCounts) {
-                    const count = itemCounts[itemId];
-                    const name = ITEM_DATA[itemId].name;
-                    
-                    const btn = document.createElement('div');
-                    btn.style.cssText = 'width:100%;padding:12px;margin:5px 0;font-size:16px;border:2px solid #333;border-radius:8px;background:#fff;cursor:pointer;display:flex;justify-content:space-between;';
-                    btn.innerHTML = '<span>💎 ' + name + '</span><span style="color:#666;font-weight:bold;">x ' + count + '</span>';
-                    btn.onclick = function() { selectShackGeode(itemId); };
-                    menu.appendChild(btn);
-                }
-            }
-            
-            const cancelBtn = document.createElement('div');
-            cancelBtn.style.cssText = 'width:100%;padding:10px;margin-top:10px;background:#999;color:#fff;border:2px solid #666;border-radius:8px;cursor:pointer;text-align:center;';
-            cancelBtn.textContent = 'Cancel';
-            cancelBtn.onclick = closeShackInventoryMenu;
-            menu.appendChild(cancelBtn);
-            
-            document.body.appendChild(menu);
-        }
-        
-        function selectShackGeode(itemId) {
-            console.log('Selected geode:', itemId);
+            // Store reference to the locked body so we can remove it later
+            shackLockedBody = body;
             shackGeodeSlot = itemId;
             
-            const icon = document.getElementById('shack-slot-icon');
-            if (icon) icon.textContent = '💎';
+            // Freeze the body in place at the slot position
+            const slotEl = document.getElementById('shack-geode-slot');
+            const slotRect = slotEl.getBoundingClientRect();
+            const containerRect = document.getElementById('basket-container').getBoundingClientRect();
+            const scale = parseFloat(document.getElementById('basket-container').style.transform?.match(/scale\(([^)]+)\)/)?.[1] || 1);
+            const slotCenterX = (slotRect.left + slotRect.width / 2 - containerRect.left) / scale;
+            const slotCenterY = (slotRect.top + slotRect.height / 2 - containerRect.top) / scale;
             
+            Matter.Body.setPosition(body, { x: slotCenterX, y: slotCenterY });
+            Matter.Body.setVelocity(body, { x: 0, y: 0 });
+            Matter.Body.setStatic(body, true);
+            
+            // Update slot UI
+            const icon = document.getElementById('shack-slot-icon');
+            const nameEl = document.getElementById('shack-slot-name');
+            const clearBtn = document.getElementById('shack-slot-clear');
+            const slotDiv = document.getElementById('shack-geode-slot');
+            
+            if (icon) icon.style.display = 'none'; // hide placeholder, body renders on canvas
+            if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
+            if (clearBtn) clearBtn.style.display = 'block';
+            if (slotDiv) slotDiv.style.border = '3px solid #4ade80';
+            
+            // Enable crack button
             const crackBtn = document.getElementById('crack-geode-btn');
             if (crackBtn) {
                 crackBtn.style.background = '#4ade80';
@@ -3157,19 +3155,45 @@ function stopBasket() {
             shackCrackCount = 0;
             updateShackProgress();
             
-            closeShackInventoryMenu();
-            
-            // Check if player has hammer
             if (!gs.tools.hammer) {
                 notify('⚠️ You need a 🔨 Hammer to crack! (Shop)');
             } else {
-                notify('Ready to crack! Tap 20 times!');
+                notify('Geode locked! Tap 🔨 20 times to crack!');
             }
         }
         
-        function closeShackInventoryMenu() {
-            const menu = document.getElementById('shack-inventory-menu');
-            if (menu) menu.remove();
+        function clearShackSlot() {
+            // Unfreeze the body
+            if (shackLockedBody) {
+                Matter.Body.setStatic(shackLockedBody, false);
+                shackLockedBody = null;
+            }
+            
+            shackGeodeSlot = null;
+            
+            // Reset slot UI
+            const icon = document.getElementById('shack-slot-icon');
+            const nameEl = document.getElementById('shack-slot-name');
+            const clearBtn = document.getElementById('shack-slot-clear');
+            const slotDiv = document.getElementById('shack-geode-slot');
+            
+            if (icon) { icon.textContent = '🪨'; icon.style.display = ''; }
+            if (nameEl) nameEl.textContent = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            if (slotDiv) slotDiv.style.border = '3px dashed #8b7355';
+            
+            const crackBtn = document.getElementById('crack-geode-btn');
+            if (crackBtn) {
+                crackBtn.style.background = '#f5e6d3';
+                crackBtn.style.borderColor = '#8b7355';
+            }
+            
+            notify('Geode removed from slot.');
+        }
+        
+        function showShackInventoryMenu() {
+            // Now handled by drag-drop
+            notify('Drag a geode from your bag into the slot! 🪨');
         }
         
         function updateShackProgress() {
@@ -3265,19 +3289,36 @@ function stopBasket() {
                 notify('😐 Just a rock...');
             }
             
-            // Reset shack
+            // Reset shack - clear the slot properly
+            if (shackLockedBody) {
+                // Remove the locked body from physics world
+                World.remove(basketEngine.world, shackLockedBody);
+                basketBodies.splice(basketBodies.indexOf(shackLockedBody), 1);
+                shackLockedBody = null;
+            }
+            
             shackGeodeSlot = null;
             shackCrackCount = 0;
             
+            // Reset slot UI
             const icon = document.getElementById('shack-slot-icon');
-            if (icon) icon.textContent = '+';
+            const nameEl = document.getElementById('shack-slot-name');
+            const clearBtn = document.getElementById('shack-slot-clear');
+            const slotDiv = document.getElementById('shack-geode-slot');
+            if (icon) { icon.textContent = '🪨'; icon.style.display = ''; }
+            if (nameEl) nameEl.textContent = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            if (slotDiv) slotDiv.style.border = '3px dashed #8b7355';
             
             const crackBtn = document.getElementById('crack-geode-btn');
             if (crackBtn) {
                 crackBtn.style.background = '#f5e6d3';
                 crackBtn.style.borderColor = '#8b7355';
+                crackBtn.style.opacity = '1';
+                crackBtn.style.cursor = 'pointer';
             }
             
+            updateInventoryCounter();
             updateShackProgress();
             
             // Prospecting level-up check
