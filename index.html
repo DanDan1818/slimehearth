@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.601</title>
+    <title>SlimeHearth v0.602</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.601</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.602</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -449,49 +449,71 @@
             </div>
             <!-- Skills Overlay (not a room) -->
             <div id="skills-overlay" style="display:none;">
-                <h2 style="margin:0 0 4px 0;font-size:11px;">📊 Skills</h2>
-                <div style="display:flex;flex-direction:column;gap:4px;">
+                <h2 style="margin:0 0 6px 0;font-size:12px;font-weight:bold;">📊 Skills</h2>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    
                     <div class="skill-display">
-                        <div style="font-size:10px;font-weight:bold;">🎣 Fishing</div>
-                        <div style="font-size:8px;">Lv <span id="fishing-level">1</span> • <span id="fishing-xp">0</span>/<span id="fishing-xp-needed">100</span></div>
-                        <div style="width:100%;height:6px;background:#ddd;border:1px solid #333;border-radius:2px;overflow:hidden;margin-top:1px;">
-                            <div id="fishing-xp-bar" style="height:100%;width:0%;background:#4dd0e1;transition:width 0.3s;"></div>
+                        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px;">
+                            <span style="font-size:11px;">🎣 Fishing</span>
+                            <span style="font-size:9px;font-weight:normal;color:#666;">Lvl</span>
+                            <span id="fishing-level" style="font-size:14px;font-weight:bold;line-height:1;">1</span>
+                        </div>
+                        <div style="width:100%;height:12px;background:#ddd;border:1px solid #aaa;border-radius:6px;overflow:hidden;position:relative;">
+                            <div id="fishing-xp-bar" style="height:100%;width:0%;background:#4dd0e1;transition:width 0.3s;border-radius:6px;"></div>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="fishing-xp">0</span>/<span id="fishing-xp-needed">10</span> XP</div>
                         </div>
                     </div>
                     
                     <div class="skill-display">
-                        <div style="font-size:10px;font-weight:bold;">🌾 Farming</div>
-                        <div style="font-size:8px;">Lv <span id="farming-level">1</span> • <span id="farming-xp">0</span>/<span id="farming-xp-needed">100</span></div>
-                        <div style="width:100%;height:6px;background:#ddd;border:1px solid #333;border-radius:2px;overflow:hidden;margin-top:1px;">
-                            <div id="farming-xp-bar" style="height:100%;width:0%;background:#8bc34a;transition:width 0.3s;"></div>
+                        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px;">
+                            <span style="font-size:11px;">🌾 Farming</span>
+                            <span style="font-size:9px;font-weight:normal;color:#666;">Lvl</span>
+                            <span id="farming-level" style="font-size:14px;font-weight:bold;line-height:1;">1</span>
+                        </div>
+                        <div style="width:100%;height:12px;background:#ddd;border:1px solid #aaa;border-radius:6px;overflow:hidden;position:relative;">
+                            <div id="farming-xp-bar" style="height:100%;width:0%;background:#8bc34a;transition:width 0.3s;border-radius:6px;"></div>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="farming-xp">0</span>/<span id="farming-xp-needed">10</span> XP</div>
                         </div>
                     </div>
                     
                     <div class="skill-display">
-                        <div style="font-size:10px;font-weight:bold;">🍳 Cooking</div>
-                        <div style="font-size:8px;">Lv <span id="cooking-level">1</span> • <span id="cooking-xp">0</span>/<span id="cooking-xp-needed">100</span></div>
-                        <div style="width:100%;height:6px;background:#ddd;border:1px solid #333;border-radius:2px;overflow:hidden;margin-top:1px;">
-                            <div id="cooking-xp-bar" style="height:100%;width:0%;background:#ff9800;transition:width 0.3s;"></div>
+                        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px;">
+                            <span style="font-size:11px;">🍳 Cooking</span>
+                            <span style="font-size:9px;font-weight:normal;color:#666;">Lvl</span>
+                            <span id="cooking-level" style="font-size:14px;font-weight:bold;line-height:1;">1</span>
+                        </div>
+                        <div style="width:100%;height:12px;background:#ddd;border:1px solid #aaa;border-radius:6px;overflow:hidden;position:relative;">
+                            <div id="cooking-xp-bar" style="height:100%;width:0%;background:#ff9800;transition:width 0.3s;border-radius:6px;"></div>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="cooking-xp">0</span>/<span id="cooking-xp-needed">10</span> XP</div>
                         </div>
                     </div>
                     
                     <div class="skill-display">
-                        <div style="font-size:10px;font-weight:bold;">⛏️ Prospecting</div>
-                        <div style="font-size:8px;">Lv <span id="prospecting-level">1</span> • <span id="prospecting-xp">0</span>/<span id="prospecting-xp-needed">100</span></div>
-                        <div style="width:100%;height:6px;background:#ddd;border:1px solid #333;border-radius:2px;overflow:hidden;margin-top:1px;">
-                            <div id="prospecting-xp-bar" style="height:100%;width:0%;background:#78716c;transition:width 0.3s;"></div>
+                        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px;">
+                            <span style="font-size:11px;">⛏️ Prospecting</span>
+                            <span style="font-size:9px;font-weight:normal;color:#666;">Lvl</span>
+                            <span id="prospecting-level" style="font-size:14px;font-weight:bold;line-height:1;">1</span>
+                        </div>
+                        <div style="width:100%;height:12px;background:#ddd;border:1px solid #aaa;border-radius:6px;overflow:hidden;position:relative;">
+                            <div id="prospecting-xp-bar" style="height:100%;width:0%;background:#78716c;transition:width 0.3s;border-radius:6px;"></div>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="prospecting-xp">0</span>/<span id="prospecting-xp-needed">10</span> XP</div>
                         </div>
                     </div>
                     
                     <div class="skill-display">
-                        <div style="font-size:10px;font-weight:bold;">⛏️ Mining</div>
-                        <div style="font-size:8px;">Lv <span id="mining-level">1</span> • <span id="mining-xp">0</span>/<span id="mining-xp-needed">100</span></div>
-                        <div style="width:100%;height:6px;background:#ddd;border:1px solid #333;border-radius:2px;overflow:hidden;margin-top:1px;">
-                            <div id="mining-xp-bar" style="height:100%;width:0%;background:#78716c;transition:width 0.3s;"></div>
+                        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px;">
+                            <span style="font-size:11px;">🪨 Mining</span>
+                            <span style="font-size:9px;font-weight:normal;color:#666;">Lvl</span>
+                            <span id="mining-level" style="font-size:14px;font-weight:bold;line-height:1;">1</span>
+                        </div>
+                        <div style="width:100%;height:12px;background:#ddd;border:1px solid #aaa;border-radius:6px;overflow:hidden;position:relative;">
+                            <div id="mining-xp-bar" style="height:100%;width:0%;background:#78716c;transition:width 0.3s;border-radius:6px;"></div>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="mining-xp">0</span>/<span id="mining-xp-needed">10</span> XP</div>
                         </div>
                     </div>
+                    
                 </div>
-                <button id="close-skills" style="margin-top:4px;background:#9c27b0;color:#fff;width:100%;padding:3px;font-size:9px;border:none;border-radius:3px;cursor:pointer;">Close</button>
+                <button id="close-skills" style="margin-top:6px;background:#9c27b0;color:#fff;width:100%;padding:4px;font-size:9px;border:none;border-radius:3px;cursor:pointer;">Close</button>
             </div>
             
             <!-- Stats Overlay -->

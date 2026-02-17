@@ -726,9 +726,8 @@
         function addSkillXP(skillName, amount) {
             console.log('addSkillXP called:', skillName, amount);
             
-            // Ensure skills exist
+            // Ensure skills object exists
             if (!gs.skills) {
-                console.error('gs.skills is undefined! Initializing...');
                 gs.skills = {
                     fishing: { level: 1, xp: 0, xpNeeded: 10 },
                     farming: { level: 1, xp: 0, xpNeeded: 10 },
@@ -737,11 +736,12 @@
                 };
             }
             
-            const skill = gs.skills[skillName];
-            if (!skill) {
-                console.error('Skill not found:', skillName);
-                return;
+            // Auto-init individual skill if missing (handles old saves)
+            if (!gs.skills[skillName]) {
+                gs.skills[skillName] = { level: 1, xp: 0, xpNeeded: 10 };
             }
+            
+            const skill = gs.skills[skillName];
             
             skill.xp += amount;
             console.log(skillName + ' XP:', skill.xp + '/' + skill.xpNeeded);
