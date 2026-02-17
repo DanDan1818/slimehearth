@@ -875,6 +875,8 @@
             document.body.appendChild(container);
             setTimeout(() => container.remove(), 2000);
         }
+        
+        function addItem(itemId, quantity = 1) {
             const currentCount = Object.keys(gs.inventory).length;
             const spaceLeft = MAX_INVENTORY - currentCount;
             
