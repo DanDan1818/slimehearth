@@ -157,7 +157,7 @@
         
         #cooking-menu-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 10px;
         }
         
         #farming-garden-room, #farming-field-room {
@@ -165,6 +165,15 @@
         }
         
         #farming-garden-room.active, #farming-field-room.active {
+            justify-content: flex-start;
+            padding-top: 10px;
+        }
+        
+        #mining-menu-room, #mining-cave-room {
+            background-image: url('./slimehearth-assets/images/cave-background.png');
+        }
+        
+        #mining-menu-room.active, #mining-cave-room.active {
             justify-content: flex-start;
             padding-top: 10px;
         }

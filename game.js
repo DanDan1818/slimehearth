@@ -2248,94 +2248,6 @@ function stopBasket() {
             updateGardenDisplay();
         }
         
-        function showGardenSeedMenu(slotIndex) {
-            // Don't allow selecting if already growing
-            if (gardenGrowing) {
-                notify('❌ Plants are growing! Wait to harvest first.', 'warning');
-                return;
-            }
-            
-            // Count plantable items (seeds) in inventory
-            const itemCounts = {};
-            for (const key in gs.inventory) {
-                const itemId = gs.inventory[key];
-                if (ITEM_DATA[itemId] && ITEM_DATA[itemId].isPlantable) {
-                    itemCounts[itemId] = (itemCounts[itemId] || 0) + 1;
-                }
-            }
-            
-            // Subtract seeds already placed in slots
-            const alreadyPlaced = {};
-            for (let i = 0; i < 9; i++) {
-                if (gardenSlots[i]) {
-                    alreadyPlaced[gardenSlots[i]] = (alreadyPlaced[gardenSlots[i]] || 0) + 1;
-                }
-            }
-            
-            // Calculate available (not yet placed)
-            const availableCounts = {};
-            for (const itemId in itemCounts) {
-                const total = itemCounts[itemId];
-                const placed = alreadyPlaced[itemId] || 0;
-                const available = total - placed;
-                if (available > 0) {
-                    availableCounts[itemId] = available;
-                }
-            }
-            
-            console.log('Item counts:', itemCounts);
-            console.log('Already placed:', alreadyPlaced);
-            console.log('Available to place:', availableCounts);
-            
-            // Close existing menu if any
-            const existingMenu = document.getElementById('garden-seed-menu');
-            if (existingMenu) {
-                existingMenu.remove();
-                return;
-            }
-            
-            const menu = document.createElement('div');
-            menu.id = 'garden-seed-menu';
-            menu.style.cssText = 'position:fixed;bottom:300px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);border:3px solid #8bc34a;border-radius:10px;padding:15px;z-index:10002;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,0.5);pointer-events:auto;';
-            
-            const header = document.createElement('div');
-            header.style.cssText = 'font-weight:bold;margin-bottom:10px;color:#333;font-size:16px;';
-            header.textContent = 'Select Seeds:';
-            menu.appendChild(header);
-            
-            if (Object.keys(availableCounts).length === 0) {
-                const empty = document.createElement('div');
-                empty.style.cssText = 'color:#999;font-style:italic;padding:10px;';
-                empty.textContent = 'No seeds available (check if already placed)';
-                menu.appendChild(empty);
-            } else {
-                for (const itemId in availableCounts) {
-                    const count = availableCounts[itemId];
-                    const name = ITEM_DATA[itemId].name;
-                    
-                    const btn = document.createElement('div');
-                    btn.style.cssText = 'width:100%;padding:12px;margin:5px 0;font-size:16px;border:2px solid #8bc34a;border-radius:8px;background:#fff;cursor:pointer;display:flex;justify-content:space-between;pointer-events:auto;';
-                    btn.innerHTML = '<span>' + name + '</span><span style="color:#666;font-weight:bold;">x ' + count + '</span>';
-                    btn.onclick = function(e) { 
-                        e.stopPropagation(); 
-                        selectGardenSeed(slotIndex, itemId); 
-                    };
-                    menu.appendChild(btn);
-                }
-            }
-            
-            const cancelBtn = document.createElement('div');
-            cancelBtn.style.cssText = 'width:100%;padding:10px;margin-top:10px;background:#999;color:#fff;border:2px solid #666;border-radius:8px;cursor:pointer;text-align:center;pointer-events:auto;';
-            cancelBtn.textContent = 'Cancel';
-            cancelBtn.onclick = function(e) {
-                e.stopPropagation();
-                closeGardenSeedMenu();
-            };
-            menu.appendChild(cancelBtn);
-            
-            document.body.appendChild(menu);
-        }
-        
         function selectGardenSeed(slotIndex, itemId) {
             console.log('selectGardenSeed called - slotIndex:', slotIndex, 'itemId:', itemId);
             
@@ -2373,10 +2285,6 @@ function stopBasket() {
             closeGardenSeedMenu();
         }
         
-        function closeGardenSeedMenu() {
-            const menu = document.getElementById('garden-seed-menu');
-            if (menu) menu.remove();
-        }
         
         function waterGarden() {
             console.log('waterGarden called');
@@ -2662,8 +2570,8 @@ function stopBasket() {
                         slot.style.background = '#fff';
                         slot.style.borderColor = '#8bc34a';
                     }
-                    slot.style.cursor = 'pointer';
-                    slot.onclick = () => showGardenSeedMenu(i);
+                    slot.style.cursor = 'default';
+                    slot.onclick = null;
                 }
             }
             
@@ -3153,106 +3061,122 @@ function stopBasket() {
             }
         }
         
+        let hearthCooking = false;
+        
         function cookHearth() {
             if (!hearthSlot1ItemId || !hearthSlot2ItemId) {
-                notify('❌ Select two ingredients first!', 'warning');
+                notify('❌ Drop two ingredients first!', 'warning');
                 return;
             }
+            if (hearthCooking) return;
             
             const recipe = checkRecipe(hearthSlot1ItemId, hearthSlot2ItemId);
+            const cookBtn = document.getElementById('cook-hearth-btn');
+            const progressContainer = document.getElementById('hearth-progress-container');
+            const progressBar = document.getElementById('hearth-progress-bar');
+            const clearBtn1 = document.getElementById('hearth-clear-1');
+            const clearBtn2 = document.getElementById('hearth-clear-2');
             
+            // Lock UI during cooking
+            hearthCooking = true;
+            if (cookBtn) { cookBtn.style.opacity = '0.5'; cookBtn.style.cursor = 'not-allowed'; cookBtn.onclick = null; }
+            if (clearBtn1) clearBtn1.style.display = 'none';
+            if (clearBtn2) clearBtn2.style.display = 'none';
+            
+            // Show and animate progress bar over 5 seconds
+            if (progressContainer) progressContainer.style.display = 'block';
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                // Use requestAnimationFrame for smooth fill
+                const duration = 5000;
+                const start = performance.now();
+                function animateBar(now) {
+                    const elapsed = now - start;
+                    const pct = Math.min((elapsed / duration) * 100, 100);
+                    progressBar.style.width = pct + '%';
+                    if (pct < 100) {
+                        requestAnimationFrame(animateBar);
+                    }
+                }
+                requestAnimationFrame(animateBar);
+            }
+            
+            // Deliver result after 5 seconds
+            setTimeout(() => {
+                finishCookingHearth(recipe);
+            }, 5000);
+        }
+        
+        function finishCookingHearth(recipe) {
             const resultDiv = document.getElementById('hearth-result');
+            const progressContainer = document.getElementById('hearth-progress-container');
+            const progressBar = document.getElementById('hearth-progress-bar');
+            const cookBtn = document.getElementById('cook-hearth-btn');
+            
+            // Hide progress bar
+            if (progressContainer) progressContainer.style.display = 'none';
+            if (progressBar) progressBar.style.width = '0%';
+            
+            // Remove locked bodies from physics first
+            if (hearthLockedBody1) { hearthLockedBody1.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody1); const i = basketBodies.indexOf(hearthLockedBody1); if (i !== -1) basketBodies.splice(i,1); hearthLockedBody1 = null; }
+            if (hearthLockedBody2) { hearthLockedBody2.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody2); const i = basketBodies.indexOf(hearthLockedBody2); if (i !== -1) basketBodies.splice(i,1); hearthLockedBody2 = null; }
             
             if (recipe) {
-                // Valid recipe! Find and remove one of each item
-                let removed1 = false, removed2 = false;
-                
                 // Remove from inventory data
+                let removed1 = false, removed2 = false;
                 for (const key in gs.inventory) {
-                    if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) {
-                        delete gs.inventory[key];
-                        removed1 = true;
-                    } else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) {
-                        delete gs.inventory[key];
-                        removed2 = true;
-                    }
+                    if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) { delete gs.inventory[key]; removed1 = true; }
+                    else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) { delete gs.inventory[key]; removed2 = true; }
                     if (removed1 && removed2) break;
                 }
-                
-                // Remove from physics world BEFORE adding result
                 removeIngredientsFromBasket(hearthSlot1ItemId, hearthSlot2ItemId);
                 
-                // NOW add the result
-                addItem(recipe.result, 1);
-                addSkillXP('cooking', 15);
+                setTimeout(() => {
+                    addItem(recipe.result, 1);
+                    addSkillXP('cooking', 15);
+                }, 300);
                 
                 if (resultDiv) {
                     resultDiv.textContent = '✨ Cooked ' + recipe.name + '!';
                     resultDiv.style.color = '#4caf50';
                     setTimeout(() => resultDiv.textContent = '', 3000);
                 }
-                
                 notify('✨ Cooked ' + recipe.name + '!');
-                
-                // Remove locked bodies from physics
-                if (hearthLockedBody1) { hearthLockedBody1.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody1); basketBodies.splice(basketBodies.indexOf(hearthLockedBody1),1); hearthLockedBody1 = null; }
-                if (hearthLockedBody2) { hearthLockedBody2.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody2); basketBodies.splice(basketBodies.indexOf(hearthLockedBody2),1); hearthLockedBody2 = null; }
-                hearthSlot1ItemId = null;
-                hearthSlot2ItemId = null;
-                // Reset slot visuals
-                ['1','2'].forEach(n => {
-                    const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon">+</span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
-                    const c = document.getElementById(`hearth-clear-${n}`); if (c) c.style.display='none';
-                    const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
-                });
-                updateHearthDisplay();
-                save();
             } else {
-                // Invalid recipe - Make burnt food!
-                // Remove the ingredients
+                // Burnt!
                 let removed1 = false, removed2 = false;
-                
-                // Remove from inventory data
                 for (const key in gs.inventory) {
-                    if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) {
-                        delete gs.inventory[key];
-                        removed1 = true;
-                    } else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) {
-                        delete gs.inventory[key];
-                        removed2 = true;
-                    }
+                    if (!removed1 && gs.inventory[key] === hearthSlot1ItemId) { delete gs.inventory[key]; removed1 = true; }
+                    else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) { delete gs.inventory[key]; removed2 = true; }
                     if (removed1 && removed2) break;
                 }
-                
-                // Remove from physics world BEFORE adding result
                 removeIngredientsFromBasket(hearthSlot1ItemId, hearthSlot2ItemId);
                 
-                // NOW add burnt food
-                addItem('burnt_food', 1);
-                addSkillXP('cooking', 5); // Half XP for burnt food
+                setTimeout(() => {
+                    addItem('burnt_food', 1);
+                    addSkillXP('cooking', 5);
+                }, 300);
                 
                 if (resultDiv) {
                     resultDiv.textContent = '🔥 OH NO! Food burnt!';
                     resultDiv.style.color = '#f44336';
                     setTimeout(() => resultDiv.textContent = '', 3000);
                 }
-                
                 notify('💀 Burnt the food!');
-                
-                // Remove locked bodies from physics
-                if (hearthLockedBody1) { hearthLockedBody1.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody1); basketBodies.splice(basketBodies.indexOf(hearthLockedBody1),1); hearthLockedBody1 = null; }
-                if (hearthLockedBody2) { hearthLockedBody2.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody2); basketBodies.splice(basketBodies.indexOf(hearthLockedBody2),1); hearthLockedBody2 = null; }
-                hearthSlot1ItemId = null;
-                hearthSlot2ItemId = null;
-                // Reset slot visuals
-                ['1','2'].forEach(n => {
-                    const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon">+</span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
-                    const c = document.getElementById(`hearth-clear-${n}`); if (c) c.style.display='none';
-                    const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
-                });
-                updateHearthDisplay();
-                save();
             }
+            
+            // Reset slots and unlock UI
+            hearthSlot1ItemId = null;
+            hearthSlot2ItemId = null;
+            hearthCooking = false;
+            ['1','2'].forEach(n => {
+                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon">+</span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
+            });
+            if (cookBtn) { cookBtn.style.opacity = '1'; cookBtn.style.cursor = 'pointer'; cookBtn.onclick = cookHearth; }
+            
+            updateHearthDisplay();
+            save();
         }
         
         // Helper function to remove ingredients from physics basket
