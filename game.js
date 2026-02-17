@@ -469,19 +469,19 @@
             const tooltip = document.createElement('div');
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
-                <div style="color: ${data.rarityColor}; font-size: 11px; font-weight: bold; margin-bottom: 2px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                <div style="color: ${data.rarityColor}; font-size: 11px; font-weight: bold; margin-bottom: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
                     ${data.name}
                 </div>
-                <div style="color: #333; font-size: 9px; margin-bottom: 3px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                <div style="color: #fff; font-size: 9px; margin-bottom: 3px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
                     ${data.description}
                 </div>
-                ${data.feedable ? `<div style="font-size: 9px; margin-bottom: 2px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                ${data.feedable ? `<div style="font-size: 9px; margin-bottom: 2px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
                     +${data.foodValue} <span style="color: #ff6b9d; font-weight: bold;">Food</span>
                 </div>` : ''}
-                <div style="font-size: 9px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                <div style="font-size: 9px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
                     💰 ${data.sellValue}
                 </div>
-                ${data.crackable ? '<div style="font-size: 9px; color: #8b7355; font-weight: bold; margin-top: 2px; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">🔨 Crackable</div>' : ''}
+                ${data.crackable ? '<div style="font-size: 9px; color: #d4a574; font-weight: bold; margin-top: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">🔨 Crackable</div>' : ''}
             `;
             
             // Position above inventory bag (bottom-left)
@@ -489,7 +489,7 @@
                 position: fixed;
                 bottom: 260px;
                 left: 10px;
-                background: rgba(50,50,50,0.95);
+                background: rgba(139, 115, 85, 0.95);
                 color: #fff;
                 padding: 6px 8px;
                 border-radius: 6px;
