@@ -1389,38 +1389,63 @@
                 console.log('End drag event fired!');
                 hideItemTooltip();
                 
-                // Check if we're on the shack room and dropped a crackable item on the slot
+                const body = event.body;
+                if (!body || !body.itemId) return;
+                const itemId = body.itemId;
+                const data = ITEM_DATA[itemId];
+                if (!data) return;
+                
+                // ── SHACK: crackable → geode slot ──
                 const shackRoom = document.getElementById('shack-room');
-                if (shackRoom && shackRoom.classList.contains('active')) {
-                    const body = event.body;
-                    if (body && body.itemId && ITEM_DATA[body.itemId] && ITEM_DATA[body.itemId].crackable) {
-                        const slotEl = document.getElementById('shack-geode-slot');
-                        if (slotEl) {
-                            const slotRect = slotEl.getBoundingClientRect();
-                            const containerEl = document.getElementById('basket-container');
-                            const containerRect = containerEl.getBoundingClientRect();
-                            
-                            // Get the actual CSS scale value
-                            const styleScale = containerEl.style.transform || '';
-                            const scaleMatch = styleScale.match(/scale\(([^)]+)\)/);
-                            const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 0.8;
-                            
-                            // Convert physics body coords → screen coords
-                            const bodyScreenX = containerRect.left + body.position.x * scale;
-                            const bodyScreenY = containerRect.top + body.position.y * scale;
-                            
-                            console.log('Body screen pos:', bodyScreenX, bodyScreenY);
-                            console.log('Slot rect:', slotRect);
-                            
-                            // Generous hit area - expand slot detection by 30px
-                            if (bodyScreenX >= slotRect.left - 30 && bodyScreenX <= slotRect.right + 30 &&
-                                bodyScreenY >= slotRect.top - 30 && bodyScreenY <= slotRect.bottom + 30) {
-                                lockGeodeInShackSlot(body);
-                            }
+                if (shackRoom && shackRoom.classList.contains('active') && data.crackable) {
+                    const slotEl = document.getElementById('shack-geode-slot');
+                    if (slotEl && isBodyOverElement(body, slotEl)) {
+                        lockGeodeInShackSlot(body);
+                        return;
+                    }
+                }
+                
+                // ── HEARTH: cookable/feedable → slot 1 or slot 2 ──
+                const hearthRoom = document.getElementById('cooking-menu-room');
+                if (hearthRoom && hearthRoom.classList.contains('active') && (data.cookable || data.feedable)) {
+                    const slot1El = document.getElementById('hearth-slot-1');
+                    const slot2El = document.getElementById('hearth-slot-2');
+                    if (slot1El && isBodyOverElement(body, slot1El)) {
+                        lockItemInHearthSlot(body, 1);
+                        return;
+                    }
+                    if (slot2El && isBodyOverElement(body, slot2El)) {
+                        lockItemInHearthSlot(body, 2);
+                        return;
+                    }
+                }
+                
+                // ── GARDEN: plantable → any empty plot slot ──
+                const gardenRoom = document.getElementById('farming-garden-room');
+                if (gardenRoom && gardenRoom.classList.contains('active') && data.isPlantable) {
+                    for (let i = 0; i < 6; i++) {
+                        const slotEl = document.getElementById(`garden-plot-slot-${i}`);
+                        if (slotEl && isBodyOverElement(body, slotEl)) {
+                            lockItemInGardenSlot(body, i);
+                            return;
                         }
                     }
                 }
             });
+            
+            // Helper: check if a physics body center is over a DOM element (with padding)
+            function isBodyOverElement(body, el, padding = 30) {
+                const rect = el.getBoundingClientRect();
+                const containerEl = document.getElementById('basket-container');
+                const containerRect = containerEl.getBoundingClientRect();
+                const styleScale = containerEl.style.transform || '';
+                const scaleMatch = styleScale.match(/scale\(([^)]+)\)/);
+                const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 0.8;
+                const screenX = containerRect.left + body.position.x * scale;
+                const screenY = containerRect.top + body.position.y * scale;
+                return screenX >= rect.left - padding && screenX <= rect.right + padding &&
+                       screenY >= rect.top - padding && screenY <= rect.bottom + padding;
+            }
             
             // Hover tooltip - check what's under mouse
             let lastHoveredBody = null;
@@ -2210,14 +2235,7 @@ function stopBasket() {
                 readyTime: gardenReadyTime
             });
             
-            // Set up click handlers for all 9 slots
-            for (let i = 0; i < 9; i++) {
-                const slot = document.getElementById(`garden-plot-slot-${i}`);
-                if (slot) {
-                    slot.onclick = () => showGardenSeedMenu(i);
-                }
-            }
-            
+            // Slots handled by drag-drop (lockItemInGardenSlot)
             // Water button handler
             const waterBtn = document.getElementById('water-garden-btn');
             if (waterBtn) {
@@ -2526,6 +2544,12 @@ function stopBasket() {
             // Clear this slot
             gardenSlots[slotIndex] = null;
             gs.gardenSlots[slotIndex] = null;
+            
+            // Clear locked body for this slot (already harvested, just remove tracking)
+            if (gardenLockedBodies[slotIndex]) {
+                gardenLockedBodies[slotIndex].render.opacity = 1;
+                gardenLockedBodies[slotIndex] = null;
+            }
             
             // Check if all slots are harvested
             const remaining = gardenSlots.filter(s => s !== null).length;
@@ -2862,6 +2886,137 @@ function stopBasket() {
         // ===== THE HEARTH (DROPDOWN MENU SYSTEM) =====
         let hearthSlot1ItemId = null;
         let hearthSlot2ItemId = null;
+        let hearthLockedBody1 = null;
+        let hearthLockedBody2 = null;
+        
+        // Shared helper: lock a body into a DOM slot visually
+        function lockBodyInSlot(body, slotEl, borderColor) {
+            const containerEl = document.getElementById('basket-container');
+            const containerRect = containerEl.getBoundingClientRect();
+            const styleScale = containerEl.style.transform || '';
+            const scaleMatch = styleScale.match(/scale\(([^)]+)\)/);
+            const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 0.8;
+            const slotRect = slotEl.getBoundingClientRect();
+            const cx = (slotRect.left + slotRect.width / 2 - containerRect.left) / scale;
+            const cy = (slotRect.top + slotRect.height / 2 - containerRect.top) / scale;
+            Matter.Body.setPosition(body, { x: cx, y: cy });
+            Matter.Body.setVelocity(body, { x: 0, y: 0 });
+            Matter.Body.setAngularVelocity(body, 0);
+            Matter.Body.setAngle(body, 0);
+            Matter.Body.setStatic(body, true);
+            body.render.opacity = 0;
+        }
+        
+        // Shared helper: build the locked item image DOM
+        function slotLockedHTML(itemId) {
+            const data = ITEM_DATA[itemId];
+            const imgSrc = ITEM_IMAGES[itemId];
+            if (imgSrc) {
+                return `<img src="${imgSrc}" style="width:52px;height:52px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
+            }
+            return `<span style="font-size:32px;animation:geodeLock 0.3s ease-out;">${data.emoji || '📦'}</span>`;
+        }
+        
+        // Release a locked body back to physics
+        function releaseLockedBody(body) {
+            if (!body) return;
+            body.render.opacity = 1;
+            Matter.Body.setStatic(body, false);
+            Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 8, y: -6 });
+        }
+        
+        function lockItemInHearthSlot(body, slotNumber) {
+            const itemId = body.itemId;
+            const data = ITEM_DATA[itemId];
+            if (!data) return;
+            
+            // Release whatever was in this slot before
+            if (slotNumber === 1 && hearthLockedBody1) releaseLockedBody(hearthLockedBody1);
+            if (slotNumber === 2 && hearthLockedBody2) releaseLockedBody(hearthLockedBody2);
+            
+            const slotEl = document.getElementById(`hearth-slot-${slotNumber}`);
+            lockBodyInSlot(body, slotEl, '#f59e0b');
+            
+            if (slotNumber === 1) { hearthLockedBody1 = body; hearthSlot1ItemId = itemId; }
+            else                  { hearthLockedBody2 = body; hearthSlot2ItemId = itemId; }
+            
+            // Update slot visual
+            slotEl.innerHTML = slotLockedHTML(itemId);
+            slotEl.style.border = '3px solid #f59e0b';
+            slotEl.style.boxShadow = '0 0 10px rgba(245,158,11,0.5)';
+            
+            // Show clear button
+            const clearBtn = document.getElementById(`hearth-clear-${slotNumber}`);
+            if (clearBtn) clearBtn.style.display = 'inline-block';
+            
+            // Update name label
+            const nameEl = document.getElementById(`hearth-slot-${slotNumber}-name`);
+            if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
+            
+            updateHearthDisplay();
+            notify(`${data.name} added to slot ${slotNumber}!`);
+        }
+        
+        function clearHearthSlot(slotNumber) {
+            if (slotNumber === 1) {
+                releaseLockedBody(hearthLockedBody1);
+                hearthLockedBody1 = null;
+                hearthSlot1ItemId = null;
+            } else {
+                releaseLockedBody(hearthLockedBody2);
+                hearthLockedBody2 = null;
+                hearthSlot2ItemId = null;
+            }
+            const slotEl = document.getElementById(`hearth-slot-${slotNumber}`);
+            if (slotEl) {
+                slotEl.innerHTML = '<span id="hearth-slot-' + slotNumber + '-icon">+</span>';
+                slotEl.style.border = '3px dashed #f59e0b';
+                slotEl.style.boxShadow = '';
+            }
+            const clearBtn = document.getElementById(`hearth-clear-${slotNumber}`);
+            if (clearBtn) clearBtn.style.display = 'none';
+            const nameEl = document.getElementById(`hearth-slot-${slotNumber}-name`);
+            if (nameEl) nameEl.textContent = '';
+            updateHearthDisplay();
+        }
+        
+        // Garden locked bodies per slot
+        const gardenLockedBodies = new Array(6).fill(null);
+        
+        function lockItemInGardenSlot(body, slotIndex) {
+            if (gardenGrowing) { notify('❌ Plants are growing! Wait to harvest first.', 'warning'); return; }
+            const itemId = body.itemId;
+            const data = ITEM_DATA[itemId];
+            if (!data || !data.isPlantable) return;
+            
+            // Release whatever was already in this slot
+            if (gardenLockedBodies[slotIndex]) releaseLockedBody(gardenLockedBodies[slotIndex]);
+            
+            const slotEl = document.getElementById(`garden-plot-slot-${slotIndex}`);
+            lockBodyInSlot(body, slotEl, '#8bc34a');
+            gardenLockedBodies[slotIndex] = body;
+            
+            // Update slot visual
+            slotEl.innerHTML = slotLockedHTML(itemId);
+            slotEl.style.border = '2px solid #8bc34a';
+            slotEl.style.boxShadow = '0 0 10px rgba(139,195,74,0.5)';
+            
+            // Use existing garden seed selection logic
+            selectGardenSeed(slotIndex, itemId);
+            notify(`${data.name} planted in slot ${slotIndex + 1}!`);
+        }
+        
+        function clearGardenSlot(slotIndex) {
+            releaseLockedBody(gardenLockedBodies[slotIndex]);
+            gardenLockedBodies[slotIndex] = null;
+            gardenSlots[slotIndex] = null;
+            const slotEl = document.getElementById(`garden-plot-slot-${slotIndex}`);
+            if (slotEl) {
+                slotEl.innerHTML = `<span id="garden-plot-icon-${slotIndex}">+</span>`;
+                slotEl.style.border = '2px dashed #8bc34a';
+                slotEl.style.boxShadow = '';
+            }
+        }
         
         const RECIPES = {
             'fish+carrot': { result: 'food', name: '🍖 Cooked Food' },
@@ -2892,14 +3047,11 @@ function stopBasket() {
         function initHearth() {
             hearthSlot1ItemId = null;
             hearthSlot2ItemId = null;
+            hearthLockedBody1 = null;
+            hearthLockedBody2 = null;
             updateHearthDisplay();
             
-            const slot1 = document.getElementById('hearth-slot-1');
-            const slot2 = document.getElementById('hearth-slot-2');
             const cookBtn = document.getElementById('cook-hearth-btn');
-            
-            if (slot1) slot1.onclick = () => showHearthFoodMenu(1);
-            if (slot2) slot2.onclick = () => showHearthFoodMenu(2);
             if (cookBtn) cookBtn.onclick = cookHearth;
         }
         
@@ -3042,8 +3194,17 @@ function stopBasket() {
                 
                 notify('✨ Cooked ' + recipe.name + '!');
                 
+                // Remove locked bodies from physics
+                if (hearthLockedBody1) { hearthLockedBody1.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody1); basketBodies.splice(basketBodies.indexOf(hearthLockedBody1),1); hearthLockedBody1 = null; }
+                if (hearthLockedBody2) { hearthLockedBody2.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody2); basketBodies.splice(basketBodies.indexOf(hearthLockedBody2),1); hearthLockedBody2 = null; }
                 hearthSlot1ItemId = null;
                 hearthSlot2ItemId = null;
+                // Reset slot visuals
+                ['1','2'].forEach(n => {
+                    const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon">+</span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                    const c = document.getElementById(`hearth-clear-${n}`); if (c) c.style.display='none';
+                    const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
+                });
                 updateHearthDisplay();
                 save();
             } else {
@@ -3078,8 +3239,17 @@ function stopBasket() {
                 
                 notify('💀 Burnt the food!');
                 
+                // Remove locked bodies from physics
+                if (hearthLockedBody1) { hearthLockedBody1.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody1); basketBodies.splice(basketBodies.indexOf(hearthLockedBody1),1); hearthLockedBody1 = null; }
+                if (hearthLockedBody2) { hearthLockedBody2.render.opacity = 1; World.remove(basketEngine.world, hearthLockedBody2); basketBodies.splice(basketBodies.indexOf(hearthLockedBody2),1); hearthLockedBody2 = null; }
                 hearthSlot1ItemId = null;
                 hearthSlot2ItemId = null;
+                // Reset slot visuals
+                ['1','2'].forEach(n => {
+                    const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon">+</span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                    const c = document.getElementById(`hearth-clear-${n}`); if (c) c.style.display='none';
+                    const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
+                });
                 updateHearthDisplay();
                 save();
             }

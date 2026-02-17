@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.592</title>
+    <title>SlimeHearth v0.593</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.592</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.593</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -344,20 +344,22 @@
                     <div style="display:flex;gap:20px;align-items:center;justify-content:center;margin:10px 0;">
                         <!-- Slot 1 -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Ingredient 1</div>
-                            <button id="hearth-slot-1" style="width:80px;height:80px;border:3px dashed #f59e0b;background:#fff;border-radius:8px;font-size:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Drop Item 1</div>
+                            <div id="hearth-slot-1" style="width:80px;height:80px;border:3px dashed #f59e0b;background:rgba(255,255,255,0.85);border-radius:8px;font-size:40px;cursor:default;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                                 <span id="hearth-slot-1-icon">+</span>
-                            </button>
+                            </div>
                             <div id="hearth-slot-1-name" style="font-size:10px;margin-top:3px;color:#000;min-height:12px;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;"></div>
+                            <button id="hearth-clear-1" onclick="clearHearthSlot(1)" style="display:none;margin-top:2px;background:#e53935;color:#fff;border:none;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:bold;cursor:pointer;position:relative;z-index:500;">✕</button>
                         </div>
                         
                         <!-- Slot 2 -->
                         <div style="text-align:center;">
-                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Ingredient 2</div>
-                            <button id="hearth-slot-2" style="width:80px;height:80px;border:3px dashed #f59e0b;background:#fff;border-radius:8px;font-size:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
+                            <div style="font-size:11px;margin-bottom:3px;font-weight:bold;color:#000;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">Drop Item 2</div>
+                            <div id="hearth-slot-2" style="width:80px;height:80px;border:3px dashed #f59e0b;background:rgba(255,255,255,0.85);border-radius:8px;font-size:40px;cursor:default;display:flex;align-items:center;justify-content:center;padding:0;margin:0;">
                                 <span id="hearth-slot-2-icon">+</span>
-                            </button>
+                            </div>
                             <div id="hearth-slot-2-name" style="font-size:10px;margin-top:3px;color:#000;min-height:12px;text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;"></div>
+                            <button id="hearth-clear-2" onclick="clearHearthSlot(2)" style="display:none;margin-top:2px;background:#e53935;color:#fff;border:none;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:bold;cursor:pointer;position:relative;z-index:500;">✕</button>
                         </div>
                         
                         <!-- Cook Button -->
