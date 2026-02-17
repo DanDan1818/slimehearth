@@ -4341,14 +4341,6 @@ function initKitchenGame() {
             // Default to emoji icon
             return item.icon;
         }
-                
-                if (!isOwned) {
-                    itemDiv.onclick = () => buyShopItem(item);
-                }
-                
-                grid.appendChild(itemDiv);
-            });
-        }
         
         function buyShopItem(item) {
             if (gs.coins < item.price) {
