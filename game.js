@@ -3131,7 +3131,7 @@ function stopBasket() {
             shackLockedBody = body;
             shackGeodeSlot = itemId;
             
-            // Compute slot center in physics coordinates
+            // Snap to center and freeze
             const slotEl = document.getElementById('shack-geode-slot');
             const slotRect = slotEl.getBoundingClientRect();
             const containerEl = document.getElementById('basket-container');
@@ -3143,22 +3143,41 @@ function stopBasket() {
             const slotCenterX = (slotRect.left + slotRect.width / 2 - containerRect.left) / scale;
             const slotCenterY = (slotRect.top + slotRect.height / 2 - containerRect.top) / scale;
             
-            // Snap and freeze
             Matter.Body.setPosition(body, { x: slotCenterX, y: slotCenterY });
             Matter.Body.setVelocity(body, { x: 0, y: 0 });
             Matter.Body.setAngularVelocity(body, 0);
+            Matter.Body.setAngle(body, 0);
             Matter.Body.setStatic(body, true);
             
-            // Update slot UI
+            // Hide the physics body visually by making it tiny and offscreen
+            // We'll show it as a DOM element instead for clean display
+            body.render.opacity = 0;
+            
+            // Update slot UI - show geode color/icon inside the slot
             const icon = document.getElementById('shack-slot-icon');
             const nameEl = document.getElementById('shack-slot-name');
             const clearBtn = document.getElementById('shack-slot-clear');
             const slotDiv = document.getElementById('shack-geode-slot');
+            const color = ITEM_COLORS[itemId] || '#8b7355';
             
-            if (icon) icon.style.display = 'none';
+            if (icon) {
+                icon.style.display = 'flex';
+                icon.style.width = '50px';
+                icon.style.height = '50px';
+                icon.style.background = color;
+                icon.style.borderRadius = '8px';
+                icon.style.border = '3px solid rgba(0,0,0,0.3)';
+                icon.style.boxShadow = `0 0 12px ${color}, inset 0 2px 4px rgba(255,255,255,0.4)`;
+                icon.style.animation = 'geodeLock 0.3s ease-out';
+                icon.textContent = '';
+            }
             if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
             if (clearBtn) clearBtn.style.display = 'block';
-            if (slotDiv) slotDiv.style.border = '3px solid #4ade80';
+            if (slotDiv) {
+                slotDiv.style.border = '3px solid #4ade80';
+                slotDiv.style.boxShadow = '0 0 10px rgba(74,222,128,0.5)';
+                slotDiv.style.animation = 'slotLock 0.3s ease-out';
+            }
             
             // Enable crack button
             const crackBtn = document.getElementById('crack-geode-btn');
@@ -3182,8 +3201,8 @@ function stopBasket() {
         function clearShackSlot() {
             // Unfreeze the body and fling it back into the basket area
             if (shackLockedBody) {
+                shackLockedBody.render.opacity = 1; // Make visible again
                 Matter.Body.setStatic(shackLockedBody, false);
-                // Give it a random toss so it bounces away from the slot
                 Matter.Body.setVelocity(shackLockedBody, { 
                     x: (Math.random() - 0.5) * 10, 
                     y: -8 
@@ -3200,10 +3219,24 @@ function stopBasket() {
             const clearBtn = document.getElementById('shack-slot-clear');
             const slotDiv = document.getElementById('shack-geode-slot');
             
-            if (icon) { icon.textContent = '🪨'; icon.style.display = ''; }
+            if (icon) {
+                icon.textContent = '🪨';
+                icon.style.display = '';
+                icon.style.width = '';
+                icon.style.height = '';
+                icon.style.background = '';
+                icon.style.borderRadius = '';
+                icon.style.border = '';
+                icon.style.boxShadow = '';
+                icon.style.animation = '';
+            }
             if (nameEl) nameEl.textContent = '';
             if (clearBtn) clearBtn.style.display = 'none';
-            if (slotDiv) slotDiv.style.border = '3px dashed #8b7355';
+            if (slotDiv) {
+                slotDiv.style.border = '3px dashed #8b7355';
+                slotDiv.style.boxShadow = '';
+                slotDiv.style.animation = '';
+            }
             
             const crackBtn = document.getElementById('crack-geode-btn');
             if (crackBtn) {
@@ -3283,6 +3316,7 @@ function stopBasket() {
             
             // STEP 1: Remove the locked physics body immediately
             if (shackLockedBody) {
+                shackLockedBody.render.opacity = 1;
                 World.remove(basketEngine.world, shackLockedBody);
                 const idx = basketBodies.indexOf(shackLockedBody);
                 if (idx !== -1) basketBodies.splice(idx, 1);

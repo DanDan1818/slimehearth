@@ -201,6 +201,18 @@
             50% { opacity: 0.5; }
         }
         
+        @keyframes geodeLock {
+            0% { transform: scale(1.4); opacity: 0.5; }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes slotLock {
+            0% { box-shadow: 0 0 0px rgba(74,222,128,0); }
+            50% { box-shadow: 0 0 20px rgba(74,222,128,0.9); }
+            100% { box-shadow: 0 0 10px rgba(74,222,128,0.5); }
+        }
+        
         /* Back/Leave Button - Bottom Center */
         .back-btn {
             position: fixed !important;
