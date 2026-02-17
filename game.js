@@ -4412,7 +4412,16 @@ function initKitchenGame() {
         // ===== HATS (COSMETICS) =====
         function displayHats() {
             const display = document.getElementById('hats-grid');
+            const hatNameHeader = document.getElementById('wardrobe-hat-name');
             if (!display) return;
+            
+            // Update header to show currently equipped hat name (without emoji)
+            if (gs.equippedHat && HATS_DATA[gs.equippedHat]) {
+                const hatName = HATS_DATA[gs.equippedHat].name.replace(/[^\w\s'-]/g, '').trim();
+                hatNameHeader.textContent = hatName;
+            } else {
+                hatNameHeader.textContent = 'Hats';
+            }
             
             display.innerHTML = '';
             
@@ -4426,48 +4435,54 @@ function initKitchenGame() {
                     background: ${equipped ? '#fef3c7' : (owned ? '#f0fdf4' : '#f3f4f6')};
                     border: 3px solid ${equipped ? '#fbbf24' : (owned ? '#4ade80' : '#d1d5db')};
                     border-radius: 10px;
-                    padding: 8px;
+                    padding: 10px;
                     text-align: center;
                     cursor: ${owned ? 'pointer' : 'default'};
                     opacity: ${owned ? '1' : '0.5'};
                     transition: transform 0.1s;
-                    min-height: 100px;
+                    min-height: 90px;
                     display: flex;
                     flex-direction: column;
+                    align-items: center;
                     justify-content: space-between;
                     position: relative;
                     z-index: 200;
                 `;
                 
+                // Image only (no text)
                 hatCard.innerHTML = `
-                    <div style="font-size:32px;margin-bottom:4px;">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;">
                         ${hat.image ? 
-                            `<img src="./slimehearth-assets/images/${hat.image}" style="width:50px;height:50px;object-fit:contain;" />` : 
-                            hat.icon
+                            `<img src="./slimehearth-assets/images/${hat.image}" style="width:60px;height:60px;object-fit:contain;" />` : 
+                            `<div style="font-size:48px;">${hat.icon}</div>`
                         }
                     </div>
-                    <div style="font-size:11px;font-weight:bold;color:#333;margin-bottom:2px;">
-                        ${hat.name}
-                    </div>
-                    <div style="font-size:9px;color:#666;margin-bottom:4px;">
-                        ${hat.description}
-                    </div>
-                    <div style="margin-top:auto;">
-                        ${equipped ? 
-                            '<div style="background:#fbbf24;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">✓ EQUIPPED</div>' :
-                            (owned ?
-                                '<div style="background:#4ade80;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">TAP TO EQUIP</div>' :
-                                '<div style="background:#9ca3af;color:#fff;padding:3px 6px;border-radius:5px;font-weight:bold;font-size:9px;">🔒 LOCKED</div>')
-                        }
-                    </div>
+                    <button style="width:100%;margin-top:8px;background:${equipped ? '#fbbf24' : '#4ade80'};color:#fff;padding:4px 8px;border:none;border-radius:5px;font-weight:bold;font-size:10px;cursor:pointer;">
+                        ${equipped ? '✓ EQUIPPED' : (owned ? 'EQUIP' : '🔒 LOCKED')}
+                    </button>
                 `;
                 
-                // Set onclick AFTER innerHTML so it doesn't get wiped
+                // Get the button element
+                const button = hatCard.querySelector('button');
+                
+                // Set onclick for owned hats
                 if (owned && !equipped) {
                     hatCard.style.cursor = 'pointer';
                     hatCard.onmouseover = () => hatCard.style.transform = 'scale(1.05)';
                     hatCard.onmouseout = () => hatCard.style.transform = 'scale(1)';
-                    hatCard.onclick = () => equipHat(hatId);
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        equipHat(hatId);
+                    };
+                } else if (equipped) {
+                    // Unequip if clicking equipped hat
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        unequipHat();
+                    };
+                } else {
+                    button.disabled = true;
+                    button.style.cursor = 'not-allowed';
                 }
                 
                 display.appendChild(hatCard);
