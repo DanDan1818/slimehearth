@@ -1698,6 +1698,8 @@
             const { Bodies, World } = Matter;
             
             const itemId = gs.inventory[key]; // Get itemId from inventory value, not by parsing key
+            console.log('spawnSingleItem - key:', key, 'itemId:', itemId);
+            
             const color = ITEM_COLORS[itemId] || '#ff6b9d';
             
             // Spawn at top-center of basket
@@ -1708,6 +1710,10 @@
             
             // Use image for items if available - but only if image actually exists in ITEM_IMAGES
             const itemData = ITEM_DATA[itemId];
+            console.log('itemData for', itemId, ':', itemData);
+            console.log('Has image property?', itemData?.image);
+            console.log('ITEM_IMAGES has entry?', ITEM_IMAGES[itemId]);
+            
             if (itemData && itemData.image && ITEM_IMAGES[itemId]) {
                 console.log('Setting sprite for:', itemId, 'at path:', ITEM_IMAGES[itemId]);
                 renderOptions.sprite = {
@@ -1716,6 +1722,8 @@
                     yScale: 0.1
                 };
                 // Important: Don't remove fillStyle - it acts as fallback if sprite fails to load
+            } else {
+                console.log('NOT using sprite for:', itemId);
             }
             
             const box = Bodies.rectangle(x, y, 40, 40, {
