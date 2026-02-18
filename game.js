@@ -1280,7 +1280,7 @@
             // Sell walls are now created dynamically in switchRoom()
             sellWalls = [];
             
-            // Velocity limiter
+            // Velocity limiter + Auto-leveling
             Events.on(basketEngine, 'beforeUpdate', () => {
                 basketBodies.forEach(body => {
                     const maxSpeed = 21.5;
@@ -1292,6 +1292,23 @@
                             x: body.velocity.x * scale,
                             y: body.velocity.y * scale
                         });
+                    }
+                    
+                    // Auto-level items when they're settling (low velocity)
+                    if (speed < 2 && Math.abs(body.angularVelocity) < 0.1) {
+                        // Gently rotate toward horizontal (angle = 0)
+                        let targetAngle = 0;
+                        let currentAngle = body.angle % (Math.PI * 2);
+                        
+                        // Normalize to -PI to PI
+                        if (currentAngle > Math.PI) currentAngle -= Math.PI * 2;
+                        if (currentAngle < -Math.PI) currentAngle += Math.PI * 2;
+                        
+                        // Apply gentle rotation toward 0
+                        const angleDiff = targetAngle - currentAngle;
+                        if (Math.abs(angleDiff) > 0.01) {
+                            Matter.Body.setAngle(body, currentAngle + angleDiff * 0.15);
+                        }
                     }
                 });
             });
@@ -1718,8 +1735,8 @@
                 console.log('Setting sprite for:', itemId, 'at path:', ITEM_IMAGES[itemId]);
                 renderOptions.sprite = {
                     texture: ITEM_IMAGES[itemId],
-                    xScale: 0.1,  // Increased from 0.075 for better visibility
-                    yScale: 0.1
+                    xScale: 0.075,
+                    yScale: 0.075
                 };
                 // Important: Don't remove fillStyle - it acts as fallback if sprite fails to load
             } else {
@@ -1828,8 +1845,8 @@
                 if (itemData && itemData.image && ITEM_IMAGES[itemId]) {
                     renderOptions.sprite = {
                         texture: ITEM_IMAGES[itemId],
-                        xScale: 0.1,  // Increased from 0.075
-                        yScale: 0.1
+                        xScale: 0.075,
+                        yScale: 0.075
                     };
                 }
                 
