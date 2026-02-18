@@ -2844,6 +2844,7 @@ function stopBasket() {
                     for (let i = 0; i < 6; i++) {
                         if (gardenSlots[i]) {
                             const slot = document.getElementById(`garden-plot-slot-${i}`);
+                            console.log('Setting up harvest for slot', i, 'element:', slot);
                             if (slot) {
                                 // Show harvest item image (e.g. carrot) instead of seed
                                 const seedData = ITEM_DATA[gardenSlots[i]];
@@ -2862,12 +2863,15 @@ function stopBasket() {
                                 slot.style.transform = 'scale(1)';
                                 
                                 const slotIndex = i;
-                                slot.onmousedown = () => startHarvestHold(slotIndex);
-                                slot.onmouseup = stopHarvestHold;
-                                slot.onmouseleave = stopHarvestHold;
-                                slot.ontouchstart = (e) => { e.preventDefault(); startHarvestHold(slotIndex); };
-                                slot.ontouchend = (e) => { e.preventDefault(); stopHarvestHold(); };
-                                slot.ontouchcancel = stopHarvestHold;
+                                slot.onmousedown = () => { console.log('onmousedown slot', slotIndex); startHarvestHold(slotIndex); };
+                                slot.onmouseup = () => { console.log('onmouseup'); stopHarvestHold(); };
+                                slot.onmouseleave = () => { console.log('onmouseleave'); stopHarvestHold(); };
+                                slot.ontouchstart = (e) => { e.preventDefault(); console.log('ontouchstart slot', slotIndex); startHarvestHold(slotIndex); };
+                                slot.ontouchend = (e) => { e.preventDefault(); console.log('ontouchend'); stopHarvestHold(); };
+                                slot.ontouchcancel = () => { console.log('ontouchcancel'); stopHarvestHold(); };
+                                
+                                console.log('Slot', i, 'pointer-events:', slot.style.pointerEvents, 'handlers set:', !!slot.onmousedown);
+                            }
                             }
                         } else {
                             // Empty / already harvested slot - fully reset
