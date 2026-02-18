@@ -267,6 +267,7 @@
             'food': {
                 name: 'Cooked Food',
                 emoji: '🍖',
+                image: 'food1.png',
                 rarity: 'Rare',
                 rarityColor: '#ff69b4',  // Pink
                 description: 'A delicious prepared meal. Restores 100 hunger!',
@@ -310,6 +311,7 @@
             },
             'rock': {
                 name: 'Rock',
+                image: 'rock1.png',
                 rarity: 'Common',
                 rarityColor: '#9ca3af',
                 description: 'A plain rock. Not very valuable.',
@@ -334,6 +336,7 @@
             'ore': {
                 name: 'Ore',
                 emoji: '⛏️',
+                image: 'ore1.png',
                 rarity: 'Uncommon',
                 rarityColor: '#4ade80',
                 description: 'Valuable ore mined from The Cave.',
@@ -359,6 +362,7 @@
             'lily_pad': {
                 name: 'Lily Pad',
                 emoji: '🌿',
+                image: 'trash1.png',
                 rarity: 'Common',
                 rarityColor: '#9ca3af',
                 description: 'A soggy lily pad. Not much use.',
@@ -4177,7 +4181,23 @@ function initKitchenGame() {
         document.getElementById('back-to-area').onclick = () => switchRoom('area-room');
         document.getElementById('back-to-area-mining').onclick = () => switchRoom('area-room');
         document.getElementById('goto-pond').onclick = () => switchRoom('fishing-pond-room');
-        document.getElementById('goto-cave').onclick = () => switchRoom('mining-cave-room');
+        document.getElementById('goto-cave').onclick = () => {
+            switchRoom('mining-cave-room');
+            // Restore mining button/timer state if mining is active
+            if (automineInterval) {
+                const button = document.getElementById('start-automine');
+                const instruction = document.getElementById('automine-instruction');
+                const timer = document.getElementById('automine-timer');
+                
+                if (button) {
+                    button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">STOP</div>';
+                    button.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
+                    button.onclick = stopAutomine;
+                }
+                if (instruction) instruction.textContent = 'Stop Automine';
+                if (timer) timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
+            }
+        };
         document.getElementById('goto-river').onclick = () => {
             if (!gs.tools.better_net) {
                 notify('❌ You need a Fishing Net to fish at the River! Buy it from the shop.');
@@ -4190,7 +4210,7 @@ function initKitchenGame() {
             switchRoom('fishing-menu-room');
         };
         document.getElementById('leave-cave').onclick = () => {
-            stopAutomine();
+            // Don't stop mining - it continues in background
             switchRoom('mining-menu-room');
         };
         document.getElementById('leave-river').onclick = () => {
