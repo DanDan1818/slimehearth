@@ -1706,14 +1706,16 @@
             
             const renderOptions = { fillStyle: color };
             
-            // Use image for fish types if available
+            // Use image for items if available - but only if image actually exists in ITEM_IMAGES
             const itemData = ITEM_DATA[itemId];
             if (itemData && itemData.image && ITEM_IMAGES[itemId]) {
+                console.log('Setting sprite for:', itemId, 'at path:', ITEM_IMAGES[itemId]);
                 renderOptions.sprite = {
                     texture: ITEM_IMAGES[itemId],
-                    xScale: 0.075,
-                    yScale: 0.075
+                    xScale: 0.1,  // Increased from 0.075 for better visibility
+                    yScale: 0.1
                 };
+                // Important: Don't remove fillStyle - it acts as fallback if sprite fails to load
             }
             
             const box = Bodies.rectangle(x, y, 40, 40, {
@@ -1818,8 +1820,8 @@
                 if (itemData && itemData.image && ITEM_IMAGES[itemId]) {
                     renderOptions.sprite = {
                         texture: ITEM_IMAGES[itemId],
-                        xScale: 0.075,
-                        yScale: 0.075
+                        xScale: 0.1,  // Increased from 0.075
+                        yScale: 0.1
                     };
                 }
                 

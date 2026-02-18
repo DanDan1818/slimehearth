@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.618</title>
+    <title>SlimeHearth v0.620</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.618</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.620</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -144,7 +144,7 @@
         </div>
         
         <!-- Middle: Slime Level (Clickable) -->
-        <div class="stat-display" style="flex:0.9;cursor:pointer;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);border-radius:8px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.2);" id="level-display-container">
+        <div class="stat-display" style="flex:0.9;cursor:pointer;background:linear-gradient(135deg, #5d4e37 0%, #3e2a1a 100%);border-radius:8px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.2);" id="level-display-container">
             <div style="display:flex;align-items:baseline;justify-content:center;gap:5px;margin-bottom:3px;">
                 <div style="font-size:20px;color:rgba(255,255,255,0.9);font-weight:bold;">LEVEL</div>
                 <div id="level-display" style="font-size:20px;color:#fff;font-weight:bold;line-height:1;">1</div>
@@ -157,10 +157,10 @@
         
         <!-- Right: Skills Button -->
         <div style="flex:1;text-align:right;padding-right:15px;">
-            <button id="skills-btn" style="padding:4px 8px;font-size:11px;background:#9c27b0;color:#fff;border:2px solid #fff;border-radius:6px;font-weight:bold;box-shadow:0 2px 4px rgba(156,39,176,0.3);cursor:pointer;">📊 Skills</button>
+            <button id="skills-btn" style="padding:4px 8px;font-size:11px;background:#5d4e37;color:#fff;border:2px solid #fff;border-radius:6px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.3);cursor:pointer;">📊 Skills</button>
             <div id="last-skill-display" style="font-size:9px;color:#f5deb3;margin-top:1px;font-weight:bold;"></div>
             <div style="width:80px;height:4px;background:#ddd;border:1px solid #999;border-radius:2px;overflow:hidden;margin:1px 0 0 auto;">
-                <div id="last-skill-xp-bar" style="height:100%;width:0%;background:#9c27b0;transition:width 0.3s;"></div>
+                <div id="last-skill-xp-bar" style="height:100%;width:0%;background:#5d4e37;transition:width 0.3s;"></div>
             </div>
         </div>
     </div>
