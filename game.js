@@ -2686,6 +2686,7 @@ function stopBasket() {
                 harvestedSlot.style.background = '#fff';
                 harvestedSlot.style.border = '2px dashed #8bc34a';
                 harvestedSlot.style.cursor = 'default';
+                harvestedSlot.style.pointerEvents = 'none'; // Disable to allow drag-through
                 harvestedSlot.style.transform = 'scale(1)';
                 harvestedSlot.style.boxShadow = '';
                 harvestedSlot.onmousedown = null;
@@ -2794,6 +2795,7 @@ function stopBasket() {
                         slot.style.borderColor = '#ccc';
                     }
                     slot.style.cursor = 'not-allowed';
+                    slot.style.pointerEvents = 'none'; // Disable during growing
                     slot.onclick = null;
                 } else {
                     // Not growing - show selected or empty
@@ -2807,6 +2809,7 @@ function stopBasket() {
                         slot.style.borderColor = '#8bc34a';
                     }
                     slot.style.cursor = 'default';
+                    slot.style.pointerEvents = 'none'; // Disable to allow drag-through
                     slot.onclick = null;
                 }
             }
@@ -2855,6 +2858,7 @@ function stopBasket() {
                                 slot.style.borderColor = '#4caf50';
                                 slot.style.border = '2px solid #4caf50';
                                 slot.style.cursor = 'pointer';
+                                slot.style.pointerEvents = 'auto'; // Enable interaction for harvesting
                                 slot.style.transform = 'scale(1)';
                                 
                                 const slotIndex = i;
@@ -2874,6 +2878,7 @@ function stopBasket() {
                                 slot.style.background = '#fff';
                                 slot.style.border = '2px dashed #8bc34a';
                                 slot.style.cursor = 'default';
+                                slot.style.pointerEvents = 'none'; // Disable to allow drag-through
                                 slot.onmousedown = null;
                                 slot.onmouseup = null;
                                 slot.onmouseleave = null;
