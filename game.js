@@ -2872,7 +2872,6 @@ function stopBasket() {
                                 
                                 console.log('Slot', i, 'pointer-events:', slot.style.pointerEvents, 'handlers set:', !!slot.onmousedown);
                             }
-                            }
                         } else {
                             // Empty / already harvested slot - fully reset
                             const slot = document.getElementById(`garden-plot-slot-${i}`);
