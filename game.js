@@ -2851,8 +2851,8 @@ function stopBasket() {
                                 const harvestImg = harvestId && ITEM_IMAGES[harvestId] ? ITEM_IMAGES[harvestId] : null;
                                 
                                 slot.innerHTML = harvestImg
-                                    ? `<img src="${harvestImg}" style="width:48px;height:48px;object-fit:contain;" />`
-                                    : `<span style="font-size:32px;">🥕</span>`;
+                                    ? `<img src="${harvestImg}" style="width:48px;height:48px;object-fit:contain;pointer-events:none;" />`
+                                    : `<span style="font-size:32px;pointer-events:none;">🥕</span>`;
                                 
                                 slot.style.background = '#e8f5e9';
                                 slot.style.borderColor = '#4caf50';
@@ -4887,6 +4887,7 @@ function initKitchenGame() {
                 gs.maxInventory += 2;
                 save();
                 updateUI();
+                updateInventoryCounter(); // Update the X/Y display
                 displayShopGrid(); // Refresh to update price and description
                 notify(`✓ Bag upgraded! Now ${gs.maxInventory} slots!`);
                 const buySound = document.getElementById('coin-buy-sound');
