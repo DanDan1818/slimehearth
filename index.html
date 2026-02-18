@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.613</title>
+    <title>SlimeHearth v0.618</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -25,7 +25,7 @@
          onclick="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';"
          ontouchend="document.getElementById('title-overlay').style.display='none';document.getElementById('hatch-overlay').style.display='flex';event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.613</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.618</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -140,7 +140,7 @@
     <div id="top-ui">
         <!-- Left: Slime Name -->
         <div class="stat-display" style="flex:1;text-align:left;padding-left:15px;">
-            <div style="font-size:16px;font-weight:bold;color:#4dabf7;" id="slime-name-display">Slime</div>
+            <div style="font-size:16px;font-weight:bold;color:#f5deb3;" id="slime-name-display">Slime</div>
         </div>
         
         <!-- Middle: Slime Level (Clickable) -->
@@ -158,7 +158,7 @@
         <!-- Right: Skills Button -->
         <div style="flex:1;text-align:right;padding-right:15px;">
             <button id="skills-btn" style="padding:4px 8px;font-size:11px;background:#9c27b0;color:#fff;border:2px solid #fff;border-radius:6px;font-weight:bold;box-shadow:0 2px 4px rgba(156,39,176,0.3);cursor:pointer;">📊 Skills</button>
-            <div id="last-skill-display" style="font-size:9px;color:#666;margin-top:1px;font-weight:bold;"></div>
+            <div id="last-skill-display" style="font-size:9px;color:#f5deb3;margin-top:1px;font-weight:bold;"></div>
             <div style="width:80px;height:4px;background:#ddd;border:1px solid #999;border-radius:2px;overflow:hidden;margin:1px 0 0 auto;">
                 <div id="last-skill-xp-bar" style="height:100%;width:0%;background:#9c27b0;transition:width 0.3s;"></div>
             </div>
@@ -375,7 +375,7 @@
                     <!-- Cooking Progress Bar (hidden until cooking starts) -->
                     <div id="hearth-progress-container" style="display:none;width:100%;max-width:280px;margin:8px auto 0 auto;">
                         <div style="font-size:11px;font-weight:bold;color:#000;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;margin-bottom:4px;">Cooking...</div>
-                        <div style="width:100%;height:16px;background:rgba(255,255,255,0.6);border-radius:8px;border:2px solid #f59e0b;overflow:hidden;">
+                        <div style="width:100%;height:16px;background:rgba(255,255,255,0.6);border-radius:8px;border:1px solid #000;overflow:hidden;">
                             <div id="hearth-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:8px;transition:none;"></div>
                         </div>
                     </div>
@@ -804,14 +804,35 @@
             bgMusic.src = musicPlaylist[currentTrackIndex];
             bgMusic.load();
             bgMusic.volume = currentVolume; // Maintain volume
-            bgMusic.play().catch(() => {});
+            
+            // Add error handling
+            bgMusic.play().catch(err => {
+                console.warn('Music play failed:', err);
+                // Try next track on error
+                setTimeout(playNextTrack, 1000);
+            });
         }
         
-        // Setup music event listener
+        // Setup music event listener with multiple fallbacks
         document.addEventListener('DOMContentLoaded', () => {
             const bgMusic = document.getElementById('bg-music');
             if (bgMusic) {
+                // Primary: ended event
                 bgMusic.addEventListener('ended', playNextTrack);
+                
+                // Backup: check if track ended manually every 5 seconds
+                setInterval(() => {
+                    if (bgMusic.ended && !bgMusic.paused) {
+                        console.log('Manual track change triggered');
+                        playNextTrack();
+                    }
+                }, 5000);
+                
+                // Handle errors
+                bgMusic.addEventListener('error', (e) => {
+                    console.error('Music error:', e);
+                    setTimeout(playNextTrack, 1000);
+                });
             }
         });
     </script>

@@ -91,12 +91,13 @@
                 bonusGeodeChance: 0, // % bonus chance for geodes from cracking (0-100)
                 rareFindChance: 0, // % bonus chance for rare item drops (0-100)
                 foodsEaten: 0 // Total foods consumed
-            }
+            },
+            maxInventory: 6, // Inventory capacity (upgradeable)
+            bagUpgrades: 0 // Number of bag upgrades purchased
         };
         
         // ===== CONSTANTS =====
         const BASKET_IMAGE = "";
-        const MAX_INVENTORY = 6;
         
         const ITEM_COLORS = {
             'fish1': '#9ca3af',
@@ -659,6 +660,14 @@
                     gs.skills.mining = { level: 1, xp: 0, xpNeeded: 10 };
                 }
                 
+                // Initialize bag upgrade system (old saves)
+                if (gs.maxInventory === undefined) {
+                    gs.maxInventory = 6;
+                }
+                if (gs.bagUpgrades === undefined) {
+                    gs.bagUpgrades = 0;
+                }
+                
                 updateUI();
                 
                 // Open basket if already hatched
@@ -672,7 +681,7 @@
             const counter = document.getElementById('inventory-counter');
             if (counter) {
                 const count = Object.keys(gs.inventory).length;
-                counter.textContent = count + '/' + MAX_INVENTORY;
+                counter.textContent = count + '/' + gs.maxInventory;
             }
         }
         
@@ -926,7 +935,7 @@
         
         function addItem(itemId, quantity = 1) {
             const currentCount = Object.keys(gs.inventory).length;
-            const spaceLeft = MAX_INVENTORY - currentCount;
+            const spaceLeft = gs.maxInventory - currentCount;
             
             if (spaceLeft <= 0) {
                 notifyInventoryFull();
@@ -2520,7 +2529,7 @@ function stopBasket() {
             gs.gardenReadyTime = gardenReadyTime;
             
             save();
-            populateBasket(); // Re-populate basket with updated inventory
+            updateInventoryCounter(); // Just update counter, don't respawn all items
             updateGardenDisplay();
             notify('💧 Garden watered! Plants growing...');
             startGardenUpdateInterval();
@@ -2533,13 +2542,13 @@ function stopBasket() {
             // Check if inventory has space for 3 carrots
             const currentInventoryCount = Object.keys(gs.inventory).length;
             
-            if (currentInventoryCount + 3 > MAX_INVENTORY) {
+            if (currentInventoryCount + 3 > gs.maxInventory) {
                 notify('❌ Inventory full! Make space for 3 carrots before harvesting.', 'warning');
-                console.log('Cannot harvest - inventory full:', currentInventoryCount, '/', MAX_INVENTORY, '(need space for 3)');
+                console.log('Cannot harvest - inventory full:', currentInventoryCount, '/', gs.maxInventory, '(need space for 3)');
                 return;
             }
             
-            console.log('Starting harvest hold for slot:', slotIndex, '- Inventory:', currentInventoryCount, '/', MAX_INVENTORY);
+            console.log('Starting harvest hold for slot:', slotIndex, '- Inventory:', currentInventoryCount, '/', gs.maxInventory);
             harvestHoldSlotIndex = slotIndex;
             harvestHoldStartTime = Date.now();
             harvestHoldProgress = 0;
@@ -2618,13 +2627,13 @@ function stopBasket() {
             // Double-check inventory space (safety check)
             const currentInventoryCount = Object.keys(gs.inventory).length;
             
-            if (currentInventoryCount + 3 > MAX_INVENTORY) {
+            if (currentInventoryCount + 3 > gs.maxInventory) {
                 notify('❌ Inventory full! Cannot harvest.', 'warning');
-                console.log('Harvest blocked - inventory full:', currentInventoryCount, '/', MAX_INVENTORY);
+                console.log('Harvest blocked - inventory full:', currentInventoryCount, '/', gs.maxInventory);
                 return;
             }
             
-            console.log('Inventory check passed:', currentInventoryCount, '+ 3 <=', MAX_INVENTORY);
+            console.log('Inventory check passed:', currentInventoryCount, '+ 3 <=', gs.maxInventory);
             
             // Give 3 carrots for this slot
             addItem('carrot', 3);
@@ -2636,7 +2645,10 @@ function stopBasket() {
             
             // Clear locked body for this slot
             if (gardenLockedBodies[slotIndex]) {
-                gardenLockedBodies[slotIndex].render.opacity = 1;
+                // Remove from physics world
+                if (basketEngine) {
+                    Matter.World.remove(basketEngine.world, gardenLockedBodies[slotIndex]);
+                }
                 gardenLockedBodies[slotIndex] = null;
             }
             
@@ -3020,6 +3032,12 @@ function stopBasket() {
             Matter.Body.setAngle(body, 0);
             Matter.Body.setStatic(body, true);
             body.render.opacity = 0;
+            
+            // Remove from basketBodies array so populateBasket doesn't respawn it
+            const index = basketBodies.indexOf(body);
+            if (index > -1) {
+                basketBodies.splice(index, 1);
+            }
         }
         
         // Shared helper: build the locked item image DOM
@@ -3038,6 +3056,11 @@ function stopBasket() {
             body.render.opacity = 1;
             Matter.Body.setStatic(body, false);
             Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 8, y: -6 });
+            
+            // Re-add to basketBodies array if not already present
+            if (!basketBodies.includes(body)) {
+                basketBodies.push(body);
+            }
         }
         
         function lockItemInHearthSlot(body, slotNumber) {
@@ -4721,6 +4744,17 @@ function initKitchenGame() {
             
             // Define shop items with icons
             const shopItems = [
+                // Bag upgrade - dynamic pricing
+                { 
+                    id: 'bag_upgrade', 
+                    name: 'Bag Upgrade', 
+                    icon: '🎒', 
+                    price: 50 + (gs.bagUpgrades * 500), 
+                    type: 'upgrade',
+                    maxPurchases: 9, // Max 9 upgrades (6 + 18 = 24 slots)
+                    currentPurchases: gs.bagUpgrades,
+                    description: `+2 Slots (${gs.maxInventory}/24)`
+                },
                 { id: 'carrot_seeds', name: '🌱 Carrot Seeds', icon: '🌱', price: 3, type: 'item' },
                 { id: 'hammer', name: 'Hammer', icon: '🔨', price: 50, type: 'tool', data: TOOLS_DATA.hammer },
                 { id: 'fishing_rod', name: 'Fishing Rod', icon: '🎣', price: 100, type: 'tool', data: TOOLS_DATA.fishing_rod },
@@ -4735,15 +4769,17 @@ function initKitchenGame() {
             
             shopItems.forEach(item => {
                 const isOwned = (item.type === 'tool' && gs.tools[item.id]) || (item.type === 'hat' && gs.hats[item.id]);
+                const isMaxed = (item.type === 'upgrade' && item.currentPurchases >= item.maxPurchases);
+                const canBuy = !isOwned && !isMaxed;
                 
                 const itemDiv = document.createElement('div');
                 itemDiv.style.cssText = `
-                    background: ${isOwned ? '#d1fae5' : '#fff'};
-                    border: 2px solid ${isOwned ? '#10b981' : '#fbbf24'};
+                    background: ${isOwned || isMaxed ? '#d1fae5' : '#fff'};
+                    border: 2px solid ${isOwned || isMaxed ? '#10b981' : '#fbbf24'};
                     border-radius: 8px;
                     padding: 6px;
                     text-align: center;
-                    cursor: ${isOwned ? 'default' : 'pointer'};
+                    cursor: ${canBuy ? 'pointer' : 'default'};
                     transition: all 0.2s;
                     position: relative;
                     min-height: 70px;
@@ -4753,9 +4789,21 @@ function initKitchenGame() {
                     justify-content: space-between;
                 `;
                 
-                if (!isOwned) {
+                if (canBuy) {
                     itemDiv.onmouseenter = () => itemDiv.style.transform = 'scale(1.05)';
                     itemDiv.onmouseleave = () => itemDiv.style.transform = 'scale(1)';
+                }
+                
+                // Build description line
+                let bottomLine = '';
+                if (isOwned) {
+                    bottomLine = '✓ OWNED';
+                } else if (isMaxed) {
+                    bottomLine = 'MAX';
+                } else if (item.type === 'upgrade' && item.description) {
+                    bottomLine = `${item.price} 💰 • ${item.description}`;
+                } else {
+                    bottomLine = `${item.price} 💰`;
                 }
                 
                 itemDiv.innerHTML = `
@@ -4763,12 +4811,12 @@ function initKitchenGame() {
                         ${getShopItemDisplay(item)}
                     </div>
                     <div style="font-size:9px;font-weight:bold;color:#333;margin-bottom:3px;line-height:1.1;">${item.name}</div>
-                    <div style="font-size:10px;font-weight:bold;color:${isOwned ? '#10b981' : '#f59e0b'};margin-top:3px;">
-                        ${isOwned ? '✓ OWNED' : `${item.price} 💰`}
+                    <div style="font-size:${item.type === 'upgrade' ? '8px' : '10px'};font-weight:bold;color:${isOwned || isMaxed ? '#10b981' : '#f59e0b'};margin-top:3px;">
+                        ${bottomLine}
                     </div>
                 `;
                 
-                if (!isOwned) {
+                if (canBuy) {
                     itemDiv.onclick = () => buyShopItem(item);
                 }
                 
@@ -4796,7 +4844,22 @@ function initKitchenGame() {
                 return;
             }
             
-            if (item.type === 'item') {
+            if (item.type === 'upgrade') {
+                // Bag upgrade
+                if (gs.bagUpgrades >= item.maxPurchases) {
+                    notify('❌ Bag is already maxed out!', 'warning');
+                    return;
+                }
+                gs.coins -= item.price;
+                gs.bagUpgrades++;
+                gs.maxInventory += 2;
+                save();
+                updateUI();
+                displayShopGrid(); // Refresh to update price and description
+                notify(`✓ Bag upgraded! Now ${gs.maxInventory} slots!`);
+                const buySound = document.getElementById('coin-buy-sound');
+                if (buySound) { buySound.currentTime = 0; buySound.play().catch(() => {}); }
+            } else if (item.type === 'item') {
                 // Buy regular item
                 gs.coins -= item.price;
                 addItem(item.id, 1);

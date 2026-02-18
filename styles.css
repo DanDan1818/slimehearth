@@ -27,8 +27,8 @@
             width: 100%;
             max-width: 700px;
             height: 60px;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            border-bottom: 3px solid #333;
+            background: linear-gradient(135deg, #5d4e37 0%, #3e2a1a 100%);
+            border-bottom: 3px solid #2a1810;
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -276,8 +276,8 @@
             width: 100%;
             max-width: 700px;
             height: 72px;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            border-top: 3px solid #333;
+            background: linear-gradient(135deg, #5d4e37 0%, #3e2a1a 100%);
+            border-top: 3px solid #2a1810;
             display: flex;
             justify-content: space-around;
             align-items: center;
