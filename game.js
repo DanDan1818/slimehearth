@@ -987,10 +987,10 @@
             
             if (inventoryBag && sellBag) {
                 if (isInShop) {
-                    // In shop - show BOTH bags (HTML walls stay hidden)
+                    // In shop - show BOTH bags (green box stays hidden until drag)
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'block';
-                    if (greenSellBox) greenSellBox.style.display = 'block';
+                    // Don't show green box here - it's shown on drag start
                 } else {
                     // Not in shop - show only inventory bag
                     inventoryBag.style.display = 'block';
@@ -1540,6 +1540,7 @@
                 if (body && body.itemId) {
                     console.log('Showing tooltip for:', body.itemId);
                     showItemTooltip(body.itemId);
+                    // Green sell box kept hidden (for testing purposes only)
                 }
             });
             
