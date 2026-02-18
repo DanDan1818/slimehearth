@@ -1304,10 +1304,10 @@
                         if (currentAngle > Math.PI) currentAngle -= Math.PI * 2;
                         if (currentAngle < -Math.PI) currentAngle += Math.PI * 2;
                         
-                        // Apply gentle rotation toward 0
+                        // Apply gentle rotation toward 0 (reduced from 0.15 to 0.08)
                         const angleDiff = targetAngle - currentAngle;
                         if (Math.abs(angleDiff) > 0.01) {
-                            Matter.Body.setAngle(body, currentAngle + angleDiff * 0.15);
+                            Matter.Body.setAngle(body, currentAngle + angleDiff * 0.08);
                         }
                     }
                 });
