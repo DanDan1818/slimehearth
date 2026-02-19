@@ -1191,7 +1191,8 @@
                 // ── GARDEN: plantable → any empty plot slot ──
                 const gardenRoom = document.getElementById('farming-garden-room');
                 if (gardenRoom && gardenRoom.classList.contains('active') && data.isPlantable) {
-                    for (let i = 0; i < 6; i++) {
+                    const unlockedCount = (typeof getUnlockedSlots === 'function') ? getUnlockedSlots() : 6;
+                    for (let i = 0; i < unlockedCount; i++) {
                         const slotEl = document.getElementById(`garden-plot-slot-${i}`);
                         if (slotEl && isBodyOverElement(body, slotEl)) {
                             lockItemInGardenSlot(body, i);

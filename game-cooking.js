@@ -575,8 +575,8 @@
             
             const crackBtn = document.getElementById('crack-geode-btn');
             if (crackBtn) {
-                crackBtn.style.background = '#f5e6d3';
-                crackBtn.style.borderColor = '#8b7355';
+                crackBtn.style.background = '#a855f7';
+                crackBtn.style.borderColor = '#fff';
                 crackBtn.style.opacity = '1';
                 crackBtn.style.cursor = 'pointer';
             }
@@ -605,15 +605,13 @@
             const hasHammer = gs.tools.hammer || false;
             
             if (hasHammer) {
-                // Unlocked appearance
-                crackBtn.style.background = '#f5e6d3';
-                crackBtn.style.borderColor = '#8b7355';
+                crackBtn.style.background = '#a855f7';
+                crackBtn.style.borderColor = '#fff';
                 crackBtn.style.opacity = '1';
                 crackBtn.style.cursor = 'pointer';
             } else {
-                // Locked appearance
-                crackBtn.style.background = '#d1d5db';
-                crackBtn.style.borderColor = '#9ca3af';
+                crackBtn.style.background = '#9ca3af';
+                crackBtn.style.borderColor = '#fff';
                 crackBtn.style.opacity = '0.5';
                 crackBtn.style.cursor = 'not-allowed';
             }
@@ -709,8 +707,8 @@
             
             const crackBtn = document.getElementById('crack-geode-btn');
             if (crackBtn) {
-                crackBtn.style.background = '#f5e6d3';
-                crackBtn.style.borderColor = '#8b7355';
+                crackBtn.style.background = '#a855f7';
+                crackBtn.style.borderColor = '#fff';
                 crackBtn.style.opacity = '1';
                 crackBtn.style.cursor = 'pointer';
             }

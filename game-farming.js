@@ -9,6 +9,22 @@
         let harvestHoldProgress = 0;
         let harvestHoldSlotIndex = -1; // Track which slot is being harvested
         
+        // Returns how many slots are unlocked based on farming level
+        function getUnlockedSlots() {
+            const lv = gs.skills && gs.skills.farming ? gs.skills.farming.level : 1;
+            if (lv >= 50) return 6;
+            if (lv >= 40) return 5;
+            if (lv >= 30) return 4;
+            if (lv >= 20) return 3;
+            if (lv >= 10) return 2;
+            return 1;
+        }
+        
+        // Returns required farming level for a slot index
+        function slotRequiredLevel(i) {
+            return [0, 10, 20, 30, 40, 50][i] || 0;
+        }
+        
         function initGardenPlots() {
             console.log('initGardenPlots called');
             
@@ -377,41 +393,64 @@
         
         function updateGardenDisplay() {
             console.log('updateGardenDisplay called - gardenGrowing:', gardenGrowing, 'gardenSlots:', gardenSlots);
-            // Update all 9 slots
-            for (let i = 0; i < 9; i++) {
+            const unlockedCount = getUnlockedSlots();
+            // Update all 6 slots
+            for (let i = 0; i < 6; i++) {
                 const icon = document.getElementById(`garden-plot-icon-${i}`);
                 const slot = document.getElementById(`garden-plot-slot-${i}`);
+                if (!slot) continue;
                 
-                if (!icon || !slot) continue;
+                const locked = i >= unlockedCount;
+                
+                if (locked) {
+                    // Locked slot — show padlock
+                    const reqLv = slotRequiredLevel(i);
+                    slot.innerHTML = `<span id="garden-plot-icon-${i}" style="display:flex;flex-direction:column;align-items:center;gap:1px;"><span style="font-size:22px;">🔒</span><span style="font-size:7px;font-weight:bold;color:#9ca3af;font-family:'Righteous',sans-serif;">Lv ${reqLv}</span></span>`;
+                    slot.style.background = 'rgba(0,0,0,0.15)';
+                    slot.style.border = '2px dashed #6b7280';
+                    slot.style.cursor = 'not-allowed';
+                    slot.style.pointerEvents = 'none';
+                    slot.style.opacity = '0.6';
+                    slot.onmousedown = null; slot.onmouseup = null;
+                    slot.ontouchstart = null; slot.ontouchend = null;
+                    continue;
+                }
+                
+                // Unlocked slot
+                slot.style.opacity = '1';
+                if (icon && !slot.innerHTML.includes('🔒')) {} // preserve icon ref below
+                const iconEl = document.getElementById(`garden-plot-icon-${i}`);
                 
                 if (gardenGrowing) {
                     // Growing state - show seedling
                     if (gardenSlots[i]) {
-                        icon.textContent = '🌱';
+                        if (iconEl) iconEl.textContent = '🌱';
                         slot.style.background = '#f1f8e9';
                         slot.style.borderColor = '#8bc34a';
+                        slot.style.border = '2px dashed #8bc34a';
                     } else {
-                        icon.textContent = '';
+                        if (iconEl) iconEl.textContent = '';
                         slot.style.background = '#f5f5f5';
                         slot.style.borderColor = '#ccc';
+                        slot.style.border = '2px dashed #ccc';
                     }
                     slot.style.cursor = 'not-allowed';
-                    slot.style.pointerEvents = 'none'; // Disable during growing
-                    slot.onclick = null;
+                    slot.style.pointerEvents = 'none';
+                    slot.onmousedown = null;
                 } else {
                     // Not growing - show selected or empty
                     if (gardenSlots[i]) {
-                        icon.textContent = '🌱';
+                        if (iconEl) iconEl.textContent = '🌱';
                         slot.style.background = '#fef3c7';
-                        slot.style.borderColor = '#f59e0b';
+                        slot.style.border = '2px dashed #f59e0b';
                     } else {
-                        icon.textContent = '+';
+                        if (iconEl) iconEl.textContent = '+';
                         slot.style.background = '#fff';
-                        slot.style.borderColor = '#8bc34a';
+                        slot.style.border = '2px dashed #8bc34a';
                     }
                     slot.style.cursor = 'default';
-                    slot.style.pointerEvents = 'none'; // Disable to allow drag-through
-                    slot.onclick = null;
+                    slot.style.pointerEvents = 'none';
+                    slot.onmousedown = null;
                 }
             }
             
@@ -447,7 +486,7 @@
                     }
                     
                     // Update slots to show harvest image and add hold-to-harvest
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < getUnlockedSlots(); i++) {
                         if (gardenSlots[i]) {
                             const slot = document.getElementById(`garden-plot-slot-${i}`);
                             console.log('Setting up harvest for slot', i, 'element:', slot);
