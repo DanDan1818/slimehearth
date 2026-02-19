@@ -522,6 +522,34 @@
             animation: beamRise 0.8s ease-out forwards;
         }
         
+        .item-beam-rainbow {
+            position: absolute;
+            pointer-events: none;
+            z-index: 150;
+            animation: beamRiseRainbow 0.8s ease-out forwards;
+        }
+        
+        @keyframes beamRiseRainbow {
+            0% {
+                opacity: 1;
+                height: 0%;
+                bottom: 0;
+                filter: blur(0px) hue-rotate(0deg);
+            }
+            40% {
+                opacity: 1;
+                height: 100%;
+                bottom: 0;
+                filter: blur(3px) hue-rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                height: 100%;
+                bottom: 0;
+                filter: blur(6px) hue-rotate(360deg);
+            }
+        }
+        
         @keyframes beamRise {
             0% {
                 opacity: 1;

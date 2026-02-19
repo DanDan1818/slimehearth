@@ -404,55 +404,60 @@
             'frog_blue': {
                 name: '🐸 Blue Frog',
                 emoji: '🐸',
-                rarity: 'Legendary',
-                rarityColor: '#3b82f6',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
                 description: 'A rare blue frog found fishing. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
+                sellable: false,
                 cookable: false,
                 feedable: true
             },
             'frog_yellow': {
                 name: '🐸 Yellow Frog',
                 emoji: '🐸',
-                rarity: 'Legendary',
-                rarityColor: '#eab308',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
                 description: 'A rare yellow frog found mining. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
+                sellable: false,
                 cookable: false,
                 feedable: true
             },
             'frog_red': {
                 name: '🐸 Red Frog',
                 emoji: '🐸',
-                rarity: 'Legendary',
-                rarityColor: '#ef4444',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
                 description: 'A rare red frog found cooking. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
+                sellable: false,
                 cookable: false,
                 feedable: true
             },
             'frog_green': {
                 name: '🐸 Green Frog',
                 emoji: '🐸',
-                rarity: 'Legendary',
-                rarityColor: '#22c55e',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
                 description: 'A rare green frog found farming. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
+                sellable: false,
                 cookable: false,
                 feedable: true
             },
             'frog_purple': {
                 name: '🐸 Purple Frog',
                 emoji: '🐸',
-                rarity: 'Legendary',
-                rarityColor: '#a855f7',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
                 description: 'A rare purple frog found in a geode. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
+                sellable: false,
                 cookable: false,
                 feedable: true
             }
@@ -584,7 +589,7 @@
             const tooltip = document.createElement('div');
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
-                <div style="color: ${data.rarityColor}; font-size: 11px; font-weight: bold; margin-bottom: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                <div style="${data.rarityColor === 'rainbow' ? 'background: linear-gradient(90deg,red,orange,yellow,green,blue,violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: brightness(1.3);' : 'color:' + data.rarityColor + ';'} font-size: 11px; font-weight: bold; margin-bottom: 2px; text-shadow: none;">
                     ${data.name}
                 </div>
                 <div style="color: #fff; font-size: 9px; margin-bottom: 3px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
@@ -609,7 +614,7 @@
                 padding: 6px 8px;
                 border-radius: 6px;
                 z-index: 135;
-                border: 2px solid ${data.rarityColor};
+                border: 2px solid ${data.rarityColor === 'rainbow' ? '#ff00ff' : data.rarityColor};
                 box-shadow: 0 4px 12px rgba(0,0,0,0.6);
                 width: 75px;
                 text-align: left;
@@ -1779,6 +1784,13 @@
                     if (inSellX && inSellY) {
                         // Get sell price from ITEM_DATA
                         const itemData = ITEM_DATA[body.itemId];
+                        
+                        // Block unsellable items (frogs etc)
+                        if (itemData && itemData.sellable === false) {
+                            notify(itemData.name + ' cannot be sold!', 'warning');
+                            continue;
+                        }
+                        
                         const sellPrice = itemData ? itemData.sellValue : 1;
                         
                         gs.coins += sellPrice;
@@ -1893,8 +1905,13 @@
                     shouldBeam = true;
                     break;
                 case 'Legendary':
-                    beamWidth = 25; // Was 100, now 1/4
+                    beamWidth = 25;
                     beamColor = '#fbbf24'; // Gold
+                    shouldBeam = true;
+                    break;
+                case 'Rainbow':
+                    beamWidth = 30;
+                    beamColor = 'rainbow';
                     shouldBeam = true;
                     break;
             }
@@ -1903,13 +1920,19 @@
             
             // Create beam element that shoots UP from bottom
             const beam = document.createElement('div');
-            beam.className = 'item-beam';
+            const isRainbow = (beamColor === 'rainbow');
+            beam.className = isRainbow ? 'item-beam-rainbow' : 'item-beam';
             beam.style.width = beamWidth + 'px';
             beam.style.height = '0%';
             beam.style.left = (body.position.x - beamWidth/2) + 'px';
-            beam.style.bottom = '0px'; // Start from bottom
-            beam.style.background = `linear-gradient(to top, ${beamColor}00 0%, ${beamColor}ff 20%, ${beamColor}ff 80%, ${beamColor}00 100%)`;
-            beam.style.boxShadow = `0 0 ${beamWidth*2}px ${beamColor}, inset 0 0 ${beamWidth}px ${beamColor}`;
+            beam.style.bottom = '0px';
+            if (isRainbow) {
+                beam.style.background = 'linear-gradient(to top, rgba(255,0,0,0) 0%, red 10%, orange 25%, yellow 40%, green 55%, blue 70%, violet 85%, rgba(238,130,238,0) 100%)';
+                beam.style.boxShadow = '0 0 20px rgba(255,0,255,0.8), 0 0 40px rgba(0,255,255,0.6), 0 0 60px rgba(255,255,0,0.4)';
+            } else {
+                beam.style.background = `linear-gradient(to top, ${beamColor}00 0%, ${beamColor}ff 20%, ${beamColor}ff 80%, ${beamColor}00 100%)`;
+                beam.style.boxShadow = `0 0 ${beamWidth*2}px ${beamColor}, inset 0 0 ${beamWidth}px ${beamColor}`;
+            }
             
             canvas.parentElement.appendChild(beam);
             
@@ -4870,7 +4893,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.642');
+        console.log('Game version: v0.643');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
