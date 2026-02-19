@@ -632,16 +632,17 @@
             shackCrackCount++;
             updateShackProgress();
             
-            // --- Shake the geode slot ---
+            // --- Shake the progress bar ---
             const slot = document.getElementById('shack-geode-slot');
-            if (slot) {
-                slot.classList.remove('crack-shaking');
-                void slot.offsetWidth; // force reflow to restart animation
-                slot.classList.add('crack-shaking');
-                slot.addEventListener('animationend', () => slot.classList.remove('crack-shaking'), { once: true });
+            const barContainer = document.getElementById('shack-bar-container');
+            if (barContainer) {
+                barContainer.classList.remove('crack-shaking');
+                void barContainer.offsetWidth;
+                barContainer.classList.add('crack-shaking');
+                barContainer.addEventListener('animationend', () => barContainer.classList.remove('crack-shaking'), { once: true });
             }
             
-            // --- Flash the progress bar ---
+            // --- Flash the progress bar fill ---
             const bar = document.getElementById('shack-progress-bar');
             if (bar) {
                 bar.style.animation = 'none';
@@ -657,24 +658,6 @@
                 void btn.offsetWidth;
                 btn.style.animation = 'crackPulse 0.25s ease-out';
                 btn.addEventListener('animationend', () => btn.style.animation = '', { once: true });
-            }
-            
-            // --- Spawn emoji burst around the slot ---
-            const stars = ['✨','💥','⚡','🔥','💫'];
-            if (slot) {
-                const rect = slot.getBoundingClientRect();
-                for (let i = 0; i < 3; i++) {
-                    const star = document.createElement('div');
-                    star.textContent = stars[Math.floor(Math.random() * stars.length)];
-                    const angle = (i / 3) * 360 + Math.random() * 40;
-                    const dist = 35 + Math.random() * 25;
-                    const rad = angle * Math.PI / 180;
-                    const x = rect.left + rect.width/2 + Math.cos(rad)*dist;
-                    const y = rect.top  + rect.height/2 + Math.sin(rad)*dist;
-                    star.style.cssText = `position:fixed;left:${x}px;top:${y}px;transform:translate(-50%,-50%);font-size:${14+Math.random()*10}px;pointer-events:none;z-index:99999;animation:crackStar 0.5s ease-out forwards;`;
-                    document.body.appendChild(star);
-                    setTimeout(() => star.remove(), 520);
-                }
             }
             
             // --- Play pick sound at varying pitch ---
