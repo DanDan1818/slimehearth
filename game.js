@@ -79,6 +79,7 @@
             hats: {}, // Format: { 'top_hat': true, 'party_hat': true }
             equippedHat: null, // Currently equipped hat (null = no hat)
             keys: {}, // Format: { 'bronze_key': true, 'silver_key': true }
+            frogs: {}, // Format: { 'frog_blue': true, ... } - collected frogs
             skills: { // Skill levels and XP
                 fishing: { level: 1, xp: 0, xpNeeded: 10 },
                 farming: { level: 1, xp: 0, xpNeeded: 10 },
@@ -120,7 +121,12 @@
             'basket': '#d97706',
             'lily_pad': '#4ade80',
             'old_boot': '#78716c',
-            'seaweed': '#16a34a'
+            'seaweed': '#16a34a',
+            'frog_blue': '#3b82f6',
+            'frog_yellow': '#eab308',
+            'frog_red': '#ef4444',
+            'frog_green': '#22c55e',
+            'frog_purple': '#a855f7'
         };
         
         const ITEM_IMAGES = {
@@ -393,6 +399,61 @@
                 sellValue: 1,
                 cookable: false,
                 feedable: false
+            },
+            'frog_blue': {
+                name: '🐸 Blue Frog',
+                emoji: '🐸',
+                rarity: 'Legendary',
+                rarityColor: '#3b82f6',
+                description: 'A rare blue frog found fishing. Feed to the slime to add to your Collection!',
+                foodValue: 0,
+                sellValue: 0,
+                cookable: false,
+                feedable: true
+            },
+            'frog_yellow': {
+                name: '🐸 Yellow Frog',
+                emoji: '🐸',
+                rarity: 'Legendary',
+                rarityColor: '#eab308',
+                description: 'A rare yellow frog found mining. Feed to the slime to add to your Collection!',
+                foodValue: 0,
+                sellValue: 0,
+                cookable: false,
+                feedable: true
+            },
+            'frog_red': {
+                name: '🐸 Red Frog',
+                emoji: '🐸',
+                rarity: 'Legendary',
+                rarityColor: '#ef4444',
+                description: 'A rare red frog found cooking. Feed to the slime to add to your Collection!',
+                foodValue: 0,
+                sellValue: 0,
+                cookable: false,
+                feedable: true
+            },
+            'frog_green': {
+                name: '🐸 Green Frog',
+                emoji: '🐸',
+                rarity: 'Legendary',
+                rarityColor: '#22c55e',
+                description: 'A rare green frog found farming. Feed to the slime to add to your Collection!',
+                foodValue: 0,
+                sellValue: 0,
+                cookable: false,
+                feedable: true
+            },
+            'frog_purple': {
+                name: '🐸 Purple Frog',
+                emoji: '🐸',
+                rarity: 'Legendary',
+                rarityColor: '#a855f7',
+                description: 'A rare purple frog found in a geode. Feed to the slime to add to your Collection!',
+                foodValue: 0,
+                sellValue: 0,
+                cookable: false,
+                feedable: true
             }
         };
         
@@ -473,6 +534,14 @@
                 icon: '💧',
                 unlockType: 'fishing' // 10% chance from fishing
             }
+        };
+        
+        const FROGS_DATA = {
+            'frog_blue':   { name: '🐸 Blue Frog',   icon: '🔵🐸', color: '#3b82f6', description: 'Found while fishing at the Pond or River' },
+            'frog_yellow': { name: '🐸 Yellow Frog', icon: '🟡🐸', color: '#eab308', description: 'Found while automining in the Cave' },
+            'frog_red':    { name: '🐸 Red Frog',    icon: '🔴🐸', color: '#ef4444', description: 'Found while cooking at the Hearth' },
+            'frog_green':  { name: '🐸 Green Frog',  icon: '🟢🐸', color: '#22c55e', description: 'Found while farming in the Garden' },
+            'frog_purple': { name: '🐸 Purple Frog', icon: '🟣🐸', color: '#a855f7', description: 'Found inside a geode at the Shack' }
         };
         
         // ===== BASKET PHYSICS =====
@@ -666,6 +735,11 @@
                 }
                 if (gs.bagUpgrades === undefined) {
                     gs.bagUpgrades = 0;
+                }
+                
+                // Patch old saves missing frogs
+                if (!gs.frogs) {
+                    gs.frogs = {};
                 }
                 
                 updateUI();
@@ -1441,6 +1515,15 @@
                                     rareFindChance: 0,
                                     foodsEaten: 0
                                 };
+                            }
+                            
+                            // Check if it's a frog - add to collection instead of eating
+                            if (body.itemId && body.itemId.startsWith('frog_')) {
+                                gs.frogs[body.itemId] = true;
+                                save();
+                                notify('🐸 ' + (FROGS_DATA[body.itemId] ? FROGS_DATA[body.itemId].name : body.itemId) + ' added to Collection!', 'achievement');
+                                updateUI();
+                                return; // Skip normal food logic
                             }
                             
                             gs.stats.foodsEaten++;
@@ -2335,6 +2418,12 @@ function stopBasket() {
                     addItem('basket', 1);
                     notify('🧺 Found a Basket!');
                 }
+                
+                // 0.01% chance to find Blue Frog (if not already collected)
+                if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
+                    addItem('frog_blue', 1);
+                    notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
+                }
             } else {
                 timer.textContent = '❌ Missed!';
             }
@@ -2405,6 +2494,12 @@ function stopBasket() {
                 if (Math.random() < 0.05) {
                     addItem('basket', 1);
                     notify('🧺 Found a Basket!');
+                }
+                
+                // 0.01% chance to find Blue Frog (if not already collected)
+                if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
+                    addItem('frog_blue', 1);
+                    notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
                 }
             } else {
                 result.textContent = '❌ It got away!';
@@ -2665,6 +2760,12 @@ function stopBasket() {
             // Give 3 carrots for this slot
             addItem('carrot', 3);
             addSkillXP('farming', 15);
+            
+            // 0.01% chance to find Green Frog (if not already collected)
+            if (!gs.frogs.frog_green && Math.random() < 0.0001) {
+                addItem('frog_green', 1);
+                notify('🟢🐸 A Green Frog was hiding under the crops!', 'achievement');
+            }
             
             // Clear this slot
             gardenSlots[slotIndex] = null;
@@ -3413,6 +3514,12 @@ function stopBasket() {
                     setTimeout(() => resultDiv.textContent = '', 3000);
                 }
                 notify('✨ Cooked ' + recipe.name + '!');
+                
+                // 0.01% chance to find Red Frog (if not already collected)
+                if (!gs.frogs.frog_red && Math.random() < 0.0001) {
+                    addItem('frog_red', 1);
+                    notify('🔴🐸 A Red Frog hopped out of the flames!', 'achievement');
+                }
             } else {
                 // Burnt!
                 let removed1 = false, removed2 = false;
@@ -3738,6 +3845,12 @@ function stopBasket() {
                     result.textContent = '🪨 Rock... +1 Rock (1 coin)';
                     addItem('rock', 1);
                     notify('😐 Just a rock...');
+                }
+                
+                // 0.01% chance to find Purple Frog (if not already collected)
+                if (!gs.frogs.frog_purple && Math.random() < 0.0001) {
+                    addItem('frog_purple', 1);
+                    notify('🟣🐸 A Purple Frog was hiding inside the geode!', 'achievement');
                 }
                 
                 checkProspectingLevelUp();
@@ -4338,6 +4451,12 @@ function initKitchenGame() {
                     setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
                 }
                 
+                // 0.01% chance to find Yellow Frog (if not already collected)
+                if (!gs.frogs.frog_yellow && Math.random() < 0.0001) {
+                    addItem('frog_yellow', 1);
+                    notify('🟡🐸 A Yellow Frog crawled out of the rocks!', 'achievement');
+                }
+                
                 if (automineTimeLeft <= 0) {
                     stopAutomine();
                     const t = document.getElementById('automine-timer');
@@ -4474,10 +4593,10 @@ function initKitchenGame() {
         
         // Debug functions
         document.getElementById('fill-bag').onclick = () => {
-            addItem('fish5', 2);  // Lobster
-            addItem('fish6', 2);  // Shrimp
+            addItem('carrot', 3);  // Carrots
             addItem('fish7', 1);  // Crab
             addItem('fish8', 1);  // Shark
+            addItem('fish5', 1);  // Lobster
         };
         
         document.getElementById('toggle-debug-console').onclick = () => {
@@ -4610,6 +4729,7 @@ function initKitchenGame() {
             switchRoom('trophies-room');
             displayTrophies();
             displayKeys();
+            displayFrogs();
         };
         document.getElementById('leave-wardrobe').onclick = () => switchRoom('room-room');
         document.getElementById('leave-trophies').onclick = () => switchRoom('room-room');
@@ -4729,7 +4849,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.388');
+        console.log('Game version: v0.636');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
@@ -5157,6 +5277,48 @@ function initKitchenGame() {
                 `;
                 
                 display.appendChild(keyCard);
+            }
+        }
+        
+        function displayFrogs() {
+            const display = document.getElementById('frogs-grid');
+            if (!display) return;
+            
+            display.innerHTML = '';
+            
+            for (const frogId in FROGS_DATA) {
+                const frog = FROGS_DATA[frogId];
+                const collected = gs.frogs[frogId] || false;
+                
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background: ${collected ? frog.color + '22' : '#f3f4f6'};
+                    border: 2px solid ${collected ? frog.color : '#d1d5db'};
+                    border-radius: 8px;
+                    padding: 6px;
+                    text-align: center;
+                    opacity: ${collected ? '1' : '0.4'};
+                    min-height: 70px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
+                `;
+                
+                card.innerHTML = `
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:28px;">
+                        ${collected ? '🐸' : '❓'}
+                    </div>
+                    <div style="width:100%;background:${collected ? frog.color : '#9ca3af'};color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:8px;margin-top:6px;">
+                        ${collected ? frog.name.replace('🐸 ','') : '???'}
+                    </div>
+                `;
+                
+                if (collected) {
+                    card.title = frog.description;
+                }
+                
+                display.appendChild(card);
             }
         }
         
