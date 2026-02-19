@@ -136,7 +136,17 @@
             gs.gardenReadyTime = gardenReadyTime;
             
             const startBar = document.getElementById('garden-progress-bar');
-            if (startBar) { startBar.style.width = '100%'; startBar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; startBar.style.transition = 'width 0.5s linear'; }
+            const startLabel = document.getElementById('garden-timer-display');
+            if (startBar) {
+                startBar.style.transition = 'width 0.6s ease-out';
+                startBar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
+                startBar.style.width = '100%';
+                if (startLabel) startLabel.textContent = 'Watering...';
+                setTimeout(() => {
+                    if (startBar) startBar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)';
+                    if (startLabel) startLabel.textContent = 'Growing...';
+                }, 650);
+            }
             save();
             updateInventoryCounter();
             updateGardenDisplay();
@@ -193,18 +203,19 @@
             const bar = document.getElementById('garden-progress-bar');
             
             if (harvestHoldProgress > 0 && harvestHoldProgress < 1) {
-                if (timerDisplay) timerDisplay.textContent = '🥕 Harvesting...';
+                if (timerDisplay) timerDisplay.textContent = 'Harvesting...';
                 if (bar) { bar.style.width = (harvestHoldProgress * 100) + '%'; bar.style.background = 'linear-gradient(90deg,#d97706,#b45309)'; bar.style.transition = 'none'; }
             } else if (harvestHoldProgress >= 1) {
-                if (timerDisplay) timerDisplay.textContent = '✅ Harvested!';
+                if (timerDisplay) timerDisplay.textContent = 'Harvested!';
                 if (bar) { bar.style.width = '100%'; bar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; bar.style.transition = 'none'; }
             } else {
                 const remaining = gardenSlots.filter(s => s !== null).length;
-                if (bar) { bar.style.width = '0%'; bar.style.background = 'linear-gradient(90deg,#d97706,#b45309)'; bar.style.transition = 'none'; }
                 if (remaining > 0) {
-                    if (timerDisplay) timerDisplay.textContent = `✅ Hold to harvest! (${remaining} left)`;
+                    if (bar) { bar.style.width = '100%'; bar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; bar.style.transition = 'none'; }
+                    if (timerDisplay) timerDisplay.textContent = 'Ready to harvest.';
                 } else {
-                    if (timerDisplay) timerDisplay.textContent = '';
+                    if (bar) { bar.style.width = '0%'; bar.style.transition = 'none'; }
+                    if (timerDisplay) timerDisplay.textContent = 'Plant seeds.';
                 }
             }
         }
@@ -299,7 +310,9 @@
                 gs.gardenReadyTime = null;
                 stopGardenUpdateInterval();
                 const doneBar = document.getElementById('garden-progress-bar');
+                const doneLabel = document.getElementById('garden-timer-display');
                 if (doneBar) { doneBar.style.width = '0%'; doneBar.style.transition = 'none'; }
+                if (doneLabel) doneLabel.textContent = 'Plant seeds.';
 
             }
             
@@ -337,7 +350,9 @@
             gardenStartTime = null;
             gardenReadyTime = null;
             const resetBar = document.getElementById('garden-progress-bar');
+            const resetLabel = document.getElementById('garden-timer-display');
             if (resetBar) { resetBar.style.width = '0%'; resetBar.style.transition = 'none'; }
+            if (resetLabel) resetLabel.textContent = 'Plant seeds.';
             
             // Reset harvest hold state
             stopHarvestHold();
@@ -421,7 +436,7 @@
                     const pct = Math.max(0, Math.min(100, 100 - (elapsed / totalTime * 100)));
                     const bar = document.getElementById('garden-progress-bar');
                     if (bar) { bar.style.width = pct + '%'; bar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; }
-                    if (timerDisplay) timerDisplay.textContent = `⏱️ Growing: ${timeLeft}s`;
+                    if (timerDisplay) timerDisplay.textContent = 'Growing...';
                     if (waterBtn) {
                         waterBtn.textContent = '🌱';
                         waterBtn.style.background = '#ccc';
@@ -493,7 +508,9 @@
                     }
                 }
             } else {
-                if (timerDisplay) timerDisplay.textContent = '';
+                if (timerDisplay) timerDisplay.textContent = 'Plant seeds.';
+                const idleBar = document.getElementById('garden-progress-bar');
+                if (idleBar) { idleBar.style.width = '0%'; idleBar.style.transition = 'none'; }
                 if (waterBtn) {
                     waterBtn.textContent = '💧';
                     waterBtn.style.background = '#4dd0e1';
