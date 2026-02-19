@@ -94,7 +94,8 @@
                 foodsEaten: 0 // Total foods consumed
             },
             maxInventory: 6, // Inventory capacity (upgradeable)
-            bagUpgrades: 0 // Number of bag upgrades purchased
+            bagUpgrades: 0, // Number of bag upgrades purchased
+            frogs: {} // Collected frogs: { 'frog_blue': true, ... }
         };
         
         // ===== CONSTANTS =====
@@ -1049,6 +1050,13 @@
         function switchRoom(roomId) {
             document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
             document.getElementById(roomId).classList.add('active');
+            
+            // Only allow basket canvas to capture pointer events on home screen
+            // Otherwise it blocks clicks on room buttons beneath it
+            const basketCanvas = document.getElementById('basket-canvas');
+            if (basketCanvas) {
+                basketCanvas.style.pointerEvents = (roomId === 'home-room') ? 'auto' : 'none';
+            }
             
             // Update bag images based on room
             const inventoryBag = document.getElementById('basket-bg-image');
@@ -4856,7 +4864,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.638');
+        console.log('Game version: v0.639');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
