@@ -1065,7 +1065,7 @@
             if (overlay) {
                 // Flash black overlay: fade in quickly, swap room at peak, fade out
                 overlay.style.opacity = '1';
-                overlay.style.transition = 'opacity 0.15s ease-in';
+                overlay.style.transition = 'opacity 0.08s ease-in';
                 overlay.classList.remove('active');
                 
                 setTimeout(() => {
@@ -1075,9 +1075,9 @@
                     doSwitchRoom(roomId);
                     
                     // Fade out
-                    overlay.style.transition = 'opacity 0.25s ease-out';
+                    overlay.style.transition = 'opacity 0.15s ease-out';
                     overlay.style.opacity = '0';
-                }, 150);
+                }, 80);
                 return;
             }
             
@@ -4944,7 +4944,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.645');
+        console.log('Game version: v0.646');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
