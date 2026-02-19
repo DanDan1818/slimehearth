@@ -144,7 +144,9 @@
         
         #wardrobe-room.active {
             justify-content: flex-start;
-            padding-top: 10px;  /* Very top of screen */
+            padding-top: 10px;
+            overflow-y: auto;
+            padding-bottom: 80px;
         }
         
         #room-room.active {
@@ -154,7 +156,9 @@
         
         #trophies-room.active {
             justify-content: flex-start;
-            padding-top: 10px;  /* Very top of screen */
+            padding-top: 10px;
+            overflow-y: auto;
+            padding-bottom: 80px;
         }
         
         #cooking-menu-room {
@@ -323,9 +327,9 @@
         }
         
         .basket-container canvas {
-            pointer-events: auto;
+            pointer-events: none;  /* Buttons beneath are always clickable; Matter.js uses addEventListener directly so dragging still works */
             position: relative;
-            z-index: 150;  /* Higher than most elements */
+            z-index: 150;
         }
         
         /* Basket Close Button - HIDDEN (bag button closes it now) */

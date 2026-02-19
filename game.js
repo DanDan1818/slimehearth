@@ -1051,12 +1051,8 @@
             document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
             document.getElementById(roomId).classList.add('active');
             
-            // Only allow basket canvas to capture pointer events on home screen
-            // Otherwise it blocks clicks on room buttons beneath it
-            const basketCanvas = document.getElementById('basket-canvas');
-            if (basketCanvas) {
-                basketCanvas.style.pointerEvents = (roomId === 'home-room') ? 'auto' : 'none';
-            }
+            // Canvas pointer-events handled via CSS (none) so buttons are always clickable
+            // Matter.js uses addEventListener directly so dragging still works everywhere
             
             // Update bag images based on room
             const inventoryBag = document.getElementById('basket-bg-image');
@@ -4864,7 +4860,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.639');
+        console.log('Game version: v0.641');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
