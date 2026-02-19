@@ -4628,7 +4628,7 @@ function initKitchenGame() {
         document.getElementById('leave-pond').onclick = () => switchRoom('fishing-menu-room');
         
         document.getElementById('goto-river').onclick = () => {
-            if (!gs.tools || !gs.tools.fishing_net) {
+            if (!gs.tools || !gs.tools.better_net) {
                 notify('❌ You need a Fishing Net to fish at the River! Buy it from the shop.');
                 return;
             }
@@ -5051,7 +5051,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.653');
+        console.log('Game version: v0.655');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
