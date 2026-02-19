@@ -1100,7 +1100,7 @@
             
             // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
             const basketContainer = document.getElementById('basket-container');
-            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'cooking-menu-room', 'adventure-room', 'mining-depth1-room', 'mining-depth2-room', 'mining-depth3-room', 'mining-depth4-room', 'mining-depth5-room'];
+            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'adventure-room'];
             if (basketContainer) {
                 if (noBasketRooms.includes(roomId)) {
                     basketContainer.style.pointerEvents = 'none';
@@ -1639,9 +1639,9 @@
                             const eatSound2 = document.getElementById('eat-sound-2');
                             const randomSound = Math.random() < 0.5 ? eatSound1 : eatSound2;
                             if (randomSound) {
-                                randomSound.currentTime = 0; // Reset to start
-                                randomSound.volume = 0.4; // 40% volume
-                                randomSound.play().catch(() => {}); // Play, ignore errors
+                                randomSound.currentTime = 0;
+                                randomSound.volume = 0.4;
+                                randomSound.play().catch(() => {});
                             }
                             
                             // Add slime XP
@@ -1649,21 +1649,29 @@
                             gs.slimeXP += xpGain;
                             
                             // Level up check (max level 100)
+                            let didLevelUp = false;
                             while (gs.slimeXP >= gs.slimeXPNeeded && gs.level < 100) {
                                 gs.slimeXP -= gs.slimeXPNeeded;
                                 gs.level++;
-                                
-                                // Gradually increase XP needed (1.2x multiplier for smoother scaling)
                                 gs.slimeXPNeeded = Math.floor(gs.slimeXPNeeded * 1.2);
-                                
                                 notify('🎉 Slime Level Up! Level ' + gs.level, 'levelup');
                                 levelUpBurst();
-                                const levelupSound = document.getElementById('slime-levelup-sound');
-                                if (levelupSound) { levelupSound.currentTime = 0; levelupSound.play().catch(() => {}); }
-                                
-                                // Create a small geode on level up
                                 addItem('small_geode', 1);
                                 notify('💎 Found a Small Geode!');
+                                didLevelUp = true;
+                            }
+                            
+                            // Play level-up sound AFTER eat sound finishes
+                            if (didLevelUp) {
+                                const playLevelUp = () => {
+                                    const levelupSound = document.getElementById('slime-levelup-sound');
+                                    if (levelupSound) { levelupSound.currentTime = 0; levelupSound.play().catch(() => {}); }
+                                };
+                                if (randomSound && !randomSound.ended) {
+                                    randomSound.addEventListener('ended', playLevelUp, { once: true });
+                                } else {
+                                    playLevelUp();
+                                }
                             }
                             
                             // Cap XP at max level
@@ -4617,6 +4625,16 @@ function initKitchenGame() {
         document.getElementById('back-to-area').onclick = () => switchRoom('area-room');
         document.getElementById('back-to-area-mining').onclick = () => switchRoom('area-room');
         document.getElementById('goto-pond').onclick = () => switchRoom('fishing-pond-room');
+        document.getElementById('leave-pond').onclick = () => switchRoom('fishing-menu-room');
+        
+        document.getElementById('goto-river').onclick = () => {
+            if (!gs.tools || !gs.tools.fishing_net) {
+                notify('❌ You need a Fishing Net to fish at the River! Buy it from the shop.');
+                return;
+            }
+            switchRoom('fishing-river-room');
+        };
+        document.getElementById('leave-river').onclick = () => switchRoom('fishing-menu-room');
         function enterMineDepth(depth) {
             const cfg = MINE_DEPTHS[depth];
             const miningLevel = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
@@ -5033,7 +5051,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.650');
+        console.log('Game version: v0.653');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
