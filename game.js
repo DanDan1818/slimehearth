@@ -1051,8 +1051,18 @@
             document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
             document.getElementById(roomId).classList.add('active');
             
-            // Canvas pointer-events handled via CSS (none) so buttons are always clickable
-            // Matter.js uses addEventListener directly so dragging still works everywhere
+            // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
+            const basketContainer = document.getElementById('basket-container');
+            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'cooking-menu-room', 'adventure-room'];
+            if (basketContainer) {
+                if (noBasketRooms.includes(roomId)) {
+                    basketContainer.style.pointerEvents = 'none';
+                    basketContainer.style.opacity = '0';
+                } else {
+                    basketContainer.style.pointerEvents = '';
+                    basketContainer.style.opacity = '1';
+                }
+            }
             
             // Update bag images based on room
             const inventoryBag = document.getElementById('basket-bg-image');
@@ -4860,7 +4870,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.641');
+        console.log('Game version: v0.642');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {

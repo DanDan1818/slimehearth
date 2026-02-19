@@ -327,7 +327,7 @@
         }
         
         .basket-container canvas {
-            pointer-events: none;  /* Buttons beneath are always clickable; Matter.js uses addEventListener directly so dragging still works */
+            pointer-events: auto;
             position: relative;
             z-index: 150;
         }
