@@ -625,13 +625,12 @@
         /* River timing minigame */
         #fishing-bar-container-river {
             position: relative;
-            width: 300px;
-            height: 30px;
-            background: linear-gradient(to bottom, #999 0%, #ddd 50%, #eee 100%);
-            border: 3px solid #333;
-            border-radius: 12px;
+            width: 280px;
+            height: 16px;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid #000;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.2);
         }
         
         #fish-pond-btn:active {
@@ -661,26 +660,26 @@
             top: 0;
             width: 30px;
             height: 100%;
-            background: linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%);
-            border-right: 3px solid #0e7490;
-            border-radius: 8px 0 0 8px;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 2px 0 6px rgba(6, 182, 212, 0.5);
+            background: linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7);
+            border-radius: 8px;
         }
         
         #fishing-target-river {
             position: absolute;
             width: 50px;
             height: 100%;
-            background: linear-gradient(to bottom, #6fffb0 0%, rgba(34, 197, 94, 0.5) 50%, rgba(22, 163, 74, 0.6) 100%);
-            border: 3px solid #16a34a;
-            border-radius: 6px;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 0 10px rgba(34, 197, 94, 0.6);
+            background: linear-gradient(90deg,#4ade80,#16a34a);
+            border-radius: 8px;
+            opacity: 0.85;
         }
         
         #fishing-timer-river {
-            font-size: 24px;
-            font-weight: bold;
-            min-height: 30px;
+            font-family: 'Righteous', sans-serif;
+            font-size: 20px;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.5);
+            min-height: 28px;
+            margin-bottom: 6px;
         }
         
         
