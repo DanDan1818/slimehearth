@@ -138,7 +138,12 @@
             'amethyst': '#a855f7',
             'topaz':    '#f59e0b',
             'diamond':  '#e0f2fe',
-            'ore': '#cd7f32',
+            'ore':         '#cd7f32',
+            'copper_ore':  '#cd7f32',
+            'coal':        '#374151',
+            'iron_ore':    '#9ca3af',
+            'silver_ore':  '#e2e8f0',
+            'gold_ore':    '#fbbf24',
             'basket': '#d97706',
             'lily_pad': '#4ade80',
             'old_boot': '#78716c',
@@ -181,7 +186,12 @@
             'basket': './slimehearth-assets/images/basket1.png',
             'food': './slimehearth-assets/images/food1.png',
             'rock': './slimehearth-assets/images/rock1.png',
-            'ore': './slimehearth-assets/images/ore1.png',
+            'ore':         './slimehearth-assets/images/ore1.png',
+            'copper_ore':  './slimehearth-assets/images/ore1.png',
+            'coal':        './slimehearth-assets/images/ore1.png',
+            'iron_ore':    './slimehearth-assets/images/ore1.png',
+            'silver_ore':  './slimehearth-assets/images/ore1.png',
+            'gold_ore':    './slimehearth-assets/images/ore1.png',
             'lily_pad': './slimehearth-assets/images/trash1.png',
             'frog_blue':   './slimehearth-assets/images/frog1.png',
             'frog_yellow': './slimehearth-assets/images/frog2.png',
@@ -517,16 +527,40 @@
                 foodValue: 0, sellValue: 1000, cookable: false, feedable: false
             },
             'ore': {
-                name: 'Ore',
-                emoji: '⛏️',
-                image: 'ore1.png',
-                rarity: 'Uncommon',
-                rarityColor: '#4ade80',
-                description: 'Valuable ore mined from The Cave.',
-                foodValue: 0,
-                sellValue: 20,
-                cookable: false,
-                feedable: false
+                name: 'Copper Ore', emoji: '🟤', image: 'ore1.png',
+                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                description: 'Uncommon copper ore found in The Cave.',
+                foodValue: 0, sellValue: 10, cookable: false, feedable: false
+            },
+            'copper_ore': {
+                name: 'Copper Ore', emoji: '🟤', image: 'ore1.png',
+                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                description: 'Uncommon copper ore found in The Cave.',
+                foodValue: 0, sellValue: 10, cookable: false, feedable: false
+            },
+            'coal': {
+                name: 'Coal', emoji: '🖤', image: 'ore1.png',
+                rarity: 'Common', rarityColor: '#9ca3af',
+                description: 'A lump of coal. Burns well.',
+                foodValue: 0, sellValue: 6, cookable: false, feedable: false
+            },
+            'iron_ore': {
+                name: 'Iron Ore', emoji: '⚙️', image: 'ore1.png',
+                rarity: 'Rare', rarityColor: '#a78bfa',
+                description: 'Dense iron ore from Depth 1 and beyond.',
+                foodValue: 0, sellValue: 35, cookable: false, feedable: false
+            },
+            'silver_ore': {
+                name: 'Silver Ore', emoji: '🔘', image: 'ore1.png',
+                rarity: 'Epic', rarityColor: '#f43f5e',
+                description: 'Gleaming silver ore from deep within Depth 3.',
+                foodValue: 0, sellValue: 100, cookable: false, feedable: false
+            },
+            'gold_ore': {
+                name: 'Gold Ore', emoji: '🌟', image: 'ore1.png',
+                rarity: 'Legendary', rarityColor: '#fbbf24',
+                description: 'Precious gold ore found only at Depth 5.',
+                foodValue: 0, sellValue: 300, cookable: false, feedable: false
             },
             'basket': {
                 name: '🧺 Basket',

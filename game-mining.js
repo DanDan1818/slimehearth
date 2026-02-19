@@ -4,13 +4,48 @@
         let automineRunId = 0;
         let currentMineDepth = 'cave';
         
+        // Ore table entry: [itemId, baseChance, xp, emoji, label]
+        // baseChance is per-second at base level; +0.001 per mining level above reqLevel
+        const ORE_TABLE = {
+            'cave':   [
+                { id: 'copper_ore', base: 0.030, xp: 8,  emoji: '🟤', label: 'Copper Ore' },
+                { id: 'coal',       base: 0.020, xp: 5,  emoji: '🖤', label: 'Coal'       },
+            ],
+            'depth1': [
+                { id: 'copper_ore', base: 0.035, xp: 8,  emoji: '🟤', label: 'Copper Ore' },
+                { id: 'coal',       base: 0.025, xp: 5,  emoji: '🖤', label: 'Coal'       },
+                { id: 'iron_ore',   base: 0.012, xp: 20, emoji: '⚙️', label: 'Iron Ore'   },
+            ],
+            'depth2': [
+                { id: 'copper_ore', base: 0.030, xp: 8,  emoji: '🟤', label: 'Copper Ore' },
+                { id: 'coal',       base: 0.025, xp: 5,  emoji: '🖤', label: 'Coal'       },
+                { id: 'iron_ore',   base: 0.020, xp: 20, emoji: '⚙️', label: 'Iron Ore'   },
+            ],
+            'depth3': [
+                { id: 'copper_ore', base: 0.025, xp: 8,  emoji: '🟤', label: 'Copper Ore' },
+                { id: 'coal',       base: 0.020, xp: 5,  emoji: '🖤', label: 'Coal'       },
+                { id: 'iron_ore',   base: 0.025, xp: 20, emoji: '⚙️', label: 'Iron Ore'   },
+                { id: 'silver_ore', base: 0.008, xp: 40, emoji: '🔘', label: 'Silver Ore' },
+            ],
+            'depth4': [
+                { id: 'coal',       base: 0.020, xp: 5,  emoji: '🖤', label: 'Coal'       },
+                { id: 'iron_ore',   base: 0.028, xp: 20, emoji: '⚙️', label: 'Iron Ore'   },
+                { id: 'silver_ore', base: 0.014, xp: 40, emoji: '🔘', label: 'Silver Ore' },
+            ],
+            'depth5': [
+                { id: 'iron_ore',   base: 0.025, xp: 20, emoji: '⚙️', label: 'Iron Ore'   },
+                { id: 'silver_ore', base: 0.018, xp: 40, emoji: '🔘', label: 'Silver Ore' },
+                { id: 'gold_ore',   base: 0.005, xp: 80, emoji: '🌟', label: 'Gold Ore'   },
+            ],
+        };
+
         const MINE_DEPTHS = {
-            'cave':   { reqLevel: 0,  oreChance: 0.02, rockChance: 0.05, oreXP: 10, rockXP: 1,  label: 'The Cave',  geodeItem: null,           geodeChance: 0      },
-            'depth1': { reqLevel: 10, oreChance: 0.04, rockChance: 0.07, oreXP: 15, rockXP: 2,  label: 'Depth 1',  geodeItem: 'small_geode',  geodeChance: 0.01   },
-            'depth2': { reqLevel: 20, oreChance: 0.06, rockChance: 0.09, oreXP: 20, rockXP: 3,  label: 'Depth 2',  geodeItem: 'medium_geode', geodeChance: 0.005  },
-            'depth3': { reqLevel: 40, oreChance: 0.09, rockChance: 0.12, oreXP: 30, rockXP: 5,  label: 'Depth 3',  geodeItem: 'large_geode',  geodeChance: 0.004  },
-            'depth4': { reqLevel: 65, oreChance: 0.12, rockChance: 0.15, oreXP: 45, rockXP: 8,  label: 'Depth 4',  geodeItem: 'rare_geode',   geodeChance: 0.003  },
-            'depth5': { reqLevel: 80, oreChance: 0.16, rockChance: 0.18, oreXP: 60, rockXP: 12, label: 'Depth 5',  geodeItem: 'rainbow_geode',geodeChance: 0.001  },
+            'cave':   { reqLevel: 0,  rockChance: 0.05, rockXP: 1,  label: 'The Cave',  geodeItem: null,           geodeChance: 0      },
+            'depth1': { reqLevel: 10, rockChance: 0.07, rockXP: 2,  label: 'Depth 1',  geodeItem: 'small_geode',  geodeChance: 0.01   },
+            'depth2': { reqLevel: 20, rockChance: 0.09, rockXP: 3,  label: 'Depth 2',  geodeItem: 'medium_geode', geodeChance: 0.005  },
+            'depth3': { reqLevel: 40, rockChance: 0.12, rockXP: 5,  label: 'Depth 3',  geodeItem: 'large_geode',  geodeChance: 0.004  },
+            'depth4': { reqLevel: 65, rockChance: 0.15, rockXP: 8,  label: 'Depth 4',  geodeItem: 'rare_geode',   geodeChance: 0.003  },
+            'depth5': { reqLevel: 80, rockChance: 0.18, rockXP: 12, label: 'Depth 5',  geodeItem: 'rainbow_geode',geodeChance: 0.001  },
         };
         
         function getAutomineIDs(depth) {
@@ -50,15 +85,26 @@
                 const resultEl = document.getElementById(ids.result);
                 if (timerEl) timerEl.textContent = `⏱️ ${automineTimeLeft}s remaining`;
                 
-                const roll = Math.random();
-                if (roll < cfg.oreChance) {
-                    addItem('ore', 1);
-                    addSkillXP('mining', cfg.oreXP);
-                    const pickSound = document.getElementById('pickaxe-sound');
-                    if (pickSound) { pickSound.currentTime = 0; pickSound.play().catch(() => {}); }
-                    if (resultEl) resultEl.textContent = '⛏️ Mined Ore!';
-                    setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
-                } else if (roll < cfg.oreChance + cfg.rockChance) {
+                // --- Ore drops (each ore rolls independently) ---
+                const miningLv = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
+                const lvBonus = (miningLv - 1) * 0.001; // +0.1% per level
+                const depthOres = ORE_TABLE[depth] || [];
+                let oreDropped = false;
+                for (const ore of depthOres) {
+                    if (Math.random() < ore.base + lvBonus) {
+                        addItem(ore.id, 1);
+                        addSkillXP('mining', ore.xp);
+                        oreDropped = true;
+                        const pickSound = document.getElementById('pickaxe-sound');
+                        if (pickSound) { pickSound.currentTime = 0; pickSound.play().catch(() => {}); }
+                        if (resultEl) resultEl.textContent = ore.emoji + ' Mined ' + ore.label + '!';
+                        setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
+                        break; // One ore drop per tick max
+                    }
+                }
+
+                // --- Rock drop (only if no ore this tick) ---
+                if (!oreDropped && Math.random() < cfg.rockChance) {
                     addItem('rock', 1);
                     addSkillXP('mining', cfg.rockXP);
                     const pickSound = document.getElementById('pickaxe-sound');
