@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.674</title>
+    <title>SlimeHearth v0.678</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.674</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.678</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -676,8 +676,13 @@
                         </div>
                     </div>
                     
-                    <!-- Progress -->
-                    <div id="shack-progress-display" style="font-size:16px;font-weight:bold;margin:8px 0;">Cracks: 0 / 20</div>
+                    <!-- Progress Bar -->
+                    <div style="width:200px;margin:8px auto 0 auto;">
+                        <div style="width:100%;height:22px;background:rgba(255,255,255,0.6);border:1px solid #000;border-radius:8px;overflow:hidden;position:relative;">
+                            <div id="shack-progress-bar" style="position:absolute;left:0;top:0;height:100%;width:0%;background:linear-gradient(90deg,#a855f7,#7c3aed);border-radius:8px;transition:width 0.15s ease-out;"></div>
+                            <div id="shack-progress-display" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;font-family:'Righteous',sans-serif;font-size:11px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);pointer-events:none;z-index:1;">Crack!</div>
+                        </div>
+                    </div>
                     
                     <!-- Result -->
                     <div id="shack-result" style="min-height:25px;font-size:14px;font-weight:bold;margin:8px 0;"></div>
@@ -895,56 +900,63 @@
             
             // After first song, shuffle the playlist
             if (currentTrackIndex === 0 && !playlistShuffled) {
-                // Keep hut-strings first, shuffle the rest
                 const restOfPlaylist = musicPlaylist.slice(1);
-                const shuffledRest = shuffleArray(restOfPlaylist);
-                musicPlaylist.splice(1, musicPlaylist.length - 1, ...shuffledRest);
+                musicPlaylist.splice(1, musicPlaylist.length - 1, ...shuffleArray(restOfPlaylist));
                 playlistShuffled = true;
             }
             
             currentTrackIndex++;
             if (currentTrackIndex >= musicPlaylist.length) {
                 currentTrackIndex = 0;
-                // Re-shuffle for next loop (excluding first track)
                 const restOfPlaylist = musicPlaylist.slice(1);
-                const shuffledRest = shuffleArray(restOfPlaylist);
-                musicPlaylist.splice(1, musicPlaylist.length - 1, ...shuffledRest);
+                musicPlaylist.splice(1, musicPlaylist.length - 1, ...shuffleArray(restOfPlaylist));
             }
             
             const currentVolume = bgMusic.volume;
-            bgMusic.src = musicPlaylist[currentTrackIndex];
-            bgMusic.load();
-            bgMusic.volume = currentVolume; // Maintain volume
             
-            // Add error handling
-            bgMusic.play().catch(err => {
-                console.warn('Music play failed:', err);
-                // Try next track on error
-                setTimeout(playNextTrack, 1000);
-            });
+            // Remove any previous canplaythrough listener to avoid stacking
+            bgMusic.oncanplaythrough = null;
+            
+            // Set src and wait for canplaythrough before playing
+            // This prevents the 2-second fragment loop bug caused by playing before buffer is ready
+            bgMusic.src = musicPlaylist[currentTrackIndex];
+            bgMusic.volume = currentVolume;
+            bgMusic.load();
+            
+            bgMusic.oncanplaythrough = () => {
+                bgMusic.oncanplaythrough = null;
+                bgMusic.play().catch(err => {
+                    console.warn('Music play failed:', err);
+                    setTimeout(playNextTrack, 2000);
+                });
+            };
+            
+            // Fallback: if canplaythrough never fires (e.g. cached file), play after short delay
+            bgMusic._playFallback = setTimeout(() => {
+                if (bgMusic.paused && bgMusic.src) {
+                    bgMusic.oncanplaythrough = null;
+                    bgMusic.play().catch(() => setTimeout(playNextTrack, 2000));
+                }
+            }, 3000);
         }
         
-        // Setup music event listener with multiple fallbacks
+        // Setup music event listeners
         document.addEventListener('DOMContentLoaded', () => {
             const bgMusic = document.getElementById('bg-music');
-            if (bgMusic) {
-                // Primary: ended event
-                bgMusic.addEventListener('ended', playNextTrack);
-                
-                // Backup: check if track ended manually every 5 seconds
-                setInterval(() => {
-                    if (bgMusic.ended && !bgMusic.paused) {
-                        console.log('Manual track change triggered');
-                        playNextTrack();
-                    }
-                }, 5000);
-                
-                // Handle errors
-                bgMusic.addEventListener('error', (e) => {
-                    console.error('Music error:', e);
-                    setTimeout(playNextTrack, 1000);
-                });
-            }
+            if (!bgMusic) return;
+            
+            // Clear fallback timer before advancing to avoid double-advance
+            bgMusic.addEventListener('ended', () => {
+                clearTimeout(bgMusic._playFallback);
+                playNextTrack();
+            });
+            
+            // Handle load errors — skip to next track
+            bgMusic.addEventListener('error', () => {
+                clearTimeout(bgMusic._playFallback);
+                console.warn('Music load error, skipping track.');
+                setTimeout(playNextTrack, 1000);
+            });
         });
     </script>
     
@@ -1013,7 +1025,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.674</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.678</div>
     <div id="mouse-coords">0, 0</div>
     
 

@@ -542,6 +542,10 @@
             
             shackGeodeSlot = null;
             shackCrackCount = 0;
+            const resetBar = document.getElementById('shack-progress-bar');
+            const resetLabel = document.getElementById('shack-progress-display');
+            if (resetBar) { resetBar.style.width = '0%'; }
+            if (resetLabel) resetLabel.textContent = 'Crack!';
             
             // Reset slot UI
             const icon = document.getElementById('shack-slot-icon');
@@ -587,10 +591,11 @@
         }
         
         function updateShackProgress() {
-            const display = document.getElementById('shack-progress-display');
-            if (display) {
-                display.textContent = 'Cracks: ' + shackCrackCount + ' / 20';
-            }
+            const bar = document.getElementById('shack-progress-bar');
+            const label = document.getElementById('shack-progress-display');
+            const pct = Math.min(shackCrackCount / 10 * 100, 100);
+            if (bar) bar.style.width = pct + '%';
+            if (label) label.textContent = shackCrackCount >= 10 ? 'Cracking!' : 'Crack!';
         }
         
         function updateCrackButton() {
@@ -615,14 +620,10 @@
         }
         
         function crackGeode() {
-            console.log('Crack clicked, geode:', shackGeodeSlot, 'count:', shackCrackCount);
-            
-            // Check if player has hammer
             if (!gs.tools.hammer) {
                 notify('❌ You need a 🔨 Hammer! Buy one from the Shop.', 'warning');
                 return;
             }
-            
             if (!shackGeodeSlot) {
                 notify('❌ Select a geode first!', 'warning');
                 return;
@@ -631,7 +632,60 @@
             shackCrackCount++;
             updateShackProgress();
             
-            if (shackCrackCount >= 20) {
+            // --- Shake the geode slot ---
+            const slot = document.getElementById('shack-geode-slot');
+            if (slot) {
+                slot.classList.remove('crack-shaking');
+                void slot.offsetWidth; // force reflow to restart animation
+                slot.classList.add('crack-shaking');
+                slot.addEventListener('animationend', () => slot.classList.remove('crack-shaking'), { once: true });
+            }
+            
+            // --- Flash the progress bar ---
+            const bar = document.getElementById('shack-progress-bar');
+            if (bar) {
+                bar.style.animation = 'none';
+                void bar.offsetWidth;
+                bar.style.animation = 'crackFlash 0.35s ease-out';
+                bar.addEventListener('animationend', () => bar.style.animation = '', { once: true });
+            }
+            
+            // --- Pulse the crack button ---
+            const btn = document.getElementById('crack-geode-btn');
+            if (btn) {
+                btn.style.animation = 'none';
+                void btn.offsetWidth;
+                btn.style.animation = 'crackPulse 0.25s ease-out';
+                btn.addEventListener('animationend', () => btn.style.animation = '', { once: true });
+            }
+            
+            // --- Spawn emoji burst around the slot ---
+            const stars = ['✨','💥','⚡','🔥','💫'];
+            if (slot) {
+                const rect = slot.getBoundingClientRect();
+                for (let i = 0; i < 3; i++) {
+                    const star = document.createElement('div');
+                    star.textContent = stars[Math.floor(Math.random() * stars.length)];
+                    const angle = (i / 3) * 360 + Math.random() * 40;
+                    const dist = 35 + Math.random() * 25;
+                    const rad = angle * Math.PI / 180;
+                    const x = rect.left + rect.width/2 + Math.cos(rad)*dist;
+                    const y = rect.top  + rect.height/2 + Math.sin(rad)*dist;
+                    star.style.cssText = `position:fixed;left:${x}px;top:${y}px;transform:translate(-50%,-50%);font-size:${14+Math.random()*10}px;pointer-events:none;z-index:99999;animation:crackStar 0.5s ease-out forwards;`;
+                    document.body.appendChild(star);
+                    setTimeout(() => star.remove(), 520);
+                }
+            }
+            
+            // --- Play pick sound at varying pitch ---
+            const pickSound = document.getElementById('pickaxe-sound');
+            if (pickSound) {
+                pickSound.currentTime = 0;
+                pickSound.playbackRate = 0.8 + (shackCrackCount / 10) * 0.5;
+                pickSound.play().catch(() => {});
+            }
+            
+            if (shackCrackCount >= 10) {
                 finishCracking();
             }
         }
@@ -680,6 +734,10 @@
             
             shackGeodeSlot = null;
             shackCrackCount = 0;
+            const resetBar = document.getElementById('shack-progress-bar');
+            const resetLabel = document.getElementById('shack-progress-display');
+            if (resetBar) { resetBar.style.width = '0%'; }
+            if (resetLabel) resetLabel.textContent = 'Crack!';
             
             save();
             updateInventoryCounter();
