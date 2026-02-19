@@ -194,7 +194,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(calc(-50% - 5px), calc(-50% + 5px));
             display: none;
             animation: slimeBounce 2s ease-in-out infinite;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
@@ -338,11 +338,11 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 15px;
-            height: 15px;
+            width: 11px;
+            height: 11px;
             background: rgba(0, 0, 0, 0.35);
             border-radius: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(calc(-50% - 5px), calc(-50% + 5px));
             z-index: 9999;
             pointer-events: none;
             opacity: 0;
