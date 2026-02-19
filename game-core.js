@@ -111,7 +111,17 @@
             'fish7': '#fbbf24',
             'fish8': '#a855f7',
             'carrot': '#ffaa44',
-            'carrot_seeds': '#8bc34a',
+            'carrot_seeds':  '#8bc34a',
+            'tomato':        '#e53935',
+            'tomato_seeds':  '#8bc34a',
+            'potato':        '#c8a96e',
+            'potato_seeds':  '#8bc34a',
+            'corn':          '#fdd835',
+            'corn_seeds':    '#8bc34a',
+            'onion':         '#ce93d8',
+            'onion_seeds':   '#8bc34a',
+            'pumpkin':       '#f4511e',
+            'pumpkin_seeds': '#8bc34a',
             'food': '#ff69b4',  // Pink for cooked food
             'burnt_food': '#1a1a1a',
             'burnt': '#1a1a1a',
@@ -142,7 +152,12 @@
             'gem': './slimehearth-assets/images/gem1.png',
             'small_geode': './slimehearth-assets/images/geode1.png',
             'carrot': './slimehearth-assets/images/carrot1.png',
-            'carrot_seeds': './slimehearth-assets/images/seeds1.png',
+            'carrot_seeds':  './slimehearth-assets/images/seeds1.png',
+            'tomato_seeds':  './slimehearth-assets/images/seeds1.png',
+            'potato_seeds':  './slimehearth-assets/images/seeds1.png',
+            'corn_seeds':    './slimehearth-assets/images/seeds1.png',
+            'onion_seeds':   './slimehearth-assets/images/seeds1.png',
+            'pumpkin_seeds': './slimehearth-assets/images/seeds1.png',
             'basket': './slimehearth-assets/images/basket1.png',
             'food': './slimehearth-assets/images/food1.png',
             'rock': './slimehearth-assets/images/rock1.png',
@@ -266,16 +281,83 @@
             },
             'carrot_seeds': {
                 name: '🌱 Carrot Seeds',
+                emoji: '🌱',
                 image: 'seeds1.png',
                 rarity: 'Common',
                 rarityColor: '#8bc34a',
-                description: 'Plant in the garden. Grows in 1 minute.',
-                foodValue: 0,
-                sellValue: 1,
-                cookable: false,
-                feedable: false,
-                isPlantable: true,
-                harvestItem: 'carrot'
+                description: 'Plant in the garden. Yields 3 Carrots.',
+                foodValue: 0, sellValue: 1, cookable: false, feedable: false,
+                isPlantable: true, harvestItem: 'carrot', harvestCount: 3
+            },
+            'tomato': {
+                name: 'Tomato', emoji: '🍅',
+                rarity: 'Common', rarityColor: '#9ca3af',
+                description: 'A juicy red tomato.',
+                foodValue: 12, sellValue: 5, cookable: true, feedable: true
+            },
+            'tomato_seeds': {
+                name: '🌱 Tomato Seeds', emoji: '🌱',
+                image: 'seeds1.png',
+                rarity: 'Common', rarityColor: '#8bc34a',
+                description: 'Plant in the garden. Yields 2 Tomatoes.',
+                foodValue: 0, sellValue: 2, cookable: false, feedable: false,
+                isPlantable: true, harvestItem: 'tomato', harvestCount: 2
+            },
+            'potato': {
+                name: 'Potato', emoji: '🥔',
+                rarity: 'Common', rarityColor: '#9ca3af',
+                description: 'A hearty starchy potato.',
+                foodValue: 8, sellValue: 4, cookable: true, feedable: true
+            },
+            'potato_seeds': {
+                name: '🌱 Potato Seeds', emoji: '🌱',
+                image: 'seeds1.png',
+                rarity: 'Common', rarityColor: '#8bc34a',
+                description: 'Plant in the garden. Yields 4 Potatoes.',
+                foodValue: 0, sellValue: 1, cookable: false, feedable: false,
+                isPlantable: true, harvestItem: 'potato', harvestCount: 4
+            },
+            'corn': {
+                name: 'Corn', emoji: '🌽',
+                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                description: 'Sweet golden corn.',
+                foodValue: 15, sellValue: 8, cookable: true, feedable: true
+            },
+            'corn_seeds': {
+                name: '🌱 Corn Seeds', emoji: '🌱',
+                image: 'seeds1.png',
+                rarity: 'Common', rarityColor: '#8bc34a',
+                description: 'Plant in the garden. Yields 2 Corn.',
+                foodValue: 0, sellValue: 3, cookable: false, feedable: false,
+                isPlantable: true, harvestItem: 'corn', harvestCount: 2
+            },
+            'onion': {
+                name: 'Onion', emoji: '🧅',
+                rarity: 'Common', rarityColor: '#9ca3af',
+                description: 'Brings tears of joy.',
+                foodValue: 10, sellValue: 6, cookable: true, feedable: true
+            },
+            'onion_seeds': {
+                name: '🌱 Onion Seeds', emoji: '🌱',
+                image: 'seeds1.png',
+                rarity: 'Common', rarityColor: '#8bc34a',
+                description: 'Plant in the garden. Yields 3 Onions.',
+                foodValue: 0, sellValue: 2, cookable: false, feedable: false,
+                isPlantable: true, harvestItem: 'onion', harvestCount: 3
+            },
+            'pumpkin': {
+                name: 'Pumpkin', emoji: '🎃',
+                rarity: 'Rare', rarityColor: '#a855f7',
+                description: 'A prize-winning pumpkin.',
+                foodValue: 25, sellValue: 20, cookable: true, feedable: true
+            },
+            'pumpkin_seeds': {
+                name: '🌱 Pumpkin Seeds', emoji: '🌱',
+                image: 'seeds1.png',
+                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                description: 'Plant in the garden. Yields 1 Pumpkin.',
+                foodValue: 0, sellValue: 5, cookable: false, feedable: false,
+                isPlantable: true, harvestItem: 'pumpkin', harvestCount: 1
             },
             'food': {
                 name: 'Cooked Food',

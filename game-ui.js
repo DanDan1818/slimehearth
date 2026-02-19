@@ -61,7 +61,12 @@
                     currentPurchases: gs.bagUpgrades,
                     description: `+2 Slots (${gs.maxInventory}/24)`
                 },
-                { id: 'carrot_seeds', name: '🌱 Carrot Seeds', icon: '🌱', price: 3, type: 'item' },
+                { id: 'carrot_seeds',  name: '🌱 Carrot Seeds',  icon: '🥕', price: 3,  type: 'item' },
+                { id: 'tomato_seeds',  name: '🌱 Tomato Seeds',  icon: '🍅', price: 5,  type: 'item' },
+                { id: 'potato_seeds',  name: '🌱 Potato Seeds',  icon: '🥔', price: 4,  type: 'item' },
+                { id: 'corn_seeds',    name: '🌱 Corn Seeds',    icon: '🌽', price: 8,  type: 'item' },
+                { id: 'onion_seeds',   name: '🌱 Onion Seeds',   icon: '🧅', price: 6,  type: 'item' },
+                { id: 'pumpkin_seeds', name: '🌱 Pumpkin Seeds', icon: '🎃', price: 15, type: 'item' },
                 { id: 'hammer', name: 'Hammer', icon: '🔨', price: 50, type: 'tool', data: TOOLS_DATA.hammer },
                 { id: 'fishing_rod', name: 'Fishing Rod', icon: '🎣', price: 100, type: 'tool', data: TOOLS_DATA.fishing_rod },
                 { id: 'better_net', name: 'Fishing Net', icon: '🥅', price: 250, type: 'tool', data: TOOLS_DATA.better_net },

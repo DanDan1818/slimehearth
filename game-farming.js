@@ -161,9 +161,11 @@
             // Check if inventory has space for 3 carrots
             const currentInventoryCount = Object.keys(gs.inventory).length;
             
-            if (currentInventoryCount + 3 > gs.maxInventory) {
-                notify('❌ Inventory full! Make space for 3 carrots before harvesting.', 'warning');
-                console.log('Cannot harvest - inventory full:', currentInventoryCount, '/', gs.maxInventory, '(need space for 3)');
+            const seedId = gardenSlots[slotIndex];
+            const seedData = ITEM_DATA[seedId];
+            const harvestCount = (seedData && seedData.harvestCount) || 3;
+            if (currentInventoryCount + harvestCount > gs.maxInventory) {
+                notify(`❌ Inventory full! Need space for ${harvestCount} items.`, 'warning');
                 return;
             }
             
@@ -246,16 +248,14 @@
             // Double-check inventory space (safety check)
             const currentInventoryCount = Object.keys(gs.inventory).length;
             
-            if (currentInventoryCount + 3 > gs.maxInventory) {
+            const sData = ITEM_DATA[gardenSlots[slotIndex]];
+            const hCount = (sData && sData.harvestCount) || 3;
+            const hItem  = (sData && sData.harvestItem)  || 'carrot';
+            if (currentInventoryCount + hCount > gs.maxInventory) {
                 notify('❌ Inventory full! Cannot harvest.', 'warning');
-                console.log('Harvest blocked - inventory full:', currentInventoryCount, '/', gs.maxInventory);
                 return;
             }
-            
-            console.log('Inventory check passed:', currentInventoryCount, '+ 3 <=', gs.maxInventory);
-            
-            // Give 3 carrots for this slot
-            addItem('carrot', 3);
+            addItem(hItem, hCount);
             addSkillXP('farming', 15);
             
             // 0.01% chance to find Green Frog (if not already collected)
@@ -319,14 +319,7 @@
             save();
             updateGardenDisplay();
             
-            const result = document.getElementById('garden-result');
-            if (result) {
-                result.textContent = `🥕 Harvested 3 Carrots! ${remaining > 0 ? `(${remaining} left)` : ''}`;
-                result.style.color = '#4caf50';
-                setTimeout(() => result.textContent = '', 2000);
-            }
-            
-            notify(`🥕 Harvested 3 Carrots! +15 Farming XP${remaining > 0 ? ` (${remaining} slots left)` : ''}`);
+            notify(`✅ Harvested! +15 Farming XP`);
         }
         
         // OLD harvestGarden - now using harvestSingleSlot per slot
