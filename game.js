@@ -147,7 +147,12 @@
             'food': './slimehearth-assets/images/food1.png',
             'rock': './slimehearth-assets/images/rock1.png',
             'ore': './slimehearth-assets/images/ore1.png',
-            'lily_pad': './slimehearth-assets/images/trash1.png'
+            'lily_pad': './slimehearth-assets/images/trash1.png',
+            'frog_blue':   './slimehearth-assets/images/frog1.png',
+            'frog_yellow': './slimehearth-assets/images/frog2.png',
+            'frog_red':    './slimehearth-assets/images/frog3.png',
+            'frog_green':  './slimehearth-assets/images/frog4.png',
+            'frog_purple': './slimehearth-assets/images/frog5.png'
         };
         
         const ITEM_DATA = {
@@ -406,6 +411,7 @@
                 emoji: '🐸',
                 rarity: 'Rainbow',
                 rarityColor: 'rainbow',
+                image: 'frog1.png',
                 description: 'A rare blue frog found fishing. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
@@ -418,6 +424,7 @@
                 emoji: '🐸',
                 rarity: 'Rainbow',
                 rarityColor: 'rainbow',
+                image: 'frog2.png',
                 description: 'A rare yellow frog found mining. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
@@ -430,6 +437,7 @@
                 emoji: '🐸',
                 rarity: 'Rainbow',
                 rarityColor: 'rainbow',
+                image: 'frog3.png',
                 description: 'A rare red frog found cooking. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
@@ -442,6 +450,7 @@
                 emoji: '🐸',
                 rarity: 'Rainbow',
                 rarityColor: 'rainbow',
+                image: 'frog4.png',
                 description: 'A rare green frog found farming. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
@@ -454,6 +463,7 @@
                 emoji: '🐸',
                 rarity: 'Rainbow',
                 rarityColor: 'rainbow',
+                image: 'frog5.png',
                 description: 'A rare purple frog found in a geode. Feed to the slime to add to your Collection!',
                 foodValue: 0,
                 sellValue: 0,
@@ -1090,7 +1100,7 @@
             
             // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
             const basketContainer = document.getElementById('basket-container');
-            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'cooking-menu-room', 'adventure-room'];
+            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'cooking-menu-room', 'adventure-room', 'mining-depth1-room', 'mining-depth2-room', 'mining-depth3-room', 'mining-depth4-room', 'mining-depth5-room'];
             if (basketContainer) {
                 if (noBasketRooms.includes(roomId)) {
                     basketContainer.style.pointerEvents = 'none';
@@ -1577,6 +1587,21 @@
                                 if (frogSound) { frogSound.currentTime = 0; frogSound.play().catch(() => {}); }
                                 
                                 notify('🐸 ' + (FROGS_DATA[b.itemId] ? FROGS_DATA[b.itemId].name : b.itemId) + ' added to Collection!', 'achievement');
+                                
+                                // Instantly fill XP to max → level up
+                                if (gs.level < 100) {
+                                    gs.slimeXP = gs.slimeXPNeeded;
+                                    while (gs.slimeXP >= gs.slimeXPNeeded && gs.level < 100) {
+                                        gs.slimeXP -= gs.slimeXPNeeded;
+                                        gs.level++;
+                                        gs.slimeXPNeeded = Math.floor(gs.slimeXPNeeded * 1.2);
+                                    }
+                                    notify('🐸 Level Up! Now Level ' + gs.level + '!', 'levelup');
+                                    levelUpBurst();
+                                    const levelupSound = document.getElementById('slime-levelup-sound');
+                                    if (levelupSound) { levelupSound.currentTime = 0; levelupSound.play().catch(() => {}); }
+                                    addItem('small_geode', 1);
+                                }
                                 
                                 // Check if all 5 frogs collected → unlock Frog Hat
                                 const allFrogs = Object.keys(FROGS_DATA).every(id => gs.frogs[id]);
@@ -4440,146 +4465,69 @@ function initKitchenGame() {
         
         // Navigation - Fishing menu
         document.getElementById('goto-fishing-menu').onclick = () => switchRoom('fishing-menu-room');
-        document.getElementById('goto-mining-menu').onclick = () => switchRoom('mining-menu-room');
+        document.getElementById('goto-mining-menu').onclick = () => {
+            switchRoom('mining-menu-room');
+            displayMiningMenu();
+        };
+        
+        function displayMiningMenu() {
+            const miningLevel = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
+            const depths = ['cave','depth1','depth2','depth3','depth4','depth5'];
+            depths.forEach(depth => {
+                const cfg = MINE_DEPTHS[depth];
+                const btnId = depth === 'cave' ? 'goto-cave' : `goto-${depth}`;
+                const btn = document.getElementById(btnId);
+                if (!btn) return;
+                const locked = miningLevel < cfg.reqLevel;
+                btn.style.opacity = locked ? '0.45' : '1';
+                btn.style.cursor = locked ? 'not-allowed' : 'pointer';
+                btn.style.filter = locked ? 'grayscale(0.6)' : '';
+            });
+        }
         document.getElementById('back-to-area').onclick = () => switchRoom('area-room');
         document.getElementById('back-to-area-mining').onclick = () => switchRoom('area-room');
         document.getElementById('goto-pond').onclick = () => switchRoom('fishing-pond-room');
-        document.getElementById('goto-cave').onclick = () => {
-            switchRoom('mining-cave-room');
-            // Restore mining button/timer state if mining is active
-            if (automineInterval) {
-                const button = document.getElementById('start-automine');
-                const instruction = document.getElementById('automine-instruction');
-                const timer = document.getElementById('automine-timer');
-                
+        function enterMineDepth(depth) {
+            const cfg = MINE_DEPTHS[depth];
+            const miningLevel = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
+            if (miningLevel < cfg.reqLevel) {
+                notify(`🔒 Requires Mining Level ${cfg.reqLevel}! (You are Level ${miningLevel})`, 'warning');
+                return;
+            }
+            const roomId = depth === 'cave' ? 'mining-cave-room' : `mining-${depth}-room`;
+            switchRoom(roomId);
+            currentMineDepth = depth;
+            // Restore button state if mining is active in this depth
+            if (automineInterval && currentMineDepth === depth) {
+                const ids = getAutomineIDs(depth);
+                const button = document.getElementById(ids.btn);
+                const timer = document.getElementById(ids.timer);
+                const instruction = document.getElementById(ids.instr);
                 if (button) {
                     button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">STOP</div>';
                     button.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
-                    button.onclick = stopAutomine;
+                    button.onclick = () => stopAutomine(depth);
                 }
                 if (instruction) instruction.textContent = 'Stop Automine';
                 if (timer) timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
             }
-        };
-        document.getElementById('goto-river').onclick = () => {
-            if (!gs.tools.better_net) {
-                notify('❌ You need a Fishing Net to fish at the River! Buy it from the shop.');
-                return;
-            }
-            switchRoom('fishing-river-room');
-        };
-        document.getElementById('leave-pond').onclick = () => {
-            stopFishing();
-            switchRoom('fishing-menu-room');
-        };
-        document.getElementById('leave-cave').onclick = () => {
-            // Don't stop mining - it continues in background
-            switchRoom('mining-menu-room');
-        };
-        document.getElementById('leave-river').onclick = () => {
-            stopFishing();
-            riverActive = false;
-            clearInterval(riverFishingInterval);
-            switchRoom('fishing-menu-room');
-        };
-        
-        // Mining - Automine system
-        let automineInterval = null;
-        let automineTimeLeft = 0;
-        let automineRunId = 0; // increments each run to invalidate stale callbacks
-        
-        function startAutomine() {
-            if (automineInterval) return; // Already mining
-            
-            const button = document.getElementById('start-automine');
-            const instruction = document.getElementById('automine-instruction');
-            const timer = document.getElementById('automine-timer');
-            const result = document.getElementById('automine-result');
-            
-            // Change button to STOP
-            button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">STOP</div>';
-            button.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
-            button.onclick = stopAutomine;
-            
-            // Update instruction
-            if (instruction) instruction.textContent = 'Stop Automine';
-            
-            automineTimeLeft = 60;
-            automineRunId++; // New run ID — invalidates any stale callbacks
-            const myRunId = automineRunId;
-            
-            timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
-            result.textContent = '';
-            
-            notify('⛏️ Started automining!');
-            
-            automineInterval = setInterval(() => {
-                // Guard: bail if this interval belongs to a stopped run
-                if (myRunId !== automineRunId) { clearInterval(automineInterval); return; }
-                
-                automineTimeLeft--;
-                const timerEl = document.getElementById('automine-timer');
-                const resultEl = document.getElementById('automine-result');
-                if (timerEl) timerEl.textContent = `⏱️ ${automineTimeLeft}s remaining`;
-                
-                const roll = Math.random();
-                if (roll < 0.02) {
-                    addItem('ore', 1);
-                    addSkillXP('mining', 10);
-                    const pickSound = document.getElementById('pickaxe-sound');
-                    if (pickSound) { pickSound.currentTime = 0; pickSound.play().catch(() => {}); }
-                    if (resultEl) resultEl.textContent = '⛏️ Mined Ore!';
-                    setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
-                } else if (roll < 0.07) {
-                    addItem('rock', 1);
-                    addSkillXP('mining', 1);
-                    const pickSound = document.getElementById('pickaxe-sound');
-                    if (pickSound) { pickSound.currentTime = 0; pickSound.play().catch(() => {}); }
-                    if (resultEl) resultEl.textContent = '🪨 Mined Rock!';
-                    setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 1500);
-                }
-                
-                // 0.01% chance to find Yellow Frog (if not already collected)
-                if (!gs.frogs.frog_yellow && Math.random() < 0.0001) {
-                    addItem('frog_yellow', 1);
-                    notify('🟡🐸 A Yellow Frog crawled out of the rocks!', 'achievement');
-                }
-                
-                if (automineTimeLeft <= 0) {
-                    stopAutomine();
-                    const t = document.getElementById('automine-timer');
-                    if (t) { t.textContent = '✅ Mining complete!'; setTimeout(() => { if (t) t.textContent = ''; }, 3000); }
-                    notify('✅ Automining finished!');
-                }
-            }, 1000);
         }
         
-        function stopAutomine() {
-            automineRunId++; // Invalidate any stale interval ticks or setTimeout callbacks
-            if (automineInterval) {
-                clearInterval(automineInterval);
-                automineInterval = null;
-            }
-            
-            const button = document.getElementById('start-automine');
-            const instruction = document.getElementById('automine-instruction');
-            if (button) {
-                // Reset to START button
-                button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">START</div>';
-                button.style.background = 'linear-gradient(135deg, #8b7355 0%, #5d4e37 100%)';
-                button.onclick = startAutomine;
-                button.disabled = false;
-                button.style.opacity = '1';
-                button.style.cursor = 'pointer';
-            }
-            
-            // Reset instruction
-            if (instruction) instruction.textContent = 'Press to Automine';
-            
-            automineTimeLeft = 0;
-        }
+        document.getElementById('goto-cave').onclick = () => enterMineDepth('cave');
+        document.getElementById('goto-depth1').onclick = () => enterMineDepth('depth1');
+        document.getElementById('goto-depth2').onclick = () => enterMineDepth('depth2');
+        document.getElementById('goto-depth3').onclick = () => enterMineDepth('depth3');
+        document.getElementById('goto-depth4').onclick = () => enterMineDepth('depth4');
+        document.getElementById('goto-depth5').onclick = () => enterMineDepth('depth5');
         
-        document.getElementById('start-automine').onclick = startAutomine;
+        document.getElementById('leave-cave').onclick = () => switchRoom('mining-menu-room');
+        document.getElementById('leave-depth1').onclick = () => switchRoom('mining-menu-room');
+        document.getElementById('leave-depth2').onclick = () => switchRoom('mining-menu-room');
+        document.getElementById('leave-depth3').onclick = () => switchRoom('mining-menu-room');
+        document.getElementById('leave-depth4').onclick = () => switchRoom('mining-menu-room');
+        document.getElementById('leave-depth5').onclick = () => switchRoom('mining-menu-room');
+        
+                document.getElementById('start-automine').onclick = () => startAutomine('cave');
         
         // Fishing buttons
         // Pond: hold to fish
@@ -4944,7 +4892,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.646');
+        console.log('Game version: v0.649');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {

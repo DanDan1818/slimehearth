@@ -179,11 +179,15 @@
             padding-top: 10px;
         }
         
-        #mining-menu-room, #mining-cave-room {
+        #mining-menu-room, #mining-cave-room,
+        #mining-depth1-room, #mining-depth2-room,
+        #mining-depth3-room, #mining-depth4-room, #mining-depth5-room {
             background-image: url('./slimehearth-assets/images/cave-background.png');
         }
         
-        #mining-menu-room.active, #mining-cave-room.active {
+        #mining-menu-room.active, #mining-cave-room.active,
+        #mining-depth1-room.active, #mining-depth2-room.active,
+        #mining-depth3-room.active, #mining-depth4-room.active, #mining-depth5-room.active {
             justify-content: flex-start;
             padding-top: 10px;
         }
