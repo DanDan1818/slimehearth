@@ -182,7 +182,7 @@
         #mining-menu-room, #mining-cave-room,
         #mining-depth1-room, #mining-depth2-room,
         #mining-depth3-room, #mining-depth4-room, #mining-depth5-room {
-            background-image: url('./slimehearth-assets/images/cave-background.png');
+            background-image: url('./slimehearth-assets/images/cave-background.gif');
         }
         
         #mining-menu-room.active, #mining-cave-room.active,
