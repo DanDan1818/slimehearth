@@ -135,8 +135,10 @@
             gs.gardenStartTime = gardenStartTime;
             gs.gardenReadyTime = gardenReadyTime;
             
+            const startBar = document.getElementById('garden-progress-bar');
+            if (startBar) { startBar.style.width = '100%'; startBar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; startBar.style.transition = 'width 0.5s linear'; }
             save();
-            updateInventoryCounter(); // Just update counter, don't respawn all items
+            updateInventoryCounter();
             updateGardenDisplay();
             notify('💧 Garden watered! Plants growing...');
             startGardenUpdateInterval();
@@ -188,22 +190,21 @@
         
         function updateHarvestProgressDisplay() {
             const timerDisplay = document.getElementById('garden-timer-display');
+            const bar = document.getElementById('garden-progress-bar');
             
             if (harvestHoldProgress > 0 && harvestHoldProgress < 1) {
-                const percent = Math.floor(harvestHoldProgress * 100);
-                timerDisplay.textContent = `🥕 Harvesting... ${percent}%`;
-                timerDisplay.style.color = '#ff9800';
+                if (timerDisplay) timerDisplay.textContent = '🥕 Harvesting...';
+                if (bar) { bar.style.width = (harvestHoldProgress * 100) + '%'; bar.style.background = 'linear-gradient(90deg,#d97706,#b45309)'; bar.style.transition = 'none'; }
             } else if (harvestHoldProgress >= 1) {
-                timerDisplay.textContent = '✅ Harvested!';
-                timerDisplay.style.color = '#4caf50';
+                if (timerDisplay) timerDisplay.textContent = '✅ Harvested!';
+                if (bar) { bar.style.width = '100%'; bar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; bar.style.transition = 'none'; }
             } else {
-                // Count remaining crops
                 const remaining = gardenSlots.filter(s => s !== null).length;
+                if (bar) { bar.style.width = '0%'; bar.style.background = 'linear-gradient(90deg,#d97706,#b45309)'; bar.style.transition = 'none'; }
                 if (remaining > 0) {
-                    timerDisplay.textContent = `✅ Hold slot to harvest! (${remaining} left)`;
-                    timerDisplay.style.color = '#4caf50';
+                    if (timerDisplay) timerDisplay.textContent = `✅ Hold to harvest! (${remaining} left)`;
                 } else {
-                    timerDisplay.textContent = '';
+                    if (timerDisplay) timerDisplay.textContent = '';
                 }
             }
         }
@@ -297,6 +298,9 @@
                 gs.gardenStartTime = null;
                 gs.gardenReadyTime = null;
                 stopGardenUpdateInterval();
+                const doneBar = document.getElementById('garden-progress-bar');
+                if (doneBar) { doneBar.style.width = '0%'; doneBar.style.transition = 'none'; }
+
             }
             
             save();
@@ -332,6 +336,8 @@
             gardenGrowing = false;
             gardenStartTime = null;
             gardenReadyTime = null;
+            const resetBar = document.getElementById('garden-progress-bar');
+            if (resetBar) { resetBar.style.width = '0%'; resetBar.style.transition = 'none'; }
             
             // Reset harvest hold state
             stopHarvestHold();
@@ -410,6 +416,11 @@
                 const timeLeft = Math.ceil((gardenReadyTime - now) / 1000);
                 
                 if (timeLeft > 0) {
+                    const totalTime = 60000;
+                    const elapsed = Date.now() - gardenStartTime;
+                    const pct = Math.max(0, Math.min(100, 100 - (elapsed / totalTime * 100)));
+                    const bar = document.getElementById('garden-progress-bar');
+                    if (bar) { bar.style.width = pct + '%'; bar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)'; }
                     if (timerDisplay) timerDisplay.textContent = `⏱️ Growing: ${timeLeft}s`;
                     if (waterBtn) {
                         waterBtn.textContent = '🌱';
