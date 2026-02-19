@@ -329,6 +329,46 @@
             notify('🐸 Spawned a ' + FROGS_DATA[randomFrog].name + '!');
         };
         
+        const FONT_OPTIONS = [
+            { name: 'Press Start 2P', family: "'Press Start 2P', monospace", tag: 'Pixel / Retro' },
+            { name: 'Fredoka One',    family: "'Fredoka One', sans-serif",   tag: 'Bubbly / Game' },
+            { name: 'Baloo 2',        family: "'Baloo 2', sans-serif",       tag: 'Playful / Chunky' },
+            { name: 'Righteous',      family: "'Righteous', sans-serif",     tag: 'Bold / Fun' },
+            { name: 'Nunito',         family: "'Nunito', sans-serif",        tag: 'Soft / Rounded' },
+            { name: 'Quicksand',      family: "'Quicksand', sans-serif",     tag: 'Light / Modern' },
+            { name: 'VT323',          family: "'VT323', monospace",          tag: 'CRT / Terminal' },
+            { name: 'monospace',      family: 'monospace',                   tag: 'System Mono' },
+            { name: 'sans-serif',     family: 'sans-serif',                  tag: 'System Sans' },
+            { name: 'serif',          family: 'serif',                       tag: 'System Serif' },
+        ];
+        
+        document.getElementById('font-preview').onclick = () => {
+            const modal = document.getElementById('font-modal');
+            const list = document.getElementById('font-list');
+            list.innerHTML = '';
+            FONT_OPTIONS.forEach(f => {
+                const card = document.createElement('div');
+                card.style.cssText = 'background:rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,255,255,0.15);';
+                card.innerHTML = `
+                    <div style="font-family:${f.family};font-size:18px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.6);margin-bottom:4px;">SlimeHearth 🐸</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:11px;color:rgba(255,255,255,0.6);">${f.name}</span>
+                        <span style="font-size:10px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.7);padding:2px 7px;border-radius:10px;">${f.tag}</span>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+            modal.style.display = 'flex';
+        };
+        
+        document.getElementById('font-modal-close').onclick = () => {
+            document.getElementById('font-modal').style.display = 'none';
+        };
+        document.getElementById('font-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('font-modal'))
+                document.getElementById('font-modal').style.display = 'none';
+        });
+        
         const resetBtn = document.getElementById('reset-game');
         if (resetBtn) {
             resetBtn.onclick = () => {
