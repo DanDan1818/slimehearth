@@ -639,8 +639,6 @@
         function finishCracking() {
             console.log('Cracking complete!');
             
-            const roll = Math.random();
-            const isGem = roll < 0.10;
             const crackedGeodeId = shackGeodeSlot;
             
             const result = document.getElementById('shack-result');
@@ -687,14 +685,53 @@
             updateInventoryCounter();
             updateShackProgress();
             
-            // STEP 4: After a short pause, spawn the result item
+            // STEP 4: Determine loot using geode tier + prospecting level
+            
+            // Base gem chance per geode type
+            const GEODE_GEM_CHANCE = {
+                'small_geode':   0.10,
+                'medium_geode':  0.20,
+                'large_geode':   0.30,
+                'rare_geode':    0.45,
+                'rainbow_geode': 0.65,
+            };
+            
+            // Gem tables per geode tier: [itemId, weight]
+            // Higher tier = more valuable gems weighted higher
+            const GEODE_GEM_TABLE = {
+                'small_geode':   [ ['emerald',30],['ruby',25],['sapphire',20],['amethyst',15],['topaz',10] ],
+                'medium_geode':  [ ['emerald',20],['ruby',20],['sapphire',20],['amethyst',20],['topaz',20] ],
+                'large_geode':   [ ['emerald',10],['ruby',15],['sapphire',20],['amethyst',25],['topaz',30] ],
+                'rare_geode':    [ ['emerald', 5],['ruby',10],['sapphire',15],['amethyst',25],['topaz',45] ],
+                'rainbow_geode': [ ['emerald', 2],['ruby', 5],['sapphire',10],['amethyst',15],['topaz',18],['diamond',50] ],
+            };
+            
+            const prospBonus = Math.min((gs.prospectingLevel || 1) - 1, 9) * 0.01; // +1% per level up to +9%
+            const baseGemChance = GEODE_GEM_CHANCE[crackedGeodeId] || 0.10;
+            const gemChance = Math.min(baseGemChance + prospBonus, 0.95);
+            const isGem = Math.random() < gemChance;
+            
             setTimeout(() => {
                 if (isGem) {
-                    result.textContent = '💎 GEM! +1 Gem (50 coins!)';
-                    addItem('gem', 1);
-                    notify('✨ Found a GEM!');
+                    // Pick which gem from weighted table
+                    const table = GEODE_GEM_TABLE[crackedGeodeId] || GEODE_GEM_TABLE['small_geode'];
+                    const totalWeight = table.reduce((s, e) => s + e[1], 0);
+                    let r = Math.random() * totalWeight;
+                    let gemId = table[0][0];
+                    for (const [id, weight] of table) {
+                        r -= weight;
+                        if (r <= 0) { gemId = id; break; }
+                    }
+                    const gemData = ITEM_DATA[gemId];
+                    const emoji = gemData.emoji || '💎';
+                    const coins = gemData.sellValue;
+                    result.textContent = emoji + ' ' + gemData.name.toUpperCase() + '! (' + coins + ' coins!)';
+                    result.style.color = gemData.rarityColor === 'rainbow' ? '#ec4899' : gemData.rarityColor;
+                    addItem(gemId, 1);
+                    notify(emoji + ' Found a ' + gemData.name + '! (' + coins + ' coins)');
                 } else {
                     result.textContent = '🪨 Rock... +1 Rock (1 coin)';
+                    result.style.color = '#9ca3af';
                     addItem('rock', 1);
                     notify('😐 Just a rock...');
                 }
@@ -709,6 +746,7 @@
                 
                 setTimeout(() => {
                     result.textContent = '';
+                    result.style.color = '';
                 }, 3000);
             }, 400);
         }

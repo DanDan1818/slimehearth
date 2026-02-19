@@ -125,9 +125,19 @@
             'food': '#ff69b4',  // Pink for cooked food
             'burnt_food': '#1a1a1a',
             'burnt': '#1a1a1a',
-            'small_geode': '#8b7355',
+            'small_geode':   '#8b7355',
+            'medium_geode':  '#6b7280',
+            'large_geode':   '#7c3aed',
+            'rare_geode':    '#d97706',
+            'rainbow_geode': '#ec4899',
             'rock': '#666666',
             'gem': '#9333ea',
+            'emerald':  '#10b981',
+            'ruby':     '#ef4444',
+            'sapphire': '#3b82f6',
+            'amethyst': '#a855f7',
+            'topaz':    '#f59e0b',
+            'diamond':  '#e0f2fe',
             'ore': '#cd7f32',
             'basket': '#d97706',
             'lily_pad': '#4ade80',
@@ -150,7 +160,17 @@
             'fish7': './slimehearth-assets/images/fish7.png',
             'fish8': './slimehearth-assets/images/fish8.png',
             'gem': './slimehearth-assets/images/gem1.png',
-            'small_geode': './slimehearth-assets/images/geode1.png',
+            'emerald':  './slimehearth-assets/images/gem1.png',
+            'ruby':     './slimehearth-assets/images/gem1.png',
+            'sapphire': './slimehearth-assets/images/gem1.png',
+            'amethyst': './slimehearth-assets/images/gem1.png',
+            'topaz':    './slimehearth-assets/images/gem1.png',
+            'diamond':  './slimehearth-assets/images/gem1.png',
+            'small_geode':   './slimehearth-assets/images/geode1.png',
+            'medium_geode':  './slimehearth-assets/images/geode1.png',
+            'large_geode':   './slimehearth-assets/images/geode1.png',
+            'rare_geode':    './slimehearth-assets/images/geode1.png',
+            'rainbow_geode': './slimehearth-assets/images/geode1.png',
             'carrot': './slimehearth-assets/images/carrot1.png',
             'carrot_seeds':  './slimehearth-assets/images/seeds1.png',
             'tomato_seeds':  './slimehearth-assets/images/seeds1.png',
@@ -395,14 +415,52 @@
                 name: 'Small Geode',
                 emoji: '🪨',
                 image: 'geode1.png',
+                rarity: 'Uncommon',
+                rarityColor: '#fbbf24',
+                description: 'A small mysterious rocky shell. Crack it at the Shack!',
+                foodValue: 0, sellValue: 2, cookable: false, feedable: false,
+                crackable: true
+            },
+            'medium_geode': {
+                name: 'Medium Geode',
+                emoji: '🪨',
+                image: 'geode1.png',
                 rarity: 'Rare',
                 rarityColor: '#a78bfa',
-                description: 'A mysterious rocky shell.',
-                foodValue: 0,
-                sellValue: 2,
-                cookable: false,
-                feedable: false,
+                description: 'A medium geode from Depth 2. Crack it at the Shack!',
+                foodValue: 0, sellValue: 5, cookable: false, feedable: false,
                 crackable: true
+            },
+            'large_geode': {
+                name: 'Large Geode',
+                emoji: '🪨',
+                image: 'geode1.png',
+                rarity: 'Epic',
+                rarityColor: '#f43f5e',
+                description: 'A large geode from Depth 3. Crack it at the Shack!',
+                foodValue: 0, sellValue: 10, cookable: false, feedable: false,
+                crackable: true
+            },
+            'rare_geode': {
+                name: 'Rare Geode',
+                emoji: '🪨',
+                image: 'geode1.png',
+                rarity: 'Legendary',
+                rarityColor: '#fbbf24',
+                description: 'A rare golden geode from Depth 4. Crack it at the Shack!',
+                foodValue: 0, sellValue: 20, cookable: false, feedable: false,
+                crackable: true
+            },
+            'rainbow_geode': {
+                name: 'Rainbow Geode',
+                emoji: '🌈🪨',
+                image: 'geode1.png',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
+                description: 'An impossibly rare geode from the deepest depths. Crack it at the Shack!',
+                foodValue: 0, sellValue: 100, cookable: false, feedable: false,
+                crackable: true,
+                sellable: false
             },
             'rock': {
                 name: 'Rock',
@@ -417,16 +475,46 @@
                 crackable: false
             },
             'gem': {
-                name: 'Gem',
-                emoji: '💎',
-                image: 'gem1.png',
-                rarity: 'Legendary',
-                rarityColor: '#fbbf24',
-                description: 'A beautiful sparkling gem!',
-                foodValue: 0,
-                sellValue: 50,
-                cookable: false,
-                feedable: false
+                name: 'Emerald', emoji: '💚', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#10b981',
+                description: 'A sparkling green emerald.',
+                foodValue: 0, sellValue: 100, cookable: false, feedable: false
+            },
+            'emerald': {
+                name: 'Emerald',  emoji: '💚', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#10b981',
+                description: 'A sparkling green emerald.',
+                foodValue: 0, sellValue: 100, cookable: false, feedable: false
+            },
+            'ruby': {
+                name: 'Ruby', emoji: '❤️', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#ef4444',
+                description: 'A brilliant red ruby.',
+                foodValue: 0, sellValue: 120, cookable: false, feedable: false
+            },
+            'sapphire': {
+                name: 'Sapphire', emoji: '💙', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#3b82f6',
+                description: 'A deep blue sapphire.',
+                foodValue: 0, sellValue: 140, cookable: false, feedable: false
+            },
+            'amethyst': {
+                name: 'Amethyst', emoji: '💜', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#a855f7',
+                description: 'A rich purple amethyst.',
+                foodValue: 0, sellValue: 160, cookable: false, feedable: false
+            },
+            'topaz': {
+                name: 'Topaz', emoji: '🧡', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#f59e0b',
+                description: 'A warm golden topaz.',
+                foodValue: 0, sellValue: 200, cookable: false, feedable: false
+            },
+            'diamond': {
+                name: 'Diamond', emoji: '💎', image: 'gem1.png',
+                rarity: 'Rainbow', rarityColor: 'rainbow',
+                description: 'An impossibly perfect diamond. Worth a fortune.',
+                foodValue: 0, sellValue: 1000, cookable: false, feedable: false
             },
             'ore': {
                 name: 'Ore',

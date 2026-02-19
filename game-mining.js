@@ -5,12 +5,12 @@
         let currentMineDepth = 'cave';
         
         const MINE_DEPTHS = {
-            'cave':   { reqLevel: 0,  oreChance: 0.02, rockChance: 0.05, oreXP: 10, rockXP: 1,  label: 'The Cave' },
-            'depth1': { reqLevel: 10, oreChance: 0.04, rockChance: 0.07, oreXP: 15, rockXP: 2,  label: 'Depth 1' },
-            'depth2': { reqLevel: 20, oreChance: 0.06, rockChance: 0.09, oreXP: 20, rockXP: 3,  label: 'Depth 2' },
-            'depth3': { reqLevel: 40, oreChance: 0.09, rockChance: 0.12, oreXP: 30, rockXP: 5,  label: 'Depth 3' },
-            'depth4': { reqLevel: 65, oreChance: 0.12, rockChance: 0.15, oreXP: 45, rockXP: 8,  label: 'Depth 4' },
-            'depth5': { reqLevel: 80, oreChance: 0.16, rockChance: 0.18, oreXP: 60, rockXP: 12, label: 'Depth 5' },
+            'cave':   { reqLevel: 0,  oreChance: 0.02, rockChance: 0.05, oreXP: 10, rockXP: 1,  label: 'The Cave',  geodeItem: null,           geodeChance: 0      },
+            'depth1': { reqLevel: 10, oreChance: 0.04, rockChance: 0.07, oreXP: 15, rockXP: 2,  label: 'Depth 1',  geodeItem: 'small_geode',  geodeChance: 0.01   },
+            'depth2': { reqLevel: 20, oreChance: 0.06, rockChance: 0.09, oreXP: 20, rockXP: 3,  label: 'Depth 2',  geodeItem: 'medium_geode', geodeChance: 0.005  },
+            'depth3': { reqLevel: 40, oreChance: 0.09, rockChance: 0.12, oreXP: 30, rockXP: 5,  label: 'Depth 3',  geodeItem: 'large_geode',  geodeChance: 0.004  },
+            'depth4': { reqLevel: 65, oreChance: 0.12, rockChance: 0.15, oreXP: 45, rockXP: 8,  label: 'Depth 4',  geodeItem: 'rare_geode',   geodeChance: 0.003  },
+            'depth5': { reqLevel: 80, oreChance: 0.16, rockChance: 0.18, oreXP: 60, rockXP: 12, label: 'Depth 5',  geodeItem: 'rainbow_geode',geodeChance: 0.001  },
         };
         
         function getAutomineIDs(depth) {
@@ -70,6 +70,15 @@
                 if (!gs.frogs.frog_yellow && Math.random() < 0.0001) {
                     addItem('frog_yellow', 1);
                     notify('🟡🐸 A Yellow Frog crawled out of the rocks!', 'achievement');
+                }
+                
+                // Geode drop based on depth
+                if (cfg.geodeItem && Math.random() < cfg.geodeChance) {
+                    addItem(cfg.geodeItem, 1);
+                    const geodeName = cfg.geodeItem.replace('_', ' ').replace(/\w/g, c => c.toUpperCase());
+                    if (resultEl) resultEl.textContent = '🪨 Found a ' + geodeName + '!';
+                    setTimeout(() => { if (myRunId === automineRunId && resultEl) resultEl.textContent = ''; }, 2000);
+                    notify('🪨 Found a ' + geodeName + '!');
                 }
                 
                 if (automineTimeLeft <= 0) {
@@ -320,6 +329,11 @@
             save(); updateUI();
             notify('📈 +5 to all Skills!', 'achievement');
             displayMiningMenu();
+        };
+        
+        document.getElementById('give-geodes').onclick = () => {
+            ['small_geode','medium_geode','large_geode','rare_geode','rainbow_geode'].forEach(id => addItem(id, 1));
+            notify('🪨 Gave 1 of each geode!');
         };
         
         document.getElementById('give-frog').onclick = () => {
