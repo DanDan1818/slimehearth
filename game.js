@@ -995,7 +995,7 @@
                     // Not in shop - show only inventory bag
                     inventoryBag.style.display = 'block';
                     sellBag.style.display = 'none';
-                    if (greenSellBox) greenSellBox.style.display = 'none';
+                    // green sell box stays invisible (opacity:0) - no display toggle needed
                 }
             }
             
