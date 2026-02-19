@@ -1518,13 +1518,12 @@
                             }
                             
                             // Check if it's a frog - add to collection instead of eating
-                            if (body.itemId && body.itemId.startsWith('frog_')) {
-                                gs.frogs[body.itemId] = true;
+                            if (b.itemId && b.itemId.startsWith('frog_')) {
+                                gs.frogs[b.itemId] = true;
                                 save();
-                                notify('🐸 ' + (FROGS_DATA[body.itemId] ? FROGS_DATA[body.itemId].name : body.itemId) + ' added to Collection!', 'achievement');
+                                notify('🐸 ' + (FROGS_DATA[b.itemId] ? FROGS_DATA[b.itemId].name : b.itemId) + ' added to Collection!', 'achievement');
                                 updateUI();
-                                return; // Skip normal food logic
-                            }
+                            } else {
                             
                             gs.stats.foodsEaten++;
                             
@@ -1584,6 +1583,7 @@
                             }
                             
                             notify('+' + xpGain + ' 🍖!');
+                            } // end else (not a frog)
                         }
                         
                         save();
@@ -4630,6 +4630,13 @@ function initKitchenGame() {
             notify('Added 1000 coins!');
         };
         
+        document.getElementById('give-frog').onclick = () => {
+            const frogIds = Object.keys(FROGS_DATA);
+            const randomFrog = frogIds[Math.floor(Math.random() * frogIds.length)];
+            addItem(randomFrog, 1);
+            notify('🐸 Spawned a ' + FROGS_DATA[randomFrog].name + '!');
+        };
+        
         const resetBtn = document.getElementById('reset-game');
         if (resetBtn) {
             resetBtn.onclick = () => {
@@ -4849,7 +4856,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.636');
+        console.log('Game version: v0.638');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
