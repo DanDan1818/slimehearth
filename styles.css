@@ -340,13 +340,13 @@
             top: 50%;
             width: 15px;
             height: 15px;
-            background: #000;
+            background: rgba(0, 0, 0, 0.35);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 9999;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: opacity 0.4s;
         }
         
         /* Skills Overlay */

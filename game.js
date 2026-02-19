@@ -1418,11 +1418,11 @@
                     
                     const dist = Math.sqrt((b.position.x - slimeX)**2 + (b.position.y - slimeY)**2);
                     
-                    if (dist < 80) {
+                    if (dist < 55) {
                         foodNearby = true;
                     }
                     
-                    if (dist < 40) {
+                    if (dist < 25) {
                         World.remove(basketEngine.world, b);
                         basketBodies.splice(i, 1);
                         delete gs.inventory[b.itemKey];
