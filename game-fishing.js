@@ -29,9 +29,11 @@
             const result = document.getElementById('fishing-result-pond');
             const bar = document.getElementById('fishing-bar-pond');
             
-            result.textContent = '🎣 Casting...';
+            result.textContent = '';
             bar.style.width = '0%';
-            bar.style.background = 'linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%)';
+            const castLabel = document.getElementById('fishing-bar-label');
+            if (castLabel) castLabel.textContent = 'Fishing...';
+            bar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
             
             // Random wait time 1-20 seconds
             const totalTime = 1000 + Math.random() * 19000; // 1-20 seconds in ms
@@ -54,9 +56,11 @@
                 // Check if we're in catch window
                 if (pondElapsedTime >= pondCatchStart && pondElapsedTime <= pondCatchEnd) {
                     // CATCH WINDOW!
-                    bar.style.background = 'linear-gradient(to bottom, #6fffb0 0%, #4ade80 50%, #2db860 100%)'; // Green 3D gradient
-                    bar.style.animation = 'fishFlash 0.3s infinite'; // Add flash
-                    result.textContent = '💦 NOW! Hold to catch!';
+                    bar.style.background = 'linear-gradient(90deg,#4ade80,#16a34a)';
+                    bar.style.animation = 'fishFlash 0.3s infinite';
+                    result.textContent = '';
+                    const biteLabel = document.getElementById('fishing-bar-label');
+                    if (biteLabel) biteLabel.textContent = '🎣 You have a bite!';
                     
                     // Show splash on first frame of catch window
                     if (splash && splash.style.display === 'none') {
@@ -75,8 +79,10 @@
                         }, 600);
                     }
                 } else {
-                    bar.style.background = 'linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%)'; // Blue 3D gradient
-                    bar.style.animation = 'none'; // Remove flash
+                    bar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
+                    bar.style.animation = 'none';
+                    const fishLabel = document.getElementById('fishing-bar-label');
+                    if (fishLabel) fishLabel.textContent = 'Fishing...';
                 }
                 
                 // Time's up
@@ -126,9 +132,11 @@
                 if (result) result.textContent = '';
                 if (bar) {
                     bar.style.width = '0%';
-                    bar.style.background = 'linear-gradient(to bottom, #6ee7ff 0%, #4dd0e1 50%, #2ba5b8 100%)';
+                    bar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
                     bar.style.animation = 'none';
                 }
+                const resetLabel = document.getElementById('fishing-bar-label');
+                if (resetLabel) resetLabel.textContent = '';
                 if (splash) splash.style.display = 'none';
             }, 1500);
         }
