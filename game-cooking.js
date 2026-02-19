@@ -95,14 +95,12 @@
             }
             const slotEl = document.getElementById(`hearth-slot-${slotNumber}`);
             if (slotEl) {
-                slotEl.innerHTML = '<span id="hearth-slot-' + slotNumber + '-icon">+</span>';
+                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:36px;line-height:1;">+</span><div id="hearth-slot-${slotNumber}-name" style="font-size:8px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;margin-top:2px;max-width:74px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-height:10px;background:rgba(0,0,0,0.45);border-radius:3px;padding:1px 3px;display:none;"></div>`;
                 slotEl.style.border = '3px dashed #f59e0b';
                 slotEl.style.boxShadow = '';
             }
             const clearBtn = document.getElementById(`hearth-clear-${slotNumber}`);
             if (clearBtn) clearBtn.style.display = 'none';
-            const nameEl = document.getElementById(`hearth-slot-${slotNumber}-name`);
-            if (nameEl) nameEl.textContent = '';
             updateHearthDisplay();
         }
         
@@ -259,22 +257,26 @@
             if (slot1Icon && slot1Name) {
                 if (hearthSlot1ItemId) {
                     const item = ITEM_DATA[hearthSlot1ItemId];
-                    slot1Icon.textContent = item.name.includes('Fish') ? '🐟' : (item.name.includes('Carrot') ? '🥕' : '📦');
+                    slot1Icon.textContent = item.emoji || '📦';
                     slot1Name.textContent = item.name;
+                    slot1Name.style.display = 'block';
                 } else {
                     slot1Icon.textContent = '+';
                     slot1Name.textContent = '';
+                    slot1Name.style.display = 'none';
                 }
             }
             
             if (slot2Icon && slot2Name) {
                 if (hearthSlot2ItemId) {
                     const item = ITEM_DATA[hearthSlot2ItemId];
-                    slot2Icon.textContent = item.name.includes('Fish') ? '🐟' : (item.name.includes('Carrot') ? '🥕' : '📦');
+                    slot2Icon.textContent = item.emoji || '📦';
                     slot2Name.textContent = item.name;
+                    slot2Name.style.display = 'block';
                 } else {
                     slot2Icon.textContent = '+';
                     slot2Name.textContent = '';
+                    slot2Name.style.display = 'none';
                 }
             }
         }
@@ -396,12 +398,14 @@
             hearthSlot2ItemId = null;
             hearthCooking = false;
             ['1','2'].forEach(n => {
-                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon">+</span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:36px;line-height:1;">+</span><div id="hearth-slot-${n}-name" style="font-size:8px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;margin-top:2px;max-width:74px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-height:10px;background:rgba(0,0,0,0.45);border-radius:3px;padding:1px 3px;display:none;"></div>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
                 const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
             });
             if (cookBtn) { cookBtn.style.opacity = '1'; cookBtn.style.cursor = 'pointer'; cookBtn.onclick = cookHearth; }
             
             updateHearthDisplay();
+            updateInventoryCounter();
+            if (typeof populateBasket === 'function') populateBasket();
             save();
         }
         
