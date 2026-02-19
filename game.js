@@ -1394,10 +1394,9 @@
                 const canvasLeft = canvasRect.left;
                 const canvasTop = canvasRect.top;
                 
-                // Convert to canvas coordinates and add offset
-                // Offset: +100px right, +100px down to match visual slime position
-                const slimeX = slimeCenterX - canvasLeft + 100;
-                const slimeY = slimeCenterY - canvasTop + 100;
+                // Convert to canvas coordinates - offset tuned to match mouth position (~230,700)
+                const slimeX = slimeCenterX - canvasLeft + 50;
+                const slimeY = slimeCenterY - canvasTop + 150;
                 
                 const mouth = document.getElementById('slime-mouth');
                 
