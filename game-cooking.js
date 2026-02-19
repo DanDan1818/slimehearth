@@ -649,13 +649,17 @@
                 bar.addEventListener('animationend', () => bar.style.animation = '', { once: true });
             }
             
-            // --- Pulse the crack button ---
+            // --- Pulse + darken the crack button ---
             const btn = document.getElementById('crack-geode-btn');
             if (btn) {
+                btn.style.background = '#581c87';
                 btn.style.animation = 'none';
                 void btn.offsetWidth;
                 btn.style.animation = 'crackPulse 0.25s ease-out';
-                btn.addEventListener('animationend', () => btn.style.animation = '', { once: true });
+                btn.addEventListener('animationend', () => {
+                    btn.style.animation = '';
+                    btn.style.background = '#a855f7';
+                }, { once: true });
             }
             
             // --- Play pick sound at varying pitch ---
@@ -764,13 +768,9 @@
                     const gemData = ITEM_DATA[gemId];
                     const emoji = gemData.emoji || '💎';
                     const coins = gemData.sellValue;
-                    result.textContent = emoji + ' ' + gemData.name.toUpperCase() + '! (' + coins + ' coins!)';
-                    result.style.color = gemData.rarityColor === 'rainbow' ? '#ec4899' : gemData.rarityColor;
                     addItem(gemId, 1);
                     notify(emoji + ' Found a ' + gemData.name + '! (' + coins + ' coins)');
                 } else {
-                    result.textContent = '🪨 Rock... +1 Rock (1 coin)';
-                    result.style.color = '#9ca3af';
                     addItem('rock', 1);
                     notify('😐 Just a rock...');
                 }
@@ -783,10 +783,7 @@
                 
                 checkProspectingLevelUp();
                 
-                setTimeout(() => {
-                    result.textContent = '';
-                    result.style.color = '';
-                }, 3000);
+
             }, 400);
         }
         
