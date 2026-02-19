@@ -88,16 +88,16 @@
                     background: ${isOwned || isMaxed ? '#d1fae5' : '#fff'};
                     border: 2px solid ${isOwned || isMaxed ? '#10b981' : '#fbbf24'};
                     border-radius: 8px;
-                    padding: 6px;
+                    padding: 4px 2px;
                     text-align: center;
                     cursor: ${canBuy ? 'pointer' : 'default'};
-                    transition: all 0.2s;
+                    transition: transform 0.15s;
                     position: relative;
-                    min-height: 70px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     justify-content: space-between;
+                    gap: 2px;
                 `;
                 
                 if (canBuy) {
@@ -118,11 +118,11 @@
                 }
                 
                 itemDiv.innerHTML = `
-                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">
+                    <div style="display:flex;align-items:center;justify-content:center;font-size:26px;line-height:1;">
                         ${getShopItemDisplay(item)}
                     </div>
-                    <div style="font-size:9px;font-weight:bold;color:#333;margin-bottom:3px;line-height:1.1;">${item.name}</div>
-                    <div style="font-size:${item.type === 'upgrade' ? '8px' : '10px'};font-weight:bold;color:${isOwned || isMaxed ? '#10b981' : '#f59e0b'};margin-top:3px;">
+                    <div style="font-size:8px;font-weight:bold;color:#333;line-height:1.1;max-width:62px;word-break:break-word;">${item.name.replace('🌱 ','')}</div>
+                    <div style="font-size:8px;font-weight:bold;color:${isOwned || isMaxed ? '#10b981' : '#f59e0b'};">
                         ${bottomLine}
                     </div>
                 `;
