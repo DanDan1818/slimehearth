@@ -530,6 +530,14 @@
                 icon: '👨‍🍳',
                 image: 'hat5.png',
                 unlockType: 'shop'
+            },
+            'frog_hat': {
+                name: '🐸 Frog Hat',
+                description: 'Awarded for collecting all 5 Frogs!',
+                cost: 0,
+                icon: '🐸',
+                image: 'frog_hat.png',
+                unlockType: 'frogs'
             }
         };
         
@@ -1053,8 +1061,32 @@
         
         // ===== NAVIGATION =====
         function switchRoom(roomId) {
+            const overlay = document.getElementById('room-transition');
+            if (overlay) {
+                // Flash black overlay: fade in quickly, swap room at peak, fade out
+                overlay.style.opacity = '1';
+                overlay.style.transition = 'opacity 0.15s ease-in';
+                overlay.classList.remove('active');
+                
+                setTimeout(() => {
+                    // Swap room at peak darkness
+                    document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
+                    document.getElementById(roomId).classList.add('active');
+                    doSwitchRoom(roomId);
+                    
+                    // Fade out
+                    overlay.style.transition = 'opacity 0.25s ease-out';
+                    overlay.style.opacity = '0';
+                }, 150);
+                return;
+            }
+            
             document.querySelectorAll('.room').forEach(r => r.classList.remove('active'));
             document.getElementById(roomId).classList.add('active');
+            doSwitchRoom(roomId);
+        }
+        
+        function doSwitchRoom(roomId) {
             
             // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
             const basketContainer = document.getElementById('basket-container');
@@ -1539,8 +1571,21 @@
                             // Check if it's a frog - add to collection instead of eating
                             if (b.itemId && b.itemId.startsWith('frog_')) {
                                 gs.frogs[b.itemId] = true;
-                                save();
+                                
+                                // Play frog sound
+                                const frogSound = document.getElementById('frog-drop-sound');
+                                if (frogSound) { frogSound.currentTime = 0; frogSound.play().catch(() => {}); }
+                                
                                 notify('🐸 ' + (FROGS_DATA[b.itemId] ? FROGS_DATA[b.itemId].name : b.itemId) + ' added to Collection!', 'achievement');
+                                
+                                // Check if all 5 frogs collected → unlock Frog Hat
+                                const allFrogs = Object.keys(FROGS_DATA).every(id => gs.frogs[id]);
+                                if (allFrogs && !gs.hats.frog_hat) {
+                                    gs.hats.frog_hat = true;
+                                    notify('🐸 Frog Hat unlocked! Check your Wardrobe!', 'achievement');
+                                }
+                                
+                                save();
                                 updateUI();
                             } else {
                             
@@ -1820,6 +1865,12 @@
         }
         
         function spawnSingleItem(key) {
+            // Play frog sound if spawning a frog
+            const spawnItemId = gs.inventory[key];
+            if (spawnItemId && spawnItemId.startsWith('frog_')) {
+                const frogSound = document.getElementById('frog-drop-sound');
+                if (frogSound) { frogSound.currentTime = 0; frogSound.play().catch(() => {}); }
+            }
             if (!basketEngine) return;
             const { Bodies, World } = Matter;
             
@@ -4893,7 +4944,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.643');
+        console.log('Game version: v0.645');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
@@ -5223,8 +5274,8 @@ function initKitchenGame() {
                             `<div style="font-size:32px;">${hat.icon}</div>`
                         }
                     </div>
-                    <button style="width:100%;margin-top:6px;background:${equipped ? '#fbbf24' : '#4ade80'};color:#fff;padding:3px 6px;border:none;border-radius:4px;font-weight:bold;font-size:9px;cursor:pointer;">
-                        ${equipped ? '✓ EQUIPPED' : (owned ? 'EQUIP' : '🔒 LOCKED')}
+                    <button style="width:100%;margin-top:6px;background:${equipped ? '#fbbf24' : (owned ? '#4ade80' : '#9ca3af')};color:#fff;padding:3px 6px;border:none;border-radius:4px;font-weight:bold;font-size:9px;cursor:pointer;">
+                        ${equipped ? '✓ EQUIPPED' : (owned ? 'EQUIP' : (hat.unlockType === 'frogs' ? '🐸 5 Frogs' : '🔒 LOCKED'))}
                     </button>
                 `;
                 

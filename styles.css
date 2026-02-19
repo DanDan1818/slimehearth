@@ -550,6 +550,15 @@
             }
         }
         
+        @keyframes roomFadeIn {
+            0%   { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        #room-transition.active {
+            animation: roomFadeIn 0.35s ease-in-out forwards;
+        }
+        
         @keyframes beamRise {
             0% {
                 opacity: 1;
