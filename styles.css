@@ -27,9 +27,14 @@
             width: 100%;
             max-width: 700px;
             height: 68px;
-            background: linear-gradient(180deg, #b8924a 0%, #9a7535 40%, #7a5a25 100%);
-            border-bottom: 2px solid #fde68a;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+            /* Wood grain: warm base + subtle SVG grain lines overlay */
+            background-color: #c8a46a;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='68'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015 0.35' numOctaves='4' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='68' filter='url(%23noise)' opacity='0.18'/%3E%3C/svg%3E"),
+                linear-gradient(180deg, #d4a96a 0%, #c4944e 35%, #b07d38 100%);
+            background-blend-mode: multiply, normal;
+            border-bottom: 2px solid rgba(253,230,138,0.7);
+            box-shadow: 0 3px 14px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.15);
             display: flex;
             justify-content: space-around;
             align-items: center;

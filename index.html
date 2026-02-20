@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.685</title>
+    <title>SlimeHearth v0.686</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-size:24px;color:rgba(255,255,255,0.9);margin-top:280px;text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, -3px 0 0 #000, 3px 0 0 #000, 0 -3px 0 #000, 0 3px 0 #000, 2px 2px 8px rgba(0,0,0,0.5);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.685</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.686</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -159,35 +159,33 @@
     <div id="top-ui">
         <!-- Left: Slime Name -->
         <div class="stat-display" style="flex:1;text-align:left;padding-left:12px;">
-            <div style="font-family:'Righteous',sans-serif;font-size:17px;color:#fde68a;text-shadow:0 1px 4px rgba(0,0,0,0.6);" id="slime-name-display">Slime</div>
-            <div style="font-size:9px;color:rgba(253,230,138,0.6);letter-spacing:0.5px;">YOUR SLIME</div>
+            <div style="font-family:'Righteous',sans-serif;font-size:17px;color:#fff8e7;text-shadow:0 1px 3px rgba(0,0,0,0.5);" id="slime-name-display">Slime</div>
         </div>
         
-        <!-- Middle: Slime Level (Clickable) -->
-        <div class="stat-display" id="level-display-container" style="flex:0.85;cursor:pointer;background:linear-gradient(135deg,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.2) 100%);border:1px solid rgba(253,230,138,0.35);border-radius:10px;padding:5px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);">
+        <!-- Middle: Slime Level card -->
+        <div class="stat-display" id="level-display-container" style="flex:0.85;cursor:pointer;background:rgba(0,0,0,0.22);border:1px solid rgba(255,240,180,0.45);border-radius:10px;padding:5px 10px;box-shadow:0 2px 6px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.12);">
             <div style="display:flex;align-items:baseline;justify-content:center;gap:4px;margin-bottom:3px;">
-                <div style="font-size:10px;color:rgba(253,230,138,0.7);font-weight:bold;letter-spacing:1px;">LEVEL</div>
-                <div id="level-display" style="font-family:'Righteous',sans-serif;font-size:22px;color:#fde68a;line-height:1;text-shadow:0 0 10px rgba(253,230,138,0.5);">1</div>
+                <div style="font-size:9px;color:rgba(255,240,180,0.75);font-weight:bold;letter-spacing:1px;">LEVEL</div>
+                <div id="level-display" style="font-family:'Righteous',sans-serif;font-size:22px;color:#fff8e7;line-height:1;text-shadow:0 0 8px rgba(255,220,120,0.5);">1</div>
             </div>
-            <div style="width:100%;height:6px;background:rgba(0,0,0,0.35);border-radius:3px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
-                <div id="slime-xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width 0.3s;box-shadow:0 0 6px rgba(251,191,36,0.7);border-radius:3px;"></div>
+            <div style="width:100%;height:6px;background:rgba(0,0,0,0.3);border-radius:3px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
+                <div id="slime-xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#fcd34d,#f59e0b);transition:width 0.3s;box-shadow:0 0 5px rgba(251,191,36,0.6);border-radius:3px;"></div>
             </div>
-            <div style="font-size:7px;color:rgba(253,230,138,0.6);margin-top:2px;text-align:center;">🍖 <span id="slime-xp">0</span> / <span id="slime-xp-needed">100</span> XP</div>
+            <div style="font-size:7px;color:rgba(255,240,180,0.65);margin-top:2px;text-align:center;">🍖 <span id="slime-xp">0</span> / <span id="slime-xp-needed">100</span> XP</div>
         </div>
         
-        <!-- Right: Skills Button + merged last-skill XP bar -->
-        <div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;padding-right:12px;gap:3px;">
-            <!-- Skills button with XP bar merged inside -->
-            <div id="skills-btn-wrap" style="background:linear-gradient(135deg,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.2) 100%);border:1px solid rgba(253,230,138,0.35);border-radius:10px;padding:5px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);min-width:80px;cursor:pointer;" onclick="document.getElementById('skills-btn').click()">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:3px;">
-                    <span style="font-family:'Righteous',sans-serif;font-size:11px;color:#fde68a;">📊 Skills</span>
-                    <span id="last-skill-display" style="font-size:9px;color:rgba(253,230,138,0.8);font-weight:bold;"></span>
+        <!-- Right: Skills card — same size as level card -->
+        <div style="flex:1;display:flex;justify-content:flex-end;padding-right:12px;">
+            <div id="skills-btn-wrap" onclick="document.getElementById('skills-btn').click()" style="background:rgba(0,0,0,0.22);border:1px solid rgba(255,240,180,0.45);border-radius:10px;padding:5px 10px;box-shadow:0 2px 6px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.12);cursor:pointer;width:100%;max-width:120px;">
+                <div style="display:flex;align-items:baseline;justify-content:center;gap:4px;margin-bottom:3px;">
+                    <div style="font-size:9px;color:rgba(255,240,180,0.75);font-weight:bold;letter-spacing:1px;">SKILLS</div>
+                    <span id="last-skill-display" style="font-family:'Righteous',sans-serif;font-size:12px;color:#fff8e7;font-weight:bold;"></span>
                 </div>
-                <div style="width:100%;height:6px;background:rgba(0,0,0,0.35);border-radius:3px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
-                    <div id="last-skill-xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#a78bfa,#7c3aed);transition:width 0.3s;border-radius:3px;box-shadow:0 0 6px rgba(167,139,250,0.6);"></div>
+                <div style="width:100%;height:6px;background:rgba(0,0,0,0.3);border-radius:3px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);">
+                    <div id="last-skill-xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#c4b5fd,#7c3aed);transition:width 0.3s;border-radius:3px;box-shadow:0 0 5px rgba(167,139,250,0.6);"></div>
                 </div>
+                <div style="font-size:7px;color:rgba(255,240,180,0.65);margin-top:2px;text-align:center;">📊 Tap to view</div>
             </div>
-            <!-- Invisible real button for JS compatibility -->
             <button id="skills-btn" style="display:none;"></button>
         </div>
     </div>
@@ -1022,7 +1020,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.685</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.686</div>
     <div id="mouse-coords">0, 0</div>
     
 
