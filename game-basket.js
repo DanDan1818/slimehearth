@@ -16,6 +16,12 @@
         let mouseConstraint = null;
         
         // ===== UTILITY FUNCTIONS =====
+        // Format coins with commas: 1234567 → 1,234,567
+        function formatCoins(n) {
+            n = Math.min(Math.floor(n), 999999);
+            return n.toLocaleString();
+        }
+        
         function showItemTooltip(itemId) {
             // Remove existing tooltip
             const existing = document.getElementById('item-tooltip');
@@ -234,10 +240,11 @@
         }
         
         function updateUI() {
-            // Update basket coins display
+            // Update basket coins display (formatted, capped at 999,999)
+            gs.coins = Math.min(gs.coins, 999999);
             const basketCoins = document.getElementById('basket-coins');
             if (basketCoins) {
-                basketCoins.textContent = gs.coins;
+                basketCoins.textContent = formatCoins(gs.coins);
             }
             updateSkillsUI();
             
@@ -1304,7 +1311,7 @@
                         
                         const sellPrice = itemData ? itemData.sellValue : 1;
                         
-                        gs.coins += sellPrice;
+                        gs.coins = Math.min(gs.coins + sellPrice, 999999);
                         notify('Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + sellPrice + ' coins! 💰');
                         const sellSound = document.getElementById('coin-sell-sound');
                         if (sellSound) { sellSound.currentTime = 0; sellSound.play().catch(() => {}); }
