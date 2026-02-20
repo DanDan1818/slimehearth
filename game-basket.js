@@ -344,13 +344,14 @@
             
             // Track last skill used
             gs.lastSkillUsed = skillName;
-            updateLastSkillDisplay();
             
-            // Level up check
+            // Level up check — detect before updating display
+            let leveledUp = false;
             while (skill.xp >= skill.xpNeeded) {
                 skill.xp -= skill.xpNeeded;
                 skill.level++;
-                skill.xpNeeded = Math.floor(skill.xpNeeded * 1.2); // Same as slime
+                skill.xpNeeded = Math.floor(skill.xpNeeded * 1.2);
+                leveledUp = true;
                 notify('🎉 ' + skillName.charAt(0).toUpperCase() + skillName.slice(1) + ' Level ' + skill.level + '!');
             }
             
@@ -359,6 +360,7 @@
             
             save();
             updateSkillsUI();
+            updateLastSkillDisplay(leveledUp);
         }
         
         function updateSkillsUI() {
@@ -383,7 +385,7 @@
             });
         }
         
-        function updateLastSkillDisplay() {
+        function updateLastSkillDisplay(leveledUp) {
             const display = document.getElementById('last-skill-display');
             if (!display || !gs.lastSkillUsed) return;
             
@@ -394,27 +396,47 @@
                 'fishing': '🎣',
                 'farming': '🌾',
                 'cooking': '🍳',
-                'mining':  '⛏️'
+                'mining':  '⛏️',
+                'prospecting': '⛏️'
             };
             
             const icon = skillIcons[gs.lastSkillUsed] || '';
             const name = gs.lastSkillUsed.charAt(0).toUpperCase() + gs.lastSkillUsed.slice(1);
             display.textContent = `${icon} ${name} Lv ${skill.level}`;
             
-            // Update XP bar
+            const skillColors = {
+                'fishing': '#4dd0e1',
+                'farming': '#8bc34a',
+                'cooking': '#ff9800',
+                'mining':  '#78716c',
+                'prospecting': '#a78bfa'
+            };
+            const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
+            
             const xpBar = document.getElementById('last-skill-xp-bar');
-            if (xpBar) {
-                const percent = (skill.xp / skill.xpNeeded) * 100;
-                xpBar.style.width = percent + '%';
-                
-                // Color based on skill
-                const skillColors = {
-                    'fishing': '#4dd0e1',
-                    'farming': '#8bc34a',
-                    'cooking': '#ff9800',
-                    'mining':  '#78716c'
-                };
-                xpBar.style.background = skillColors[gs.lastSkillUsed] || '#9c27b0';
+            if (!xpBar) return;
+            
+            xpBar.style.background = color;
+            const targetPct = (skill.xp / skill.xpNeeded) * 100;
+            
+            if (leveledUp) {
+                // Drain to 0 then fill back up to current XP
+                xpBar.style.transition = 'none';
+                xpBar.style.width = '100%';
+                // Let the 100% paint, then animate down to 0, then up to target
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        xpBar.style.transition = 'width 0.3s ease-in';
+                        xpBar.style.width = '0%';
+                        setTimeout(() => {
+                            xpBar.style.transition = 'width 0.5s ease-out';
+                            xpBar.style.width = targetPct + '%';
+                        }, 350);
+                    });
+                });
+            } else {
+                xpBar.style.transition = 'width 0.4s ease-out';
+                xpBar.style.width = targetPct + '%';
             }
         }
         
