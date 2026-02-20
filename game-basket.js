@@ -71,7 +71,7 @@
                 z-index: 1000;
                 border: 2px solid ${rarityBorderColor};
                 box-shadow: 0 0 16px rgba(0,0,0,0.7), 0 0 8px ${rarityBorderColor}55;
-                width: 200px;
+                width: 140px;
                 text-align: left;
                 pointer-events: none;
                 font-family: sans-serif;
