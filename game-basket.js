@@ -49,21 +49,21 @@
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.2);">
-                    <span style="${rarityHeaderStyle}font-family:'Righteous',sans-serif;font-size:14px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;">${data.name}</span>
-                    <span style="font-size:12px;font-weight:bold;color:#fbbf24;white-space:nowrap;">💰 ${data.sellValue}</span>
+                    <span style="${rarityHeaderStyle}font-family:'Righteous',sans-serif;font-size:14px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${data.name}</span>
+                    <span style="font-size:12px;font-weight:bold;color:#fbbf24;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.7);">💰 ${data.sellValue}</span>
                 </div>
-                <div style="font-size:11px;color:#e5e7eb;line-height:1.4;margin-bottom:${data.feedable || data.crackable ? '5px' : '0'};">
+                <div style="font-size:11px;color:#fff;line-height:1.4;margin-bottom:${data.feedable || data.crackable ? '5px' : '0'};text-shadow:0 1px 2px rgba(0,0,0,0.6);">
                     ${data.description}
                 </div>
-                ${data.feedable ? `<div style="font-size:11px;color:#f9a8d4;font-weight:bold;">❤️ +${data.foodValue} Food</div>` : ''}
-                ${data.crackable ? `<div style="font-size:11px;color:#c4b5fd;font-weight:bold;margin-top:2px;">🔨 Crackable at Shack</div>` : ''}
+                ${data.feedable ? `<div style="font-size:11px;color:#fff;font-weight:bold;text-shadow:0 1px 2px rgba(0,0,0,0.6);">❤️ +${data.foodValue} Food</div>` : ''}
+                ${data.crackable ? `<div style="font-size:11px;color:#fff;font-weight:bold;margin-top:2px;text-shadow:0 1px 2px rgba(0,0,0,0.6);">🔨 Crackable</div>` : ''}
             `;
 
             tooltip.style.cssText = `
                 position: fixed;
                 bottom: 235px;
-                left: calc(50% - 185px);
-                transform: translateX(-50%);
+                left: max(8px, calc(50% - 242px));
+                transform: none;
                 background-color: #7abdd6;
                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.4' numOctaves='4' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E"), linear-gradient(90deg, #6aaec8 0%, #8dcae0 50%, #6aaec8 100%);
                 background-blend-mode: multiply, normal;
