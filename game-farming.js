@@ -669,16 +669,16 @@
             updateFieldDots();
             document.getElementById('field-result').textContent = '';
             
-            if (fieldAnimFrame) cancelAnimationFrame(fieldAnimFrame);
-            fieldLoop();
+            if (fieldAnimFrame) { cancelAnimationFrame(fieldAnimFrame); fieldAnimFrame = null; }
+            fieldAnimFrame = requestAnimationFrame(fieldLoop);
         }
         
         function fieldLoop() {
-            if (!fieldActive) return;
+            if (!fieldActive) { fieldAnimFrame = null; return; }
             
             // Only animate the current active bar — completed bars stay frozen
             const i = fieldCurrentBar;
-            if (i < 3) {
+            if (i < 3 && !fieldLocked) {
                 const pos = fieldIndPos[i] + fieldIndDir[i] * fieldSpeeds[i];
                 if (pos <= 0) {
                     fieldIndPos[i] = 0;
@@ -698,7 +698,8 @@
         function renderBar(i) {
             const wrap = document.getElementById('field-bar-wrap-' + i);
             if (!wrap) return;
-            const h = wrap.clientHeight || 160;
+            // Use the fixed height directly — clientHeight is 0 when room is hidden
+            const h = 160;
             
             const ind  = document.getElementById('field-ind-' + i);
             const zone = document.getElementById('field-zone-' + i);
