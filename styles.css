@@ -229,6 +229,32 @@
             50% { opacity: 0.5; }
         }
         
+        /* Pond bar: gentle water ripple while fishing */
+        @keyframes pondWave {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Pond bar: sharp thump when fish bites */
+        @keyframes pondBite {
+            0%   { transform: scaleY(1)   translateY(0);   }
+            15%  { transform: scaleY(1.6) translateY(-4px); }
+            30%  { transform: scaleY(0.7) translateY(3px);  }
+            50%  { transform: scaleY(1.3) translateY(-2px); }
+            70%  { transform: scaleY(0.85) translateY(1px); }
+            100% { transform: scaleY(1)   translateY(0);   }
+        }
+        
+        /* Container shakes on bite */
+        @keyframes pondShake {
+            0%,100% { transform: translateX(0); }
+            20%  { transform: translateX(-4px); }
+            40%  { transform: translateX(4px); }
+            60%  { transform: translateX(-3px); }
+            80%  { transform: translateX(3px); }
+        }
+        
         @keyframes geodeLock {
             0% { transform: scale(1.4); opacity: 0.5; }
             60% { transform: scale(0.9); }
