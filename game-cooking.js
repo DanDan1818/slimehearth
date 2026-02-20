@@ -143,28 +143,36 @@
         }
         
         const RECIPES = {
-            // Original
-            'fish+carrot':   { result: 'food',         name: '🍖 Cooked Food'   },
-            'carrot+fish':   { result: 'food',         name: '🍖 Cooked Food'   },
-            // New recipes (both key orders handled by checkRecipe)
-            'fish+onion':    { result: 'fish_soup',    name: '🍲 Fish Soup'     },
-            'onion+fish':    { result: 'fish_soup',    name: '🍲 Fish Soup'     },
-            'carrot+potato': { result: 'carrot_stew',  name: '🥘 Carrot Stew'   },
-            'potato+carrot': { result: 'carrot_stew',  name: '🥘 Carrot Stew'   },
-            'tomato+fish':   { result: 'tomato_soup',  name: '🍅 Tomato Soup'   },
-            'fish+tomato':   { result: 'tomato_soup',  name: '🍅 Tomato Soup'   },
-            'potato+onion':  { result: 'potato_roast', name: '🥔 Potato Roast'  },
-            'onion+potato':  { result: 'potato_roast', name: '🥔 Potato Roast'  },
-            'corn+carrot':   { result: 'corn_bread',   name: '🌽 Corn Bread'    },
-            'carrot+corn':   { result: 'corn_bread',   name: '🌽 Corn Bread'    },
-            'onion+tomato':  { result: 'onion_broth',  name: '🧅 Onion Broth'   },
-            'tomato+onion':  { result: 'onion_broth',  name: '🧅 Onion Broth'   },
-            'pumpkin+carrot':{ result: 'pumpkin_pie',  name: '🥧 Pumpkin Pie'   },
-            'carrot+pumpkin':{ result: 'pumpkin_pie',  name: '🥧 Pumpkin Pie'   },
-            'fish+corn':     { result: 'fish_tacos',   name: '🌮 Fish Tacos'    },
-            'corn+fish':     { result: 'fish_tacos',   name: '🌮 Fish Tacos'    },
-            'tomato+corn':   { result: 'veggie_feast', name: '🥗 Veggie Feast'  },
-            'corn+tomato':   { result: 'veggie_feast', name: '🥗 Veggie Feast'  },
+            // Lv 1 — always unlocked
+            'fish+carrot':   { result: 'food',         name: '🍖 Cooked Food',   reqLevel: 1  },
+            'carrot+fish':   { result: 'food',         name: '🍖 Cooked Food',   reqLevel: 1  },
+            // Lv 3
+            'fish+onion':    { result: 'fish_soup',    name: '🍲 Fish Soup',     reqLevel: 3  },
+            'onion+fish':    { result: 'fish_soup',    name: '🍲 Fish Soup',     reqLevel: 3  },
+            // Lv 5
+            'tomato+fish':   { result: 'tomato_soup',  name: '🍅 Tomato Soup',   reqLevel: 5  },
+            'fish+tomato':   { result: 'tomato_soup',  name: '🍅 Tomato Soup',   reqLevel: 5  },
+            // Lv 8
+            'carrot+potato': { result: 'carrot_stew',  name: '🥘 Carrot Stew',   reqLevel: 8  },
+            'potato+carrot': { result: 'carrot_stew',  name: '🥘 Carrot Stew',   reqLevel: 8  },
+            // Lv 10
+            'onion+tomato':  { result: 'onion_broth',  name: '🧅 Onion Broth',   reqLevel: 10 },
+            'tomato+onion':  { result: 'onion_broth',  name: '🧅 Onion Broth',   reqLevel: 10 },
+            // Lv 15
+            'potato+onion':  { result: 'potato_roast', name: '🥔 Potato Roast',  reqLevel: 15 },
+            'onion+potato':  { result: 'potato_roast', name: '🥔 Potato Roast',  reqLevel: 15 },
+            // Lv 20
+            'corn+carrot':   { result: 'corn_bread',   name: '🌽 Corn Bread',    reqLevel: 20 },
+            'carrot+corn':   { result: 'corn_bread',   name: '🌽 Corn Bread',    reqLevel: 20 },
+            // Lv 25
+            'fish+corn':     { result: 'fish_tacos',   name: '🌮 Fish Tacos',    reqLevel: 25 },
+            'corn+fish':     { result: 'fish_tacos',   name: '🌮 Fish Tacos',    reqLevel: 25 },
+            // Lv 35
+            'pumpkin+carrot':{ result: 'pumpkin_pie',  name: '🥧 Pumpkin Pie',   reqLevel: 35 },
+            'carrot+pumpkin':{ result: 'pumpkin_pie',  name: '🥧 Pumpkin Pie',   reqLevel: 35 },
+            // Lv 50
+            'tomato+corn':   { result: 'veggie_feast', name: '🥗 Veggie Feast',  reqLevel: 50 },
+            'corn+tomato':   { result: 'veggie_feast', name: '🥗 Veggie Feast',  reqLevel: 50 },
         };
         
         // Helper function to check if item is a fish
@@ -174,15 +182,27 @@
         
         // Check if two items match a recipe (supports "any fish")
         function checkRecipe(item1, item2) {
+            const cookLv = gs.skills && gs.skills.cooking ? gs.skills.cooking.level : 1;
+            
+            function recipeAllowed(recipe) {
+                if (!recipe) return null;
+                if (recipe.reqLevel && cookLv < recipe.reqLevel) return { locked: true, reqLevel: recipe.reqLevel, name: recipe.name };
+                return recipe;
+            }
+            
             // Direct match
             const directKey1 = item1 + '+' + item2;
             const directKey2 = item2 + '+' + item1;
-            if (RECIPES[directKey1]) return RECIPES[directKey1];
-            if (RECIPES[directKey2]) return RECIPES[directKey2];
+            if (RECIPES[directKey1]) return recipeAllowed(RECIPES[directKey1]);
+            if (RECIPES[directKey2]) return recipeAllowed(RECIPES[directKey2]);
             
-            // Check for fish + carrot combo (any fish works)
-            if ((isFish(item1) && item2 === 'carrot') || (item1 === 'carrot' && isFish(item2))) {
-                return RECIPES['fish+carrot'];
+            // Check for fish + carrot / onion / tomato / corn combos (any fish works)
+            if (isFish(item1) || isFish(item2)) {
+                const veggie = isFish(item1) ? item2 : item1;
+                const fishKey = 'fish+' + veggie;
+                const veggieKey = veggie + '+fish';
+                if (RECIPES[fishKey]) return recipeAllowed(RECIPES[fishKey]);
+                if (RECIPES[veggieKey]) return recipeAllowed(RECIPES[veggieKey]);
             }
             
             return null;
@@ -311,6 +331,14 @@
             if (hearthCooking) return;
             
             const recipe = checkRecipe(hearthSlot1ItemId, hearthSlot2ItemId);
+            
+            // Recipe locked behind cooking level
+            if (recipe && recipe.locked) {
+                notify('🔒 ' + recipe.name + ' requires Cooking Lv ' + recipe.reqLevel + '!', 'warning');
+                hearthCooking = false;
+                return;
+            }
+            
             const cookBtn = document.getElementById('cook-hearth-btn');
             const progressContainer = document.getElementById('hearth-progress-container');
             const progressBar = document.getElementById('hearth-progress-bar');
