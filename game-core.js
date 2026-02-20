@@ -206,7 +206,7 @@
                 emoji: '🐟',
                 image: 'fish1.png',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'A common fish from the pond.',
                 foodValue: 2,
                 sellValue: 3,
@@ -218,7 +218,7 @@
                 emoji: '🐠',
                 image: 'fish2.png',
                 rarity: 'Uncommon',
-                rarityColor: '#4ade80',
+                rarityColor: '#2d8a2d',
                 description: 'A colorful blue fish.',
                 foodValue: 3,
                 sellValue: 5,
@@ -230,7 +230,7 @@
                 emoji: '🐡',
                 image: 'fish3.png',
                 rarity: 'Rare',
-                rarityColor: '#fbbf24',
+                rarityColor: '#2563eb',
                 description: 'A rare tropical fish!',
                 foodValue: 4,
                 sellValue: 10,
@@ -242,7 +242,7 @@
                 emoji: '🎣',
                 image: 'fish4.png',
                 rarity: 'Epic',
-                rarityColor: '#a855f7',
+                rarityColor: '#7c3aed',
                 description: 'A legendary golden fish!',
                 foodValue: 5,
                 sellValue: 20,
@@ -254,7 +254,7 @@
                 emoji: '🦞',
                 image: 'fish5.png',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'A tasty lobster from the river.',
                 foodValue: 3,
                 sellValue: 5,
@@ -266,7 +266,7 @@
                 emoji: '🦐',
                 image: 'fish6.png',
                 rarity: 'Uncommon',
-                rarityColor: '#4ade80',
+                rarityColor: '#2d8a2d',
                 description: 'Fresh river shrimp.',
                 foodValue: 4,
                 sellValue: 8,
@@ -278,7 +278,7 @@
                 emoji: '🦀',
                 image: 'fish7.png',
                 rarity: 'Rare',
-                rarityColor: '#fbbf24',
+                rarityColor: '#2563eb',
                 description: 'A rare river crab!',
                 foodValue: 5,
                 sellValue: 12,
@@ -290,7 +290,7 @@
                 emoji: '🦈',
                 image: 'fish8.png',
                 rarity: 'Epic',
-                rarityColor: '#a855f7',
+                rarityColor: '#7c3aed',
                 description: 'An epic shark caught in the river!',
                 foodValue: 8,
                 sellValue: 25,
@@ -302,7 +302,7 @@
                 emoji: '🥕',
                 image: 'carrot1.png',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'A crunchy orange vegetable.',
                 foodValue: 10,
                 sellValue: 3,
@@ -314,77 +314,77 @@
                 emoji: '🌱',
                 image: 'seeds1.png',
                 rarity: 'Common',
-                rarityColor: '#8bc34a',
+                rarityColor: '#111111',
                 description: 'Plant in the garden. Yields 3 Carrots.',
                 foodValue: 0, sellValue: 1, cookable: false, feedable: false,
                 isPlantable: true, harvestItem: 'carrot', harvestCount: 3
             },
             'tomato': {
                 name: 'Tomato', emoji: '🍅',
-                rarity: 'Common', rarityColor: '#9ca3af',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'A juicy red tomato.',
                 foodValue: 12, sellValue: 5, cookable: true, feedable: true
             },
             'tomato_seeds': {
                 name: '🌱 Tomato Seeds', emoji: '🌱',
                 image: 'seeds1.png',
-                rarity: 'Common', rarityColor: '#8bc34a',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'Plant in the garden. Yields 2 Tomatoes.',
                 foodValue: 0, sellValue: 2, cookable: false, feedable: false,
                 isPlantable: true, harvestItem: 'tomato', harvestCount: 2
             },
             'potato': {
                 name: 'Potato', emoji: '🥔',
-                rarity: 'Common', rarityColor: '#9ca3af',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'A hearty starchy potato.',
                 foodValue: 8, sellValue: 4, cookable: true, feedable: true
             },
             'potato_seeds': {
                 name: '🌱 Potato Seeds', emoji: '🌱',
                 image: 'seeds1.png',
-                rarity: 'Common', rarityColor: '#8bc34a',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'Plant in the garden. Yields 4 Potatoes.',
                 foodValue: 0, sellValue: 1, cookable: false, feedable: false,
                 isPlantable: true, harvestItem: 'potato', harvestCount: 4
             },
             'corn': {
                 name: 'Corn', emoji: '🌽',
-                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Sweet golden corn.',
                 foodValue: 15, sellValue: 8, cookable: true, feedable: true
             },
             'corn_seeds': {
                 name: '🌱 Corn Seeds', emoji: '🌱',
                 image: 'seeds1.png',
-                rarity: 'Common', rarityColor: '#8bc34a',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'Plant in the garden. Yields 2 Corn.',
                 foodValue: 0, sellValue: 3, cookable: false, feedable: false,
                 isPlantable: true, harvestItem: 'corn', harvestCount: 2
             },
             'onion': {
                 name: 'Onion', emoji: '🧅',
-                rarity: 'Common', rarityColor: '#9ca3af',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'Brings tears of joy.',
                 foodValue: 10, sellValue: 6, cookable: true, feedable: true
             },
             'onion_seeds': {
                 name: '🌱 Onion Seeds', emoji: '🌱',
                 image: 'seeds1.png',
-                rarity: 'Common', rarityColor: '#8bc34a',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'Plant in the garden. Yields 3 Onions.',
                 foodValue: 0, sellValue: 2, cookable: false, feedable: false,
                 isPlantable: true, harvestItem: 'onion', harvestCount: 3
             },
             'pumpkin': {
                 name: 'Pumpkin', emoji: '🎃',
-                rarity: 'Rare', rarityColor: '#a855f7',
+                rarity: 'Rare', rarityColor: '#2563eb',
                 description: 'A prize-winning pumpkin.',
                 foodValue: 25, sellValue: 20, cookable: true, feedable: true
             },
             'pumpkin_seeds': {
                 name: '🌱 Pumpkin Seeds', emoji: '🌱',
                 image: 'seeds1.png',
-                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Plant in the garden. Yields 1 Pumpkin.',
                 foodValue: 0, sellValue: 5, cookable: false, feedable: false,
                 isPlantable: true, harvestItem: 'pumpkin', harvestCount: 1
@@ -394,7 +394,7 @@
                 emoji: '🍖',
                 image: 'food1.png',
                 rarity: 'Rare',
-                rarityColor: '#ff69b4',  // Pink
+                rarityColor: '#2563eb',  // Pink
                 description: 'A delicious prepared meal. Restores 100 hunger!',
                 foodValue: 100,  // Gives 100 slime XP when eaten
                 sellValue: 50,   // Sells for 50 coins
@@ -403,8 +403,8 @@
             },
             'burnt_food': {
                 name: 'Burnt Food',
-                rarity: 'Trash',
-                rarityColor: '#78716c',
+                rarity: 'Common',
+                rarityColor: '#111111',
                 description: 'Completely charred and inedible.',
                 foodValue: 1,
                 sellValue: 1,
@@ -413,8 +413,8 @@
             },
             'burnt': {
                 name: 'Burnt Food',
-                rarity: 'Trash',
-                rarityColor: '#78716c',
+                rarity: 'Common',
+                rarityColor: '#111111',
                 description: 'Completely charred and inedible.',
                 foodValue: 1,
                 sellValue: 1,
@@ -426,7 +426,7 @@
                 emoji: '🪨',
                 image: 'geode1.png',
                 rarity: 'Uncommon',
-                rarityColor: '#fbbf24',
+                rarityColor: '#2d8a2d',
                 description: 'A small mysterious rocky shell. Crack it at the Shack!',
                 foodValue: 0, sellValue: 2, cookable: false, feedable: false,
                 crackable: true
@@ -436,7 +436,7 @@
                 emoji: '🪨',
                 image: 'geode1.png',
                 rarity: 'Rare',
-                rarityColor: '#a78bfa',
+                rarityColor: '#2563eb',
                 description: 'A medium geode from Depth 2. Crack it at the Shack!',
                 foodValue: 0, sellValue: 5, cookable: false, feedable: false,
                 crackable: true
@@ -446,7 +446,7 @@
                 emoji: '🪨',
                 image: 'geode1.png',
                 rarity: 'Epic',
-                rarityColor: '#f43f5e',
+                rarityColor: '#7c3aed',
                 description: 'A large geode from Depth 3. Crack it at the Shack!',
                 foodValue: 0, sellValue: 10, cookable: false, feedable: false,
                 crackable: true
@@ -456,7 +456,7 @@
                 emoji: '🪨',
                 image: 'geode1.png',
                 rarity: 'Legendary',
-                rarityColor: '#fbbf24',
+                rarityColor: '#ea580c',
                 description: 'A rare golden geode from Depth 4. Crack it at the Shack!',
                 foodValue: 0, sellValue: 20, cookable: false, feedable: false,
                 crackable: true
@@ -476,7 +476,7 @@
                 name: 'Rock',
                 image: 'rock1.png',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'A plain rock. Not very valuable.',
                 foodValue: 0,
                 sellValue: 1,
@@ -486,37 +486,37 @@
             },
             'gem': {
                 name: 'Emerald', emoji: '💚', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#10b981',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A sparkling green emerald.',
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
             },
             'emerald': {
                 name: 'Emerald',  emoji: '💚', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#10b981',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A sparkling green emerald.',
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
             },
             'ruby': {
                 name: 'Ruby', emoji: '❤️', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#ef4444',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A brilliant red ruby.',
                 foodValue: 0, sellValue: 120, cookable: false, feedable: false
             },
             'sapphire': {
                 name: 'Sapphire', emoji: '💙', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#3b82f6',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A deep blue sapphire.',
                 foodValue: 0, sellValue: 140, cookable: false, feedable: false
             },
             'amethyst': {
                 name: 'Amethyst', emoji: '💜', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#a855f7',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A rich purple amethyst.',
                 foodValue: 0, sellValue: 160, cookable: false, feedable: false
             },
             'topaz': {
                 name: 'Topaz', emoji: '🧡', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#f59e0b',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A warm golden topaz.',
                 foodValue: 0, sellValue: 200, cookable: false, feedable: false
             },
@@ -528,37 +528,37 @@
             },
             'ore': {
                 name: 'Copper Ore', emoji: '🟤', image: 'ore1.png',
-                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Uncommon copper ore found in The Cave.',
                 foodValue: 0, sellValue: 10, cookable: false, feedable: false
             },
             'copper_ore': {
                 name: 'Copper Ore', emoji: '🟤', image: 'ore1.png',
-                rarity: 'Uncommon', rarityColor: '#fbbf24',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Uncommon copper ore found in The Cave.',
                 foodValue: 0, sellValue: 10, cookable: false, feedable: false
             },
             'coal': {
                 name: 'Coal', emoji: '🖤', image: 'ore1.png',
-                rarity: 'Common', rarityColor: '#9ca3af',
+                rarity: 'Common', rarityColor: '#111111',
                 description: 'A lump of coal. Burns well.',
                 foodValue: 0, sellValue: 6, cookable: false, feedable: false
             },
             'iron_ore': {
                 name: 'Iron Ore', emoji: '⚙️', image: 'ore1.png',
-                rarity: 'Rare', rarityColor: '#a78bfa',
+                rarity: 'Rare', rarityColor: '#2563eb',
                 description: 'Dense iron ore from Depth 1 and beyond.',
                 foodValue: 0, sellValue: 35, cookable: false, feedable: false
             },
             'silver_ore': {
                 name: 'Silver Ore', emoji: '🔘', image: 'ore1.png',
-                rarity: 'Epic', rarityColor: '#f43f5e',
+                rarity: 'Epic', rarityColor: '#7c3aed',
                 description: 'Gleaming silver ore from deep within Depth 3.',
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
             },
             'gold_ore': {
                 name: 'Gold Ore', emoji: '🌟', image: 'ore1.png',
-                rarity: 'Legendary', rarityColor: '#fbbf24',
+                rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'Precious gold ore found only at Depth 5.',
                 foodValue: 0, sellValue: 300, cookable: false, feedable: false
             },
@@ -567,7 +567,7 @@
                 emoji: '🧺',
                 image: 'basket1.png',
                 rarity: 'Uncommon',
-                rarityColor: '#fbbf24',
+                rarityColor: '#2d8a2d',
                 description: 'A mysterious basket. Feed to slime to open!',
                 foodValue: 0,
                 sellValue: 10,
@@ -581,7 +581,7 @@
                 emoji: '🌿',
                 image: 'trash1.png',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'A soggy lily pad. Not much use.',
                 foodValue: 0,
                 sellValue: 1,
@@ -592,7 +592,7 @@
                 name: 'Old Boot',
                 emoji: '👢',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'Someone lost this long ago.',
                 foodValue: 0,
                 sellValue: 1,
@@ -603,7 +603,7 @@
                 name: 'Seaweed',
                 emoji: '🌿',
                 rarity: 'Common',
-                rarityColor: '#9ca3af',
+                rarityColor: '#111111',
                 description: 'Slimy river weed.',
                 foodValue: 0,
                 sellValue: 1,

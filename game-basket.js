@@ -40,7 +40,7 @@
             
             const data = ITEM_DATA[itemId];
             
-            const rarityBorderColor = data.rarityColor === 'rainbow' ? '#d946ef' : data.rarityColor;
+            const rarityBorderColor = data.rarityColor === 'rainbow' ? '#d946ef' : (data.rarityColor === '#111111' ? '#666666' : data.rarityColor);
             const rarityHeaderStyle = data.rarityColor === 'rainbow'
                 ? 'background:linear-gradient(90deg,#f87171,#fb923c,#facc15,#4ade80,#60a5fa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;'
                 : 'color:' + data.rarityColor + ';';
