@@ -48,7 +48,7 @@
             const tooltip = document.createElement('div');
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
-                <div style="background:${headerBg};margin:-8px -10px 6px -10px;padding:5px 10px;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                <div style="background-color:${headerBg};background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.4' numOctaves='4' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");background-blend-mode:multiply;background-size:cover;margin:-8px -10px 6px -10px;padding:5px 10px;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:space-between;gap:6px;">
                     <span style="font-family:'Righteous',sans-serif;font-size:13px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${data.name}</span>
                     <span style="font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.7);">💰 ${data.sellValue}</span>
                 </div>
