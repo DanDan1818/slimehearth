@@ -80,6 +80,14 @@
                             void barContainer.offsetWidth;
                             barContainer.style.animation = 'pondBite 0.6s cubic-bezier(0.2,1.4,0.4,1) forwards, pondWave 1.2s ease-in-out 0.6s infinite';
                         }
+                        // Burst the outer specks
+                        const specks = document.querySelectorAll('.pspeck');
+                        specks.forEach((s, i) => {
+                            s.classList.remove('burst');
+                            void s.offsetWidth;
+                            s.classList.add('burst');
+                            s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+                        });
                         // Show splash
                         if (splash && splash.style.display === 'none') {
                             splash.style.display = 'block';
