@@ -333,8 +333,19 @@
                     <div style="position:relative;display:inline-block;">
                         <div id="fishing-progress-pond" style="width:200px;height:22px;border-radius:11px;overflow:visible;position:relative;">
                             <!-- Inner clip wrapper keeps fill rounded and contained -->
-                            <div style="position:absolute;inset:0;border-radius:11px;overflow:hidden;background:rgba(255,255,255,0.6);border:1px solid #000;">
-                                <div id="fishing-bar-pond" style="height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7);transition:width 0.1s;"></div>
+                            <div style="position:absolute;inset:0;border-radius:11px;overflow:hidden;background:rgba(180,220,240,0.5);border:1px solid #5bb8d4;">
+                                <!-- Water base fill -->
+                                <div id="fishing-bar-pond" style="height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7);transition:width 0.1s;border-radius:11px 0 0 11px;"></div>
+                                <!-- Ripple shimmer overlay — always visible across full bar -->
+                                <div style="position:absolute;inset:0;pointer-events:none;border-radius:11px;overflow:hidden;">
+                                    <div class="pond-ripple-1"></div>
+                                    <div class="pond-ripple-2"></div>
+                                    <div class="pond-ripple-3"></div>
+                                </div>
+                                <!-- Splash flecks -->
+                                <div class="pond-splash-1"></div>
+                                <div class="pond-splash-2"></div>
+                                <div class="pond-splash-3"></div>
                             </div>
                             <span id="fishing-bar-label" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.6);white-space:nowrap;pointer-events:none;z-index:1;"></span>
                         </div>

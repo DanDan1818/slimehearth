@@ -229,6 +229,47 @@
             50% { opacity: 0.5; }
         }
         
+        /* ===== POND BAR WATER EFFECTS ===== */
+
+        /* Ripple shimmer bands that sweep across */
+        .pond-ripple-1, .pond-ripple-2, .pond-ripple-3 {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 40px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+            border-radius: 50%;
+            animation: pondRippleSweep 2.4s ease-in-out infinite;
+        }
+        .pond-ripple-2 { animation-delay: 0.8s; opacity: 0.7; width: 25px; }
+        .pond-ripple-3 { animation-delay: 1.6s; opacity: 0.5; width: 18px; }
+
+        @keyframes pondRippleSweep {
+            0%   { left: -50px; opacity: 0; }
+            15%  { opacity: 1; }
+            85%  { opacity: 1; }
+            100% { left: 210px; opacity: 0; }
+        }
+
+        /* Splash flecks — little bright dots that pop and fade */
+        .pond-splash-1, .pond-splash-2, .pond-splash-3 {
+            position: absolute;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            pointer-events: none;
+            animation: pondSplashPop 2s ease-out infinite;
+        }
+        .pond-splash-1 { left: 20%;  top: 3px;  animation-delay: 0s;    animation-duration: 1.8s; }
+        .pond-splash-2 { left: 55%;  top: 10px; animation-delay: 0.7s;  animation-duration: 2.2s; width: 4px; height: 4px; }
+        .pond-splash-3 { left: 80%;  top: 5px;  animation-delay: 1.3s;  animation-duration: 1.6s; width: 3px; height: 3px; }
+
+        @keyframes pondSplashPop {
+            0%   { transform: scale(0);   opacity: 0; }
+            20%  { transform: scale(1.4); opacity: 1; }
+            60%  { transform: scale(0.8); opacity: 0.6; }
+            100% { transform: scale(0);   opacity: 0; }
+        }
+
         /* Pond bar: gentle vertical sway while fishing */
         @keyframes pondWave {
             0%   { transform: translateY(0px) scaleY(1); }
