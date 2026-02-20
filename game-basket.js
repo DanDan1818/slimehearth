@@ -41,16 +41,16 @@
             const data = ITEM_DATA[itemId];
             
             const rarityBorderColor = data.rarityColor === 'rainbow' ? '#d946ef' : (data.rarityColor === '#111111' ? '#666666' : data.rarityColor);
-            const rarityHeaderStyle = data.rarityColor === 'rainbow'
-                ? 'background:linear-gradient(90deg,#f87171,#fb923c,#facc15,#4ade80,#60a5fa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;'
-                : 'color:' + data.rarityColor + ';';
+            const headerBg = data.rarityColor === 'rainbow'
+                ? 'linear-gradient(90deg,#f87171,#fb923c,#facc15,#4ade80,#60a5fa,#c084fc)'
+                : data.rarityColor;
 
             const tooltip = document.createElement('div');
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.2);">
-                    <span style="${rarityHeaderStyle}font-family:'Righteous',sans-serif;font-size:14px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${data.name}</span>
-                    <span style="font-size:12px;font-weight:bold;color:#fbbf24;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.7);">💰 ${data.sellValue}</span>
+                <div style="background:${headerBg};margin:-8px -10px 6px -10px;padding:5px 10px;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                    <span style="font-family:'Righteous',sans-serif;font-size:13px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${data.name}</span>
+                    <span style="font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.7);">💰 ${data.sellValue}</span>
                 </div>
                 <div style="font-size:11px;color:#fff;line-height:1.4;margin-bottom:${data.feedable || data.crackable ? '5px' : '0'};text-shadow:0 1px 2px rgba(0,0,0,0.6);">
                     ${data.description}
