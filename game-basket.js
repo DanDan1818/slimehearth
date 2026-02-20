@@ -55,8 +55,8 @@
 
             tooltip.style.cssText = `
                 position: fixed;
-                bottom: 230px;
-                left: 50%;
+                bottom: 235px;
+                left: calc(50% - 185px);
                 transform: translateX(-50%);
                 background: rgba(20,10,40,0.96);
                 color: #fff;
