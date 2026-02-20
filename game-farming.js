@@ -666,6 +666,15 @@
                 fieldSpeeds[i]  = FIELD_BASE_SPEED + i * 0.003 + Math.random() * 0.003;
             }
             
+            // Reset all indicators to brown
+            for (let i = 0; i < 3; i++) {
+                const ind = document.getElementById('field-ind-' + i);
+                if (ind) {
+                    ind.style.background = 'linear-gradient(180deg,#a16207,#78350f)';
+                    ind.style.border = '1.5px solid #000';
+                }
+            }
+            
             updateFieldDots();
             document.getElementById('field-result').textContent = '';
             
@@ -676,9 +685,12 @@
         function fieldLoop() {
             if (!fieldActive) { fieldAnimFrame = null; return; }
             
-            // Only animate the current active bar — completed bars stay frozen
-            const i = fieldCurrentBar;
-            if (i < 3 && !fieldLocked) {
+            // All 3 bars animate simultaneously
+            for (let i = 0; i < 3; i++) {
+                // Already-hit bars stay frozen green — skip them
+                if (i < fieldCurrentBar) continue;
+                if (fieldLocked && i === fieldCurrentBar) continue;
+                
                 const pos = fieldIndPos[i] + fieldIndDir[i] * fieldSpeeds[i];
                 if (pos <= 0) {
                     fieldIndPos[i] = 0;
@@ -761,9 +773,6 @@
                     // ✅ Advance to next bar — freeze this one green, unlock next
                     setTimeout(() => {
                         // Freeze hit bar: keep indicator green, stop it moving
-                        const hitInd = document.getElementById('field-ind-' + i);
-                        if (hitInd) hitInd.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
-                        
                         fieldCurrentBar++;
                         fieldLocked = false;
                         updateFieldDots();
@@ -775,12 +784,20 @@
                 fieldLocked = true;
                 cancelAnimationFrame(fieldAnimFrame);
                 
-                const ind = document.getElementById('field-ind-' + i);
-                if (ind) { ind.style.background = 'linear-gradient(180deg,#ef4444,#b91c1c)'; }
+                // Flash all active (non-hit) bars red
+                for (let j = fieldCurrentBar; j < 3; j++) {
+                    const ind = document.getElementById('field-ind-' + j);
+                    if (ind) ind.style.background = 'linear-gradient(180deg,#ef4444,#b91c1c)';
+                }
                 
                 document.getElementById('field-result').textContent = '❌ Missed! Try again';
                 
                 setTimeout(() => {
+                    // Restore brown before reinit
+                    for (let j = 0; j < 3; j++) {
+                        const ind = document.getElementById('field-ind-' + j);
+                        if (ind) ind.style.background = 'linear-gradient(180deg,#a16207,#78350f)';
+                    }
                     fieldActive = true;
                     fieldLocked = false;
                     initFieldGame();
