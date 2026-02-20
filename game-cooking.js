@@ -412,6 +412,10 @@
                     setTimeout(() => resultDiv.textContent = '', 3000);
                 }
                 notify('✨ Cooked ' + recipe.name + '!');
+                document.querySelectorAll('.hspeck').forEach(s => {
+                    s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                    s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+                });
                 
                 // 0.01% chance to find Red Frog (if not already collected)
                 if (!gs.frogs.frog_red && Math.random() < 0.0001) {
@@ -696,6 +700,11 @@
                 bar.style.animation = 'crackFlash 0.35s ease-out';
                 bar.addEventListener('animationend', () => bar.style.animation = '', { once: true });
             }
+            // --- Burst gem specks on crack hit ---
+            document.querySelectorAll('.ssspeck').forEach(s => {
+                s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+            });
             
             // --- Pulse + darken the crack button ---
             const btn = document.getElementById('crack-geode-btn');

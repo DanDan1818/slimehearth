@@ -229,6 +229,11 @@
             const castBtn = document.getElementById('cast-river');
             
             if (success) {
+                // Burst river specks on catch
+                document.querySelectorAll('.rspeck').forEach(s => {
+                    s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                    s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+                });
                 // Fishing level scales loot
                 const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
                 const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30);
