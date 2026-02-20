@@ -3254,63 +3254,14 @@ function stopBasket() {
             gardenActive = false;
         }
         
-        let fieldPattern = [];
-        let fieldInput = [];
-        let fieldActive = false;
-        
-        function initFieldGame() {
-            fieldActive = true;
-            fieldPattern = generateFieldPattern();
-            fieldInput = [];
-            document.getElementById('field-pattern-display').textContent = fieldPattern.join(' ');
-            document.getElementById('field-input-display').textContent = '';
-            document.getElementById('field-result').textContent = '';
-        }
-        
-        function generateFieldPattern() {
-            const plants = ['🌽', '🥕', '🥔'];
-            const pattern = [];
-            for (let i = 0; i < 4; i++) {
-                pattern.push(plants[Math.floor(Math.random() * plants.length)]);
-            }
-            return pattern;
-        }
-        
-        function plantInField(plant) {
-            if (!fieldActive) return;
-            fieldInput.push(plant);
-            document.getElementById('field-input-display').textContent = fieldInput.join(' ');
-            
-            for (let i = 0; i < fieldInput.length; i++) {
-                if (fieldInput[i] !== fieldPattern[i]) {
-                    const result = document.getElementById('field-result');
-                    result.textContent = '❌ Wrong order! Try again';
-                    setTimeout(() => {
-                        fieldInput = [];
-                        document.getElementById('field-input-display').textContent = '';
-                        result.textContent = '';
-                    }, 1500);
-                    return;
-                }
-            }
-            
-            if (fieldInput.length === fieldPattern.length) {
-                const result = document.getElementById('field-result');
-                result.textContent = '🎉 Perfect planting! +1 Carrot';
-                addItem('carrot', 1);
-                addSkillXP('farming', 15);
-                setTimeout(() => initFieldGame(), 2000);
-            }
-        }
-        
-        function resetField() {
-            fieldInput = [];
-            document.getElementById('field-input-display').textContent = '';
-            document.getElementById('field-result').textContent = '';
-        }
-        
+        // Field minigame state — logic lives in game-farming.js
+        // Stub functions here to avoid crashes from old references
         function stopFieldGame() {
-            fieldActive = false;
+            if (typeof fieldActive !== 'undefined') fieldActive = false;
+            if (typeof fieldAnimFrame !== 'undefined' && fieldAnimFrame) {
+                cancelAnimationFrame(fieldAnimFrame);
+                fieldAnimFrame = null;
+            }
         }
         
 
