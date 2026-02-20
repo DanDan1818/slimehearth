@@ -16,13 +16,14 @@
             if (lv >= 40) return 5;
             if (lv >= 30) return 4;
             if (lv >= 20) return 3;
-            if (lv >= 10) return 2;
+            if (lv >= 10) return 3;
+            if (lv >= 5)  return 2;
             return 1;
         }
         
         // Returns required farming level for a slot index
         function slotRequiredLevel(i) {
-            return [0, 10, 20, 30, 40, 50][i] || 0;
+            return [0, 5, 10, 20, 30, 40, 50][i] || 0;
         }
         
         function initGardenPlots() {
@@ -635,63 +636,182 @@
             gardenActive = false;
         }
         
-        let fieldPattern = [];
-        let fieldInput = [];
+        // ===== FIELD MINIGAME: 3 vertical bars, tap to hit green zone =====
         let fieldActive = false;
+        let fieldAnimFrame = null;
+        let fieldHits = 0;           // successful hits in current round (0-2)
+        let fieldCurrentBar = 0;     // which bar is active (0,1,2)
+        let fieldIndPos = [0, 0, 0]; // 0..1 position of indicator per bar
+        let fieldIndDir = [1, 1, 1]; // direction per bar
+        let fieldSpeeds = [0, 0, 0]; // pixels-per-frame per bar
+        let fieldZonePos = [0, 0, 0];// 0..1 top of green zone per bar
+        let fieldLocked = false;     // brief lock after tap
+        
+        const FIELD_IND_H  = 0.22;   // indicator height as fraction
+        const FIELD_ZONE_H = 0.30;   // zone height as fraction
+        const FIELD_BASE_SPEED = 0.006;
         
         function initFieldGame() {
             fieldActive = true;
-            fieldPattern = generateFieldPattern();
-            fieldInput = [];
-            document.getElementById('field-pattern-display').textContent = fieldPattern.join(' ');
-            document.getElementById('field-input-display').textContent = '';
-            document.getElementById('field-result').textContent = '';
-        }
-        
-        function generateFieldPattern() {
-            const plants = ['🌽', '🥕', '🥔'];
-            const pattern = [];
-            for (let i = 0; i < 4; i++) {
-                pattern.push(plants[Math.floor(Math.random() * plants.length)]);
-            }
-            return pattern;
-        }
-        
-        function plantInField(plant) {
-            if (!fieldActive) return;
-            fieldInput.push(plant);
-            document.getElementById('field-input-display').textContent = fieldInput.join(' ');
+            fieldHits = 0;
+            fieldCurrentBar = 0;
+            fieldLocked = false;
             
-            for (let i = 0; i < fieldInput.length; i++) {
-                if (fieldInput[i] !== fieldPattern[i]) {
-                    const result = document.getElementById('field-result');
-                    result.textContent = '❌ Wrong order! Try again';
+            // Randomise zone positions and speeds
+            for (let i = 0; i < 3; i++) {
+                fieldZonePos[i] = 0.1 + Math.random() * (0.6 - FIELD_ZONE_H);
+                fieldIndPos[i]  = Math.random() * (1 - FIELD_IND_H);
+                fieldIndDir[i]  = Math.random() > 0.5 ? 1 : -1;
+                // Each bar slightly faster than the last
+                fieldSpeeds[i]  = FIELD_BASE_SPEED + i * 0.003 + Math.random() * 0.003;
+            }
+            
+            updateFieldDots();
+            document.getElementById('field-result').textContent = '';
+            
+            if (fieldAnimFrame) cancelAnimationFrame(fieldAnimFrame);
+            fieldLoop();
+        }
+        
+        function fieldLoop() {
+            if (!fieldActive) return;
+            
+            // Only animate the active bar (and all unlocked bars visually)
+            for (let i = 0; i <= fieldCurrentBar && i < 3; i++) {
+                if (i < fieldCurrentBar) continue; // already locked-in bars stay still
+                const pos = fieldIndPos[i] + fieldIndDir[i] * fieldSpeeds[i];
+                if (pos <= 0) {
+                    fieldIndPos[i] = 0;
+                    fieldIndDir[i] = 1;
+                } else if (pos + FIELD_IND_H >= 1) {
+                    fieldIndPos[i] = 1 - FIELD_IND_H;
+                    fieldIndDir[i] = -1;
+                } else {
+                    fieldIndPos[i] = pos;
+                }
+                renderBar(i);
+            }
+            
+            fieldAnimFrame = requestAnimationFrame(fieldLoop);
+        }
+        
+        function renderBar(i) {
+            const wrap = document.getElementById('field-bar-wrap-' + i);
+            if (!wrap) return;
+            const h = wrap.clientHeight || 160;
+            
+            const ind  = document.getElementById('field-ind-' + i);
+            const zone = document.getElementById('field-zone-' + i);
+            if (ind)  ind.style.top  = (fieldIndPos[i]  * h) + 'px';
+            if (zone) zone.style.top = (fieldZonePos[i] * h) + 'px';
+        }
+        
+        function fieldTap() {
+            if (!fieldActive || fieldLocked) return;
+            
+            const i = fieldCurrentBar;
+            const indTop    = fieldIndPos[i];
+            const indBot    = indTop + FIELD_IND_H;
+            const zoneTop   = fieldZonePos[i];
+            const zoneBot   = zoneTop + FIELD_ZONE_H;
+            
+            // Check overlap
+            const hit = indTop < zoneBot && indBot > zoneTop;
+            
+            if (hit) {
+                // ✅ Hit!
+                fieldLocked = true;
+                
+                // Flash indicator green
+                const ind = document.getElementById('field-ind-' + i);
+                if (ind) { ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)'; }
+                
+                // Burst specks
+                document.querySelectorAll('.fs' + i + 'a, .fs' + i + 'b').forEach(s => {
+                    s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                    s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+                });
+                
+                fieldHits++;
+                updateFieldDots();
+                
+                if (fieldHits === 3) {
+                    // 🎉 All 3 hit — success!
+                    fieldActive = false;
+                    cancelAnimationFrame(fieldAnimFrame);
+                    
+                    const farmLv = gs.skills && gs.skills.farming ? gs.skills.farming.level : 1;
+                    const bonus = Math.floor(farmLv / 5);
+                    const xp = 20 + bonus * 5;
+                    
+                    // Reward: random crop
+                    const crops = ['carrot','potato','corn','tomato','onion'];
+                    const crop = crops[Math.floor(Math.random() * crops.length)];
+                    const qty = 1 + bonus;
+                    addItem(crop, qty);
+                    addSkillXP('farming', xp);
+                    
+                    const cropData = ITEM_DATA[crop];
+                    document.getElementById('field-result').textContent =
+                        '🎉 ' + (cropData ? cropData.emoji + ' x' + qty : '✅') + ' Farmed!';
+                    
+                    setTimeout(() => initFieldGame(), 1800);
+                    
+                } else {
+                    // Advance to next bar
                     setTimeout(() => {
-                        fieldInput = [];
-                        document.getElementById('field-input-display').textContent = '';
-                        result.textContent = '';
-                    }, 1500);
-                    return;
+                        fieldCurrentBar++;
+                        fieldLocked = false;
+                        // Reset indicator colour
+                        if (ind) ind.style.background = 'linear-gradient(180deg,#38bdf8,#0ea5e9,#0284c7)';
+                    }, 300);
+                }
+                
+            } else {
+                // ❌ Miss — restart
+                fieldLocked = true;
+                cancelAnimationFrame(fieldAnimFrame);
+                
+                const ind = document.getElementById('field-ind-' + i);
+                if (ind) { ind.style.background = 'linear-gradient(180deg,#ef4444,#b91c1c)'; }
+                
+                document.getElementById('field-result').textContent = '❌ Missed! Try again';
+                
+                setTimeout(() => {
+                    fieldActive = true;
+                    fieldLocked = false;
+                    initFieldGame();
+                }, 900);
+            }
+        }
+        
+        function updateFieldDots() {
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById('field-dot-' + i);
+                if (!dot) continue;
+                if (i < fieldHits) {
+                    // filled — green
+                    dot.style.background = '#4ade80';
+                    dot.style.borderColor = '#16a34a';
+                    dot.style.boxShadow = '0 0 6px #4ade80';
+                } else if (i === fieldCurrentBar) {
+                    // active — pulse white
+                    dot.style.background = '#fff';
+                    dot.style.borderColor = '#fff';
+                    dot.style.boxShadow = '0 0 8px rgba(255,255,255,0.8)';
+                } else {
+                    // waiting — dim
+                    dot.style.background = 'rgba(255,255,255,0.2)';
+                    dot.style.borderColor = 'rgba(255,255,255,0.4)';
+                    dot.style.boxShadow = 'none';
                 }
             }
-            
-            if (fieldInput.length === fieldPattern.length) {
-                const result = document.getElementById('field-result');
-                result.textContent = '🎉 Perfect planting! +1 Carrot';
-                addItem('carrot', 1);
-                addSkillXP('farming', 15);
-                setTimeout(() => initFieldGame(), 2000);
-            }
-        }
-        
-        function resetField() {
-            fieldInput = [];
-            document.getElementById('field-input-display').textContent = '';
-            document.getElementById('field-result').textContent = '';
         }
         
         function stopFieldGame() {
             fieldActive = false;
+            if (fieldAnimFrame) cancelAnimationFrame(fieldAnimFrame);
+            fieldAnimFrame = null;
         }
         
 

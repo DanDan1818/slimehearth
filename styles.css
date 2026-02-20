@@ -356,6 +356,31 @@
             100% { opacity: 0;   transform: translate(calc(var(--tx)*1.4), calc(var(--ty)*1.4)) scale(0.3); }
         }
 
+        /* --- FIELD: green leaf specks per bar, burst on hit --- */
+        .fspeck {
+            position: absolute;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: #4ade80;
+            opacity: 0;
+            pointer-events: none;
+            animation: gardenSpeckDrift 3s ease-in-out infinite;
+        }
+        .fs0a { left: -4px; top: 25%; animation-delay: 0s;   animation-duration: 2.8s; background: #86efac; }
+        .fs0b { left: -4px; top: 65%; animation-delay: 1.4s; animation-duration: 3.2s; width: 4px; height: 4px; }
+        .fs1a { left: -4px; top: 35%; animation-delay: 0.5s; animation-duration: 3.0s; }
+        .fs1b { left: -4px; top: 70%; animation-delay: 1.9s; animation-duration: 2.6s; background: #bbf7d0; width: 4px; height: 4px; }
+        .fs2a { left: -4px; top: 20%; animation-delay: 0.9s; animation-duration: 2.9s; background: #4ade80; }
+        .fs2b { left: -4px; top: 60%; animation-delay: 2.3s; animation-duration: 3.1s; width: 4px; height: 4px; background: #86efac; }
+        .fspeck.burst {
+            animation: fieldSpeckBurst 0.5s cubic-bezier(0.2,1.6,0.4,1) forwards !important;
+        }
+        @keyframes fieldSpeckBurst {
+            0%   { opacity: 1; transform: translate(0,0) scale(1.5); }
+            60%  { opacity: 1; transform: translate(-14px, -12px) scale(2.2); }
+            100% { opacity: 0; transform: translate(-20px, -18px) scale(0.3); }
+        }
+
         /* --- RIVER: blue water specks, scatter on successful catch --- */
         .rspeck {
             position: absolute;
