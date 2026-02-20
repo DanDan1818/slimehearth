@@ -676,9 +676,9 @@
         function fieldLoop() {
             if (!fieldActive) return;
             
-            // Only animate the active bar (and all unlocked bars visually)
-            for (let i = 0; i <= fieldCurrentBar && i < 3; i++) {
-                if (i < fieldCurrentBar) continue; // already locked-in bars stay still
+            // Only animate the current active bar — completed bars stay frozen
+            const i = fieldCurrentBar;
+            if (i < 3) {
                 const pos = fieldIndPos[i] + fieldIndDir[i] * fieldSpeeds[i];
                 if (pos <= 0) {
                     fieldIndPos[i] = 0;
@@ -744,7 +744,6 @@
                     const bonus = Math.floor(farmLv / 5);
                     const xp = 20 + bonus * 5;
                     
-                    // Reward: random crop
                     const crops = ['carrot','potato','corn','tomato','onion'];
                     const crop = crops[Math.floor(Math.random() * crops.length)];
                     const qty = 1 + bonus;
@@ -753,18 +752,21 @@
                     
                     const cropData = ITEM_DATA[crop];
                     document.getElementById('field-result').textContent =
-                        '🎉 ' + (cropData ? cropData.emoji + ' x' + qty : '✅') + ' Farmed!';
+                        '🎉 ' + (cropData ? cropData.emoji + ' ×' + qty : '✅') + ' Farmed!';
                     
                     setTimeout(() => initFieldGame(), 1800);
                     
                 } else {
-                    // Advance to next bar
+                    // ✅ Advance to next bar — freeze this one green, unlock next
                     setTimeout(() => {
+                        // Freeze hit bar: keep indicator green, stop it moving
+                        const hitInd = document.getElementById('field-ind-' + i);
+                        if (hitInd) hitInd.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
+                        
                         fieldCurrentBar++;
                         fieldLocked = false;
-                        // Reset indicator colour
-                        if (ind) ind.style.background = 'linear-gradient(180deg,#38bdf8,#0ea5e9,#0284c7)';
-                    }, 300);
+                        updateFieldDots();
+                    }, 350);
                 }
                 
             } else {
