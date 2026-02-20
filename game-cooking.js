@@ -143,8 +143,28 @@
         }
         
         const RECIPES = {
-            'fish+carrot': { result: 'food', name: '🍖 Cooked Food' },
-            'carrot+fish': { result: 'food', name: '🍖 Cooked Food' }
+            // Original
+            'fish+carrot':   { result: 'food',         name: '🍖 Cooked Food'   },
+            'carrot+fish':   { result: 'food',         name: '🍖 Cooked Food'   },
+            // New recipes (both key orders handled by checkRecipe)
+            'fish+onion':    { result: 'fish_soup',    name: '🍲 Fish Soup'     },
+            'onion+fish':    { result: 'fish_soup',    name: '🍲 Fish Soup'     },
+            'carrot+potato': { result: 'carrot_stew',  name: '🥘 Carrot Stew'   },
+            'potato+carrot': { result: 'carrot_stew',  name: '🥘 Carrot Stew'   },
+            'tomato+fish':   { result: 'tomato_soup',  name: '🍅 Tomato Soup'   },
+            'fish+tomato':   { result: 'tomato_soup',  name: '🍅 Tomato Soup'   },
+            'potato+onion':  { result: 'potato_roast', name: '🥔 Potato Roast'  },
+            'onion+potato':  { result: 'potato_roast', name: '🥔 Potato Roast'  },
+            'corn+carrot':   { result: 'corn_bread',   name: '🌽 Corn Bread'    },
+            'carrot+corn':   { result: 'corn_bread',   name: '🌽 Corn Bread'    },
+            'onion+tomato':  { result: 'onion_broth',  name: '🧅 Onion Broth'   },
+            'tomato+onion':  { result: 'onion_broth',  name: '🧅 Onion Broth'   },
+            'pumpkin+carrot':{ result: 'pumpkin_pie',  name: '🥧 Pumpkin Pie'   },
+            'carrot+pumpkin':{ result: 'pumpkin_pie',  name: '🥧 Pumpkin Pie'   },
+            'fish+corn':     { result: 'fish_tacos',   name: '🌮 Fish Tacos'    },
+            'corn+fish':     { result: 'fish_tacos',   name: '🌮 Fish Tacos'    },
+            'tomato+corn':   { result: 'veggie_feast', name: '🥗 Veggie Feast'  },
+            'corn+tomato':   { result: 'veggie_feast', name: '🥗 Veggie Feast'  },
         };
         
         // Helper function to check if item is a fish

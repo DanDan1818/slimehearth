@@ -411,6 +411,71 @@
                 cookable: false,
                 feedable: true
             },
+            // === COOKED FOODS ===
+            'fish_soup': {
+                name: 'Fish Soup', emoji: '🍲',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
+                description: 'A warm bowl of fish broth.',
+                foodValue: 120, sellValue: 35,
+                cookable: false, feedable: true
+            },
+            'carrot_stew': {
+                name: 'Carrot Stew', emoji: '🥘',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
+                description: 'Thick hearty carrot stew.',
+                foodValue: 130, sellValue: 40,
+                cookable: false, feedable: true
+            },
+            'tomato_soup': {
+                name: 'Tomato Soup', emoji: '🍅',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
+                description: 'Rich creamy tomato soup.',
+                foodValue: 115, sellValue: 30,
+                cookable: false, feedable: true
+            },
+            'potato_roast': {
+                name: 'Potato Roast', emoji: '🥔',
+                rarity: 'Rare', rarityColor: '#2563eb',
+                description: 'Crispy golden roasted potatoes.',
+                foodValue: 140, sellValue: 50,
+                cookable: false, feedable: true
+            },
+            'corn_bread': {
+                name: 'Corn Bread', emoji: '🌽',
+                rarity: 'Rare', rarityColor: '#2563eb',
+                description: 'Sweet golden corn bread.',
+                foodValue: 150, sellValue: 55,
+                cookable: false, feedable: true
+            },
+            'onion_broth': {
+                name: 'Onion Broth', emoji: '🧅',
+                rarity: 'Uncommon', rarityColor: '#2d8a2d',
+                description: 'A rich savoury onion broth.',
+                foodValue: 125, sellValue: 38,
+                cookable: false, feedable: true
+            },
+            'pumpkin_pie': {
+                name: 'Pumpkin Pie', emoji: '🥧',
+                rarity: 'Epic', rarityColor: '#7c3aed',
+                description: 'A legendary slice of pumpkin pie.',
+                foodValue: 250, sellValue: 120,
+                cookable: false, feedable: true
+            },
+            'fish_tacos': {
+                name: 'Fish Tacos', emoji: '🌮',
+                rarity: 'Rare', rarityColor: '#2563eb',
+                description: 'Fish and corn wrapped up tight.',
+                foodValue: 180, sellValue: 75,
+                cookable: false, feedable: true
+            },
+            'veggie_feast': {
+                name: 'Veggie Feast', emoji: '🥗',
+                rarity: 'Epic', rarityColor: '#7c3aed',
+                description: 'Every vegetable in one bowl.',
+                foodValue: 300, sellValue: 200,
+                cookable: false, feedable: true
+            },
+
             'burnt': {
                 name: 'Burnt Food',
                 rarity: 'Common',
