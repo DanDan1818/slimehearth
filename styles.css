@@ -26,14 +26,15 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 700px;
-            height: 60px;
-            background: linear-gradient(135deg, #8b7355 0%, #6b5744 100%);
-            border-bottom: 3px solid #2a1810;
+            height: 68px;
+            background: linear-gradient(180deg, #b8924a 0%, #9a7535 40%, #7a5a25 100%);
+            border-bottom: 2px solid #fde68a;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 500;
-            padding: 0 10px;
+            padding: 0 8px;
         }
         
         .stat-display {
@@ -50,7 +51,7 @@
         /* Main Content Area */
         #main-area {
             position: absolute;
-            top: 60px;
+            top: 68px;
             bottom: 72px;
             width: 100%;
             overflow: hidden;
@@ -360,7 +361,7 @@
         /* Skills Overlay */
         #skills-overlay {
             position: fixed;
-            top: 60px;
+            top: 68px;
             right: 10px;
             background: rgba(255,255,255,0.95);
             border: 2px solid #9c27b0;

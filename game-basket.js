@@ -34,39 +34,41 @@
             
             const data = ITEM_DATA[itemId];
             
+            const rarityBorderColor = data.rarityColor === 'rainbow' ? '#d946ef' : data.rarityColor;
+            const rarityHeaderStyle = data.rarityColor === 'rainbow'
+                ? 'background:linear-gradient(90deg,#f87171,#fb923c,#facc15,#4ade80,#60a5fa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;'
+                : 'color:' + data.rarityColor + ';';
+
             const tooltip = document.createElement('div');
             tooltip.id = 'item-tooltip';
             tooltip.innerHTML = `
-                <div style="${data.rarityColor === 'rainbow' ? 'background: linear-gradient(90deg,red,orange,yellow,green,blue,violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: brightness(1.3);' : 'color:' + data.rarityColor + ';'} font-size: 11px; font-weight: bold; margin-bottom: 2px; text-shadow: none;">
-                    ${data.name}
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.2);">
+                    <span style="${rarityHeaderStyle}font-family:'Righteous',sans-serif;font-size:14px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;">${data.name}</span>
+                    <span style="font-size:12px;font-weight:bold;color:#fbbf24;white-space:nowrap;">💰 ${data.sellValue}</span>
                 </div>
-                <div style="color: #fff; font-size: 9px; margin-bottom: 3px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                <div style="font-size:11px;color:#e5e7eb;line-height:1.4;margin-bottom:${data.feedable || data.crackable ? '5px' : '0'};">
                     ${data.description}
                 </div>
-                ${data.feedable ? `<div style="font-size: 9px; margin-bottom: 2px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
-                    +${data.foodValue} <span style="color: #ff6b9d; font-weight: bold;">Food</span>
-                </div>` : ''}
-                <div style="font-size: 9px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
-                    💰 ${data.sellValue}
-                </div>
-                ${data.crackable ? '<div style="font-size: 9px; color: #d4a574; font-weight: bold; margin-top: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">🔨 Crackable</div>' : ''}
+                ${data.feedable ? `<div style="font-size:11px;color:#f9a8d4;font-weight:bold;">❤️ +${data.foodValue} Food</div>` : ''}
+                ${data.crackable ? `<div style="font-size:11px;color:#c4b5fd;font-weight:bold;margin-top:2px;">🔨 Crackable at Shack</div>` : ''}
             `;
-            
-            // Position above inventory bag (bottom-left)
+
             tooltip.style.cssText = `
                 position: fixed;
-                bottom: 260px;
-                left: 10px;
-                background: rgba(139, 115, 85, 0.95);
+                bottom: 230px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(20,10,40,0.96);
                 color: #fff;
-                padding: 6px 8px;
-                border-radius: 6px;
-                z-index: 135;
-                border: 2px solid ${data.rarityColor === 'rainbow' ? '#ff00ff' : data.rarityColor};
-                box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-                width: 75px;
+                padding: 10px 14px;
+                border-radius: 10px;
+                z-index: 1000;
+                border: 2px solid ${rarityBorderColor};
+                box-shadow: 0 0 16px rgba(0,0,0,0.7), 0 0 8px ${rarityBorderColor}55;
+                width: 200px;
                 text-align: left;
                 pointer-events: none;
+                font-family: sans-serif;
             `;
             
             document.body.appendChild(tooltip);
