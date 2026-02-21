@@ -10,18 +10,12 @@
         /* Main Game Container */
         #game-container {
             position: relative;
-            width: 100vw;
+            width: 100%;
             max-width: 700px;
             height: 100vh;
-            height: 100dvh;
             margin: 0 auto;
-            background: #8b6340;
+            background: #f0f0f0;
             overflow: hidden;
-            margin-left: calc(-1 * env(safe-area-inset-left));
-            margin-right: calc(-1 * env(safe-area-inset-right));
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
-            width: calc(100vw + env(safe-area-inset-left) + env(safe-area-inset-right));
         }
         
         /* Top UI Bar */
@@ -61,18 +55,20 @@
         /* Main Content Area */
         #main-area {
             position: absolute;
-            top: 0;
-            bottom: 0;
+            top: 68px;
+            bottom: 72px;
             width: 100%;
             overflow: hidden;
         }
         
         /* Rooms */
         .room {
-            position: absolute;
+            position: fixed;
             top: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
+            max-width: 700px;
             height: 100%;
             display: none;
             background-size: cover;
@@ -85,13 +81,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding-top: 68px;
-            padding-bottom: 72px;
         }
         
         #shop-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #area-room {
@@ -100,7 +94,7 @@
         
         #area-room.active {
             justify-content: flex-start;
-            padding-top: 78px;  /* Very top of screen */
+            padding-top: 10px;  /* Very top of screen */
         }
         
         /* Room Backgrounds */
@@ -114,7 +108,7 @@
         
         #shack-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #fishing-pond-room {
@@ -131,17 +125,17 @@
         
         #fishing-pond-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #fishing-river-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #fishing-menu-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #farming-menu-room {
@@ -152,24 +146,24 @@
         
         #farming-menu-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #wardrobe-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
             overflow-y: auto;
             padding-bottom: 80px;
         }
         
         #room-room.active {
             justify-content: flex-start;
-            padding-top: 78px;  /* Very top of screen */
+            padding-top: 10px;  /* Very top of screen */
         }
         
         #trophies-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
             overflow-y: auto;
             padding-bottom: 80px;
         }
@@ -180,7 +174,7 @@
         
         #cooking-menu-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #farming-garden-room, #farming-field-room {
@@ -189,7 +183,7 @@
         
         #farming-garden-room.active, #farming-field-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #mining-menu-room, #mining-cave-room,
@@ -202,7 +196,7 @@
         #mining-depth1-room.active, #mining-depth2-room.active,
         #mining-depth3-room.active, #mining-depth4-room.active, #mining-depth5-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         /* Home Room - Slime Display */
