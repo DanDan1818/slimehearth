@@ -2,10 +2,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f0f0f0;
+            background: #8b6340;
             overflow: hidden;
             height: 100vh;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
         /* Main Game Container */
@@ -15,7 +14,7 @@
             max-width: 700px;
             height: 100vh;
             margin: 0 auto;
-            background: #f0f0f0;
+            background: #8b6340;
             overflow: hidden;
         }
         
@@ -56,8 +55,8 @@
         /* Main Content Area */
         #main-area {
             position: absolute;
-            top: 0;
-            bottom: 0;
+            top: 68px;
+            bottom: 72px;
             width: 100%;
             overflow: hidden;
         }
@@ -80,13 +79,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding-top: 68px;
-            padding-bottom: 72px;
         }
         
         #shop-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #area-room {
@@ -95,7 +92,7 @@
         
         #area-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;  /* Very top of screen */
         }
         
         /* Room Backgrounds */
@@ -109,7 +106,7 @@
         
         #shack-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #fishing-pond-room {
@@ -126,17 +123,17 @@
         
         #fishing-pond-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #fishing-river-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #fishing-menu-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #farming-menu-room {
@@ -147,12 +144,12 @@
         
         #farming-menu-room.active {
             justify-content: flex-start;
-            padding-top: 108px;
+            padding-top: 40px;
         }
         
         #wardrobe-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
             overflow-y: auto;
             padding-bottom: 80px;
         }
@@ -164,7 +161,7 @@
         
         #trophies-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
             overflow-y: auto;
             padding-bottom: 80px;
         }
@@ -175,7 +172,7 @@
         
         #cooking-menu-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #farming-garden-room, #farming-field-room {
@@ -184,7 +181,7 @@
         
         #farming-garden-room.active, #farming-field-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         #mining-menu-room, #mining-cave-room,
@@ -197,7 +194,7 @@
         #mining-depth1-room.active, #mining-depth2-room.active,
         #mining-depth3-room.active, #mining-depth4-room.active, #mining-depth5-room.active {
             justify-content: flex-start;
-            padding-top: 78px;
+            padding-top: 10px;
         }
         
         /* Home Room - Slime Display */
