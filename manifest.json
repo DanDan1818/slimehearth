@@ -1,0 +1,22 @@
+{
+  "name": "SlimeHearth",
+  "short_name": "SlimeHearth",
+  "description": "SlimeHearth mobile game",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#f0f0f0",
+  "theme_color": "#7abdd6",
+  "icons": [
+    {
+      "src": "./slimehearth-assets/images/egg1.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./slimehearth-assets/images/egg1.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
