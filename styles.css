@@ -66,15 +66,16 @@
             position: fixed;
             top: 0;
             left: 50%;
+            bottom: 0;
             transform: translateX(-50%);
             width: 100%;
             max-width: 700px;
-            height: 100vh;
             display: none;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             pointer-events: none;
+            z-index: 1;
         }
         
         .room.active {
