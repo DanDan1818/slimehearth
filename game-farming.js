@@ -673,7 +673,7 @@
             for (let i = 0; i < 3; i++) {
                 const ind = document.getElementById('field-ind-' + i);
                 if (ind) {
-                    ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
+                    ind.style.background = 'linear-gradient(180deg,#fde047,#eab308)';
                     ind.style.border = '1.5px solid #000';
                 }
             }
@@ -762,17 +762,21 @@
                 const wrap = document.getElementById('field-bar-wrap-' + i);
                 if (!wrap) continue;
                 wrap.style.visibility = '';
-                wrap.style.opacity = '1';
-                wrap.style.transform = 'scaleY(0)';
+                wrap.style.opacity = '0';
+                wrap.style.transform = 'scaleY(0.3)';
                 wrap.style.transformOrigin = 'bottom center';
                 wrap.style.transition = 'none';
-                // stagger each bar slightly
-                const delay = i * 80;
-                setTimeout(() => {
-                    wrap.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1)';
-                    wrap.style.transform = 'scaleY(1)';
-                }, delay);
             }
+            // All 3 grow back simultaneously, smooth ease-out
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                for (let i = 0; i < 3; i++) {
+                    const wrap = document.getElementById('field-bar-wrap-' + i);
+                    if (!wrap) continue;
+                    wrap.style.transition = 'transform 0.25s ease-out, opacity 0.2s ease-out';
+                    wrap.style.transform = 'scaleY(1)';
+                    wrap.style.opacity = '1';
+                }
+            }));
         }
         
         function fieldTap() {
@@ -793,7 +797,7 @@
                 
                 // Flash indicator green
                 const ind = document.getElementById('field-ind-' + i);
-                if (ind) { ind.style.background = 'linear-gradient(180deg,#a16207,#78350f)'; }
+                if (ind) { ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)'; }
                 
                 // Burst specks
                 document.querySelectorAll('.fs' + i + 'a, .fs' + i + 'b').forEach(s => {
@@ -858,7 +862,7 @@
                     showAllFieldBars();
                     for (let j = 0; j < 3; j++) {
                         const ind = document.getElementById('field-ind-' + j);
-                        if (ind) ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
+                        if (ind) ind.style.background = 'linear-gradient(180deg,#fde047,#eab308)';
                     }
                     fieldActive = true;
                     fieldLocked = false;
