@@ -14,7 +14,7 @@
             max-width: 700px;
             height: 100vh;
             margin: 0 auto;
-            background: #f0f0f0;
+            background: #8b6340;
             overflow: hidden;
         }
         
@@ -74,8 +74,8 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            z-index: 0;
             pointer-events: none;
-            z-index: 1;
         }
         
         .room.active {
@@ -86,7 +86,13 @@
             pointer-events: none;
         }
         
-        .room.active * {
+        /* Re-enable pointer events only on actual interactive elements */
+        .room.active button,
+        .room.active input,
+        .room.active select,
+        .room.active a,
+        .room.active [onclick],
+        .room.active [ontouchstart] {
             pointer-events: auto;
         }
         
