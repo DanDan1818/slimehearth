@@ -620,7 +620,7 @@
             transform: translateX(-50%) scale(0.8);  /* Center and scale */
             transform-origin: center bottom;  /* Scale from center bottom */
             width: 100%;
-            max-width: 390px;  /* Match game width */
+            max-width: 700px;  /* Match canvas width */
             height: 1200px;
             z-index: 140;
             display: none;
@@ -682,7 +682,7 @@
             pointer-events: none;
         }
         
-        @media (max-width: 390px) {
+        @media (max-width: 700px) {
             #notifications {
                 right: 10px;
                 top: 100px;
@@ -992,7 +992,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 390px;
+            max-width: 700px;
             height: 1200px;
             z-index: 130;
             display: none;
@@ -1053,7 +1053,7 @@
         }
         
         /* Mobile adjustments */
-        @media (max-width: 390px) {
+        @media (max-width: 700px) {
             #floating-bag-btn {
                 left: 10px !important;
             }
