@@ -36,7 +36,7 @@
             const iconHtml = imgSrc
                 ? `<img src="${imgSrc}" style="width:36px;height:36px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`
                 : `<span style="font-size:24px;line-height:1;animation:geodeLock 0.3s ease-out;">${data ? data.emoji || '📦' : '📦'}</span>`;
-            return iconHtml + `<span style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${nameStr}</span>`;
+            return iconHtml + `<span style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${nameStr}</span>`;
         }
         
         // Release a locked body back to physics
@@ -107,7 +107,7 @@
             }
             const slotEl = document.getElementById(`hearth-slot-${slotNumber}`);
             if (slotEl) {
-                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:26px;line-height:1;">+</span><span id="hearth-slot-${slotNumber}-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
+                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:28px;line-height:1;">+</span><span id="hearth-slot-${slotNumber}-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
                 slotEl.style.border = '3px dashed #f59e0b';
                 slotEl.style.boxShadow = '';
             }
@@ -236,7 +236,7 @@
             // Also reset slot visuals
             ['1','2'].forEach(n => {
                 const s = document.getElementById(`hearth-slot-${n}`);
-                if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:26px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:28px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
                 const b = document.getElementById(`hearth-clear-${n}`);
                 if (b) b.style.display = 'none';
             });
@@ -405,7 +405,7 @@
         }
         
         function finishCookingHearth(recipe) {
-            const resultDiv = document.getElementById('hearth-result');
+            // hearth-result div removed
             const progressContainer = document.getElementById('hearth-progress-container');
             const progressBar = document.getElementById('hearth-progress-bar');
             const cookBtn = document.getElementById('cook-hearth-btn');
@@ -431,11 +431,6 @@
                     addSkillXP('cooking', 15);
                 }, 300);
                 
-                if (resultDiv) {
-                    resultDiv.textContent = '✨ Cooked ' + recipe.name + '!';
-                    resultDiv.style.color = '#4caf50';
-                    setTimeout(() => resultDiv.textContent = '', 3000);
-                }
                 notify('✨ Cooked ' + recipe.name + '!');
                 document.querySelectorAll('.hspeck').forEach(s => {
                     s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
@@ -460,11 +455,6 @@
                     addSkillXP('cooking', 5);
                 }, 300);
                 
-                if (resultDiv) {
-                    resultDiv.textContent = '🔥 OH NO! Food burnt!';
-                    resultDiv.style.color = '#f44336';
-                    setTimeout(() => resultDiv.textContent = '', 3000);
-                }
                 notify('💀 Burnt the food!');
             }
             
@@ -473,7 +463,7 @@
             hearthSlot2ItemId = null;
             hearthCooking = false;
             ['1','2'].forEach(n => {
-                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:26px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:28px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
                 const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
             });
             if (cookBtn) { cookBtn.style.opacity = '1'; cookBtn.style.cursor = 'pointer'; cookBtn.onclick = cookHearth; }
@@ -558,24 +548,17 @@
             const slotDiv = document.getElementById('shack-geode-slot');
             const imgSrc = ITEM_IMAGES[itemId];
             
-            if (icon) {
-                if (imgSrc) {
-                    icon.style.display = 'flex';
-                    icon.style.width = '52px';
-                    icon.style.height = '52px';
-                    icon.style.background = '';
-                    icon.style.borderRadius = '';
-                    icon.style.border = '';
-                    icon.style.boxShadow = '';
-                    icon.style.animation = 'geodeLock 0.3s ease-out';
-                    icon.innerHTML = `<img src="${imgSrc}" style="width:36px;height:36px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
-                } else {
-                    icon.style.display = 'flex';
-                    icon.style.animation = 'geodeLock 0.3s ease-out';
-                    icon.textContent = '💎';
-                }
+            // Replace slot contents wholesale — guarantees centering
+            if (slotDiv) {
+                const nameStr = data.name.replace(/[^\w\s'-]/g, '').trim();
+                const imgHtml = imgSrc
+                    ? `<img src="${imgSrc}" style="width:34px;height:34px;object-fit:contain;display:block;animation:geodeLock 0.3s ease-out;" />`
+                    : `<span style="font-size:26px;line-height:1;animation:geodeLock 0.3s ease-out;">${data.emoji || '💎'}</span>`;
+                slotDiv.innerHTML = `
+                    <span id="shack-slot-icon" style="display:flex;align-items:center;justify-content:center;">${imgHtml}</span>
+                    <span id="shack-slot-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${nameStr}</span>
+                `;
             }
-            if (nameEl) { nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim(); nameEl.style.display = ''; }
             if (clearBtn) clearBtn.style.display = 'block';
             if (slotDiv) {
                 slotDiv.style.border = '3px solid #4ade80';
@@ -628,16 +611,11 @@
             const slotDiv = document.getElementById('shack-geode-slot');
             
             if (icon) {
-                icon.innerHTML = '';
-                icon.textContent = '🪨';
-                icon.style.display = '';
-                icon.style.width = '';
-                icon.style.height = '';
-                icon.style.background = '';
-                icon.style.borderRadius = '';
-                icon.style.border = '';
-                icon.style.boxShadow = '';
-                icon.style.animation = '';
+                // Reset slot div completely
+                const slotDivC = document.getElementById('shack-geode-slot');
+                if (slotDivC) {
+                    slotDivC.innerHTML = `<span id="shack-slot-icon" style="font-size:26px;line-height:1;display:flex;align-items:center;justify-content:center;">🪨</span><span id="shack-slot-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
+                }
             }
             if (nameEl) { nameEl.textContent = ''; nameEl.style.display = 'none'; }
             if (clearBtn) clearBtn.style.display = 'none';
@@ -783,7 +761,8 @@
             const nameEl = document.getElementById('shack-slot-name');
             const clearBtn = document.getElementById('shack-slot-clear');
             const slotDiv = document.getElementById('shack-geode-slot');
-            if (icon) { icon.textContent = '🪨'; icon.style.display = ''; }
+            const slotDivR = document.getElementById('shack-geode-slot');
+            if (slotDivR) slotDivR.innerHTML = `<span id="shack-slot-icon" style="font-size:26px;line-height:1;display:flex;align-items:center;justify-content:center;">🪨</span><span id="shack-slot-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
             if (nameEl) { nameEl.textContent = ''; nameEl.style.display = 'none'; }
             if (clearBtn) clearBtn.style.display = 'none';
             if (slotDiv) slotDiv.style.border = '3px dashed #8b7355';

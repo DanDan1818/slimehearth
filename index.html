@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.738</title>
+    <title>SlimeHearth v0.740</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.738</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.740</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -554,41 +554,8 @@
                 <h2 style="font-size:22px;margin-bottom:5px;">The Hearth</h2>
                 
                 <div style="text-align:center;max-width:500px;margin:0 auto;">
-                    <p style="margin-bottom:10px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.6);font-size:14px;font-weight:bold;">Drop two ingredients to cook together!</p>
-                    
-                    <!-- Two Ingredient Slots side by side -->
-                    <div style="display:flex;gap:16px;align-items:flex-start;justify-content:center;margin:8px 0 4px 0;">
-                        <!-- Slot 1 -->
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                            <div style="font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Item 1</div>
-                            <div id="hearth-slot-1" style="width:58px;height:58px;border:3px dashed #f59e0b;background:rgba(255,255,255,0.85);border-radius:8px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px;position:relative;">
-                                <span id="hearth-slot-1-icon" style="font-size:26px;line-height:1;">+</span>
-                                <span id="hearth-slot-1-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>
-                            </div>
-                            <button id="hearth-clear-1" onclick="clearHearthSlot(1)" style="display:none;background:#e53935;color:#fff;border:none;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:bold;cursor:pointer;z-index:500;">✕ Remove</button>
-                        </div>
-
-                        <!-- Slot 2 -->
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                            <div style="font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Item 2</div>
-                            <div id="hearth-slot-2" style="width:58px;height:58px;border:3px dashed #f59e0b;background:rgba(255,255,255,0.85);border-radius:8px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px;position:relative;">
-                                <span id="hearth-slot-2-icon" style="font-size:26px;line-height:1;">+</span>
-                                <span id="hearth-slot-2-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>
-                            </div>
-                            <button id="hearth-clear-2" onclick="clearHearthSlot(2)" style="display:none;background:#e53935;color:#fff;border:none;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:bold;cursor:pointer;z-index:500;">✕ Remove</button>
-                        </div>
-                    </div>
-
-                    <!-- Cook button centered below both slots -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin-bottom:4px;">
-                        <div style="font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Cook!</div>
-                        <button id="cook-hearth-btn" style="width:64px;height:64px;border:none;background:#f59e0b;border-radius:50%;font-size:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 4px 8px rgba(0,0,0,0.3);transition:transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">
-                            🔥
-                        </button>
-                    </div>
-                    
-                    <!-- Cooking Progress Bar (hidden until cooking starts) -->
-                    <div id="hearth-progress-container" style="display:none;width:100%;max-width:280px;margin:8px auto 0 auto;">
+                    <!-- Cooking Progress Bar (hidden until cooking starts) — top -->
+                    <div id="hearth-progress-container" style="display:none;width:100%;max-width:280px;margin:0 auto 10px auto;">
                         <div id="hearth-bar-container" style="width:100%;height:22px;border-radius:11px;overflow:visible;position:relative;">
                             <div style="position:absolute;inset:0;border-radius:11px;overflow:hidden;background:rgba(255,255,255,0.6);border:1px solid #000;">
                                 <div id="hearth-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:11px 0 0 11px;transition:none;"></div>
@@ -602,9 +569,38 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Result -->
-                    <div id="hearth-result" style="min-height:25px;font-size:16px;font-weight:bold;margin:10px 0;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.6);"></div>
+
+                    <!-- Two Ingredient Slots side by side -->
+                    <div style="display:flex;gap:16px;align-items:flex-start;justify-content:center;margin:8px 0 4px 0;">
+                        <!-- Slot 1 -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <div style="font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Item 1</div>
+                            <div id="hearth-slot-1" style="width:58px;height:58px;border:3px dashed #f59e0b;background:rgba(255,255,255,0.85);border-radius:8px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px;position:relative;">
+                                <span id="hearth-slot-1-icon" style="font-size:28px;line-height:1;">+</span>
+                                <span id="hearth-slot-1-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>
+                            </div>
+                            <button id="hearth-clear-1" onclick="clearHearthSlot(1)" style="display:none;background:#e53935;color:#fff;border:none;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:bold;cursor:pointer;z-index:500;">✕ Remove</button>
+                        </div>
+
+                        <!-- Slot 2 -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <div style="font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Item 2</div>
+                            <div id="hearth-slot-2" style="width:58px;height:58px;border:3px dashed #f59e0b;background:rgba(255,255,255,0.85);border-radius:8px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px;position:relative;">
+                                <span id="hearth-slot-2-icon" style="font-size:28px;line-height:1;">+</span>
+                                <span id="hearth-slot-2-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>
+                            </div>
+                            <button id="hearth-clear-2" onclick="clearHearthSlot(2)" style="display:none;background:#e53935;color:#fff;border:none;border-radius:5px;padding:2px 8px;font-size:10px;font-weight:bold;cursor:pointer;z-index:500;">✕ Remove</button>
+                        </div>
+                    </div>
+
+                    <!-- Cook button centered below both slots -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin-bottom:4px;">
+                        <div style="font-size:10px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Cook!</div>
+                        <button id="cook-hearth-btn" style="width:64px;height:64px;border:none;background:#f59e0b;border-radius:50%;font-size:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 4px 8px rgba(0,0,0,0.3);transition:transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">🔥</button>
+                    </div>
+
+                    <!-- Result (hidden, kept for JS compatibility) -->
+                    <div id="hearth-result" style="display:none;"></div>
                     
                     <!-- Recipe Book — fixed bottom-right, scrollable, shows level gates -->
                     <div style="position:fixed;bottom:80px;right:8px;width:42%;max-width:200px;background:#fef3c7;border:2px solid #f59e0b;border-radius:10px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
@@ -809,9 +805,9 @@
                     <!-- Geode Slot + Crack Button stacked, fully centered -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
                         <div style="font-size:11px;font-weight:bold;color:#000;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;">Drop Geode</div>
-                        <div id="shack-geode-slot" style="width:58px;height:58px;border:3px dashed #8b7355;background:rgba(255,255,255,0.85);border-radius:8px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px;position:relative;">
-                            <span id="shack-slot-icon" style="font-size:26px;line-height:1;">🪨</span>
-                            <span id="shack-slot-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>
+                        <div id="shack-geode-slot" style="width:58px;height:58px;border:3px dashed #8b7355;background:rgba(255,255,255,0.85);border-radius:8px;cursor:default;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:3px;position:relative;">
+                            <span id="shack-slot-icon" style="font-size:26px;line-height:1;display:flex;align-items:center;justify-content:center;">🪨</span>
+                            <span id="shack-slot-name" style="font-size:9px;font-weight:bold;color:#333;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>
                         </div>
                         <button id="shack-slot-clear" onclick="clearShackSlot()" style="display:none;background:#e53935;color:#fff;border:none;border-radius:5px;padding:3px 10px;font-size:11px;font-weight:bold;cursor:pointer;position:relative;z-index:500;">✕ Remove</button>
                         <button id="crack-geode-btn" style="width:80px;height:80px;border-radius:50%;background:#a855f7;color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:background 0.1s,transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.background='#581c87';this.style.transform='scale(0.92)'" ontouchend="this.style.background='#a855f7';this.style.transform='scale(1)'">🔨</button>
@@ -1158,7 +1154,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.738</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.740</div>
     <div id="mouse-coords">0, 0</div>
     
 
