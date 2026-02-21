@@ -69,8 +69,6 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            padding-top: 68px;
-            padding-bottom: 72px;
         }
         
         .room.active {
@@ -78,11 +76,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding-top: 68px;
+            padding-bottom: 72px;
         }
         
         #shop-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
         }
         
         #area-room {
@@ -91,7 +91,7 @@
         
         #area-room.active {
             justify-content: flex-start;
-            padding-top: 10px;  /* Very top of screen */
+            padding-top: 78px;  /* Very top of screen */
         }
         
         /* Room Backgrounds */
@@ -105,7 +105,7 @@
         
         #shack-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
         }
         
         #fishing-pond-room {
@@ -122,17 +122,17 @@
         
         #fishing-pond-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 108px;
         }
         
         #fishing-river-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 108px;
         }
         
         #fishing-menu-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 108px;
         }
         
         #farming-menu-room {
@@ -143,24 +143,24 @@
         
         #farming-menu-room.active {
             justify-content: flex-start;
-            padding-top: 40px;
+            padding-top: 108px;
         }
         
         #wardrobe-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
             overflow-y: auto;
             padding-bottom: 80px;
         }
         
         #room-room.active {
             justify-content: flex-start;
-            padding-top: 10px;  /* Very top of screen */
+            padding-top: 78px;  /* Very top of screen */
         }
         
         #trophies-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
             overflow-y: auto;
             padding-bottom: 80px;
         }
@@ -171,7 +171,7 @@
         
         #cooking-menu-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
         }
         
         #farming-garden-room, #farming-field-room {
@@ -180,7 +180,7 @@
         
         #farming-garden-room.active, #farming-field-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
         }
         
         #mining-menu-room, #mining-cave-room,
@@ -193,7 +193,7 @@
         #mining-depth1-room.active, #mining-depth2-room.active,
         #mining-depth3-room.active, #mining-depth4-room.active, #mining-depth5-room.active {
             justify-content: flex-start;
-            padding-top: 10px;
+            padding-top: 78px;
         }
         
         /* Home Room - Slime Display */
