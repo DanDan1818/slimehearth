@@ -933,19 +933,20 @@
             orchardZoneW     = ORCHARD_ZONE_SIZES[0];
             orchardBallPos   = Math.random() * (1 - ORCHARD_BALL_FRAC);
             orchardBallDir   = Math.random() > 0.5 ? 1 : -1;
-            orchardZoneLeft  = 0.05 + Math.random() * (0.9 - orchardZoneW);
+            // Zone always centered
+            orchardZoneLeft  = (1 - orchardZoneW) / 2;
 
             // Show + grow bar
             const wrap = document.getElementById('orchard-bar-wrap');
             if (wrap) {
                 wrap.style.visibility = '';
                 wrap.style.opacity = '1';
-                wrap.style.transform = 'scaleX(0)';
-                wrap.style.transformOrigin = 'left center';
+                wrap.style.transform = 'scaleY(0)';
+                wrap.style.transformOrigin = 'top center';
                 wrap.style.transition = 'none';
                 requestAnimationFrame(() => requestAnimationFrame(() => {
-                    wrap.style.transition = 'transform 0.25s ease-out';
-                    wrap.style.transform = 'scaleX(1)';
+                    wrap.style.transition = 'transform 0.25s ease-out, opacity 0.2s ease-out';
+                    wrap.style.transform = 'scaleY(1)';
                 }));
             }
 
@@ -981,6 +982,8 @@
         function renderOrchardZone() {
             const zone = document.getElementById('orchard-zone');
             if (!zone) return;
+            // Always center the zone
+            orchardZoneLeft = (1 - orchardZoneW) / 2;
             zone.style.left  = (orchardZoneLeft * ORCHARD_BAR_W) + 'px';
             zone.style.width = (orchardZoneW    * ORCHARD_BAR_W) + 'px';
         }
@@ -1071,10 +1074,9 @@
                     setTimeout(() => initOrchardGame(), 1800);
 
                 } else {
-                    // Shrink zone, speed up, new position
+                    // Shrink zone (stays centered), speed up
                     orchardZoneW     = ORCHARD_ZONE_SIZES[orchardHits];
                     orchardBallSpeed = ORCHARD_SPEEDS[orchardHits];
-                    orchardZoneLeft  = 0.05 + Math.random() * (0.9 - orchardZoneW);
                     setTimeout(() => {
                         renderOrchardZone();
                         orchardLocked = false;

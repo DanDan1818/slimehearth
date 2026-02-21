@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.734</title>
+    <title>SlimeHearth v0.735</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.734</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.735</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -512,41 +512,39 @@
             </div>
 
             <!-- Farming - Orchard (Tree Shake Minigame) -->
-            <div class="room" id="farming-orchard-room">
-                <h2 style="">Orchard</h2>
-                <div id="farming-game-orchard" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+            <div class="room" id="farming-orchard-room" style="justify-content:flex-start;padding-top:18px;">
+                <h2 style="margin-bottom:10px;">Orchard</h2>
 
-                    <!-- Status message -->
-                    <div id="orchard-result" style="font-family:'Righteous',sans-serif;font-size:15px;min-height:24px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);letter-spacing:1px;"></div>
-
-                    <!-- Tap counter dots -->
-                    <div style="display:flex;gap:10px;">
-                        <div id="orchard-dot-0" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
-                        <div id="orchard-dot-1" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
-                        <div id="orchard-dot-2" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
-                    </div>
-
-                    <!-- Horizontal bar -->
-                    <div style="position:relative;display:inline-block;">
-                        <div id="orchard-bar-wrap" style="width:240px;height:28px;border-radius:14px;overflow:visible;position:relative;background:rgba(255,255,255,0.6);border:1px solid #000;">
-                            <!-- harvest zone — shrinks each hit, horizontal -->
-                            <div id="orchard-zone" style="position:absolute;top:0;bottom:0;left:0;width:91px;background:linear-gradient(90deg,#4ade80,#16a34a);border-radius:14px;border:1.5px solid #000;opacity:0.9;transition:left 0.3s ease, width 0.3s ease;"></div>
-                            <!-- bouncing ball — circle: 24px matches bar height minus inset -->
-                            <div id="orchard-ball" style="position:absolute;top:3px;bottom:3px;width:22px;left:0;background:linear-gradient(135deg,#f87171,#dc2626);border-radius:50%;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);"></div>
-                            <!-- outer specks -->
-                            <div style="position:absolute;inset:-8px;pointer-events:none;">
-                                <div class="orchard-speck osp1"></div>
-                                <div class="orchard-speck osp2"></div>
-                                <div class="orchard-speck osp3"></div>
-                                <div class="orchard-speck osp4"></div>
-                            </div>
+                <!-- Bar + specks at the top -->
+                <div style="position:relative;display:inline-block;margin-bottom:6px;">
+                    <div id="orchard-bar-wrap" style="width:240px;height:28px;border-radius:14px;overflow:visible;position:relative;background:rgba(255,255,255,0.6);border:1px solid #000;">
+                        <!-- fixed green zone always centered -->
+                        <div id="orchard-zone" style="position:absolute;top:0;bottom:0;background:linear-gradient(90deg,#4ade80,#16a34a);border-radius:14px;border:1.5px solid #000;opacity:0.9;transition:width 0.3s ease;"></div>
+                        <!-- bouncing red ball -->
+                        <div id="orchard-ball" style="position:absolute;top:3px;bottom:3px;width:22px;left:0;background:linear-gradient(135deg,#f87171,#dc2626);border-radius:50%;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);"></div>
+                        <!-- specks that fall downward -->
+                        <div style="position:absolute;left:-10px;right:-10px;top:0;height:60px;pointer-events:none;overflow:visible;">
+                            <div class="orchard-speck osp1"></div>
+                            <div class="orchard-speck osp2"></div>
+                            <div class="orchard-speck osp3"></div>
+                            <div class="orchard-speck osp4"></div>
+                            <div class="orchard-speck osp5"></div>
+                            <div class="orchard-speck osp6"></div>
                         </div>
                     </div>
-
-                    <!-- Shake button -->
-                    <button id="orchard-tap-btn" style="width:80px;height:80px;border-radius:50%;background:#f59e0b;color:#fff;border:4px solid #fff;font-size:44px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">🌳</button>
-
                 </div>
+
+                <!-- Status + dots below bar -->
+                <div id="orchard-result" style="font-family:'Righteous',sans-serif;font-size:15px;min-height:22px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);letter-spacing:1px;margin-bottom:6px;"></div>
+                <div style="display:flex;gap:10px;margin-bottom:20px;">
+                    <div id="orchard-dot-0" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
+                    <div id="orchard-dot-1" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
+                    <div id="orchard-dot-2" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
+                </div>
+
+                <!-- Shake button -->
+                <button id="orchard-tap-btn" style="width:80px;height:80px;border-radius:50%;background:#f59e0b;color:#fff;border:4px solid #fff;font-size:44px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;-webkit-tap-highlight-color:transparent;" ontouchstart="this.style.transform='scale(0.9)'" ontouchend="this.style.transform='scale(1)'">🌳</button>
+
                 <button id="leave-orchard" class="back-btn">←</button>
             </div>
             
@@ -1160,7 +1158,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.734</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.735</div>
     <div id="mouse-coords">0, 0</div>
     
 
