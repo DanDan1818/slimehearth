@@ -670,7 +670,7 @@
             for (let i = 0; i < 3; i++) {
                 const ind = document.getElementById('field-ind-' + i);
                 if (ind) {
-                    ind.style.background = 'linear-gradient(180deg,#a16207,#78350f)';
+                    ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
                     ind.style.border = '1.5px solid #000';
                 }
             }
@@ -737,7 +737,7 @@
                 
                 // Flash indicator green
                 const ind = document.getElementById('field-ind-' + i);
-                if (ind) { ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)'; }
+                if (ind) { ind.style.background = 'linear-gradient(180deg,#a16207,#78350f)'; }
                 
                 // Burst specks
                 document.querySelectorAll('.fs' + i + 'a, .fs' + i + 'b').forEach(s => {
@@ -796,7 +796,7 @@
                     // Restore brown before reinit
                     for (let j = 0; j < 3; j++) {
                         const ind = document.getElementById('field-ind-' + j);
-                        if (ind) ind.style.background = 'linear-gradient(180deg,#a16207,#78350f)';
+                        if (ind) ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
                     }
                     fieldActive = true;
                     fieldLocked = false;

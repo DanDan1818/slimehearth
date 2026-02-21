@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimeHearth v0.724</title>
+    <title>SlimeHearth v0.725</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.724</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.725</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -461,9 +461,9 @@
                             <div id="field-dot-0" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
                             <div id="field-bar-wrap-0" style="width:28px;height:160px;border-radius:14px;overflow:visible;position:relative;background:rgba(255,255,255,0.6);border:1px solid #000;">
                                 <!-- green zone -->
-                                <div id="field-zone-0" style="position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:14px;opacity:0.85;transition:top 0.05s;"></div>
+                                <div id="field-zone-0" style="position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,#a16207,#78350f);border-radius:14px;border:1.5px solid #000;opacity:0.9;transition:top 0.05s;"></div>
                                 <!-- moving indicator -->
-                                <div id="field-ind-0" style="position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,#a16207,#78350f);border-radius:14px;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);transition:top 0.05s;"></div>
+                                <div id="field-ind-0" style="position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:14px;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);transition:top 0.05s;"></div>
                                 <!-- outer specks -->
                                 <div style="position:absolute;inset:-8px;pointer-events:none;">
                                     <div class="fspeck fs0a"></div>
@@ -476,8 +476,8 @@
                         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
                             <div id="field-dot-1" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
                             <div id="field-bar-wrap-1" style="width:28px;height:160px;border-radius:14px;overflow:visible;position:relative;background:rgba(255,255,255,0.6);border:1px solid #000;">
-                                <div id="field-zone-1" style="position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:14px;opacity:0.85;transition:top 0.05s;"></div>
-                                <div id="field-ind-1" style="position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,#a16207,#78350f);border-radius:14px;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);transition:top 0.05s;"></div>
+                                <div id="field-zone-1" style="position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,#a16207,#78350f);border-radius:14px;border:1.5px solid #000;opacity:0.9;transition:top 0.05s;"></div>
+                                <div id="field-ind-1" style="position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:14px;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);transition:top 0.05s;"></div>
                                 <div style="position:absolute;inset:-8px;pointer-events:none;">
                                     <div class="fspeck fs1a"></div>
                                     <div class="fspeck fs1b"></div>
@@ -489,8 +489,8 @@
                         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
                             <div id="field-dot-2" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;"></div>
                             <div id="field-bar-wrap-2" style="width:28px;height:160px;border-radius:14px;overflow:visible;position:relative;background:rgba(255,255,255,0.6);border:1px solid #000;">
-                                <div id="field-zone-2" style="position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:14px;opacity:0.85;transition:top 0.05s;"></div>
-                                <div id="field-ind-2" style="position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,#a16207,#78350f);border-radius:14px;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);transition:top 0.05s;"></div>
+                                <div id="field-zone-2" style="position:absolute;left:0;right:0;height:30%;background:linear-gradient(180deg,#a16207,#78350f);border-radius:14px;border:1.5px solid #000;opacity:0.9;transition:top 0.05s;"></div>
+                                <div id="field-ind-2" style="position:absolute;left:0;right:0;height:22%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:14px;border:1.5px solid #000;box-shadow:0 0 0 0.5px rgba(0,0,0,0.4);transition:top 0.05s;"></div>
                                 <div style="position:absolute;inset:-8px;pointer-events:none;">
                                     <div class="fspeck fs2a"></div>
                                     <div class="fspeck fs2b"></div>
@@ -1117,7 +1117,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.724</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.725</div>
     <div id="mouse-coords">0, 0</div>
     
 
