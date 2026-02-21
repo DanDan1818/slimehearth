@@ -894,28 +894,29 @@
             }
         }
         
-        // ===== ORCHARD MINIGAME: 1 bar, ball bounces, zone shrinks each hit, 3 hits to win =====
+        // ===== ORCHARD MINIGAME: horizontal bar, ball bounces L-R, zone shrinks per hit =====
         let orchardActive = false;
         let orchardAnimFrame = null;
         let orchardHits = 0;
-        let orchardBallPos = 0;     // 0..1
+        let orchardBallPos = 0;      // 0..1 fraction of bar width
         let orchardBallDir = 1;
         let orchardBallSpeed = 0.008;
-        let orchardZoneTop = 0;     // 0..1
-        let orchardZoneH = 0.38;    // shrinks each hit: 0.38 → 0.26 → 0.16
+        let orchardZoneLeft = 0.2;   // 0..1
+        let orchardZoneW = 0.38;     // shrinks each hit
         let orchardLocked = false;
 
-        const ORCHARD_BALL_H = 40 / 220;  // ball height as fraction of bar
-        const ORCHARD_BAR_H  = 220;
+        const ORCHARD_BAR_W  = 240;  // px — must match HTML
+        const ORCHARD_BALL_W = 22;   // px — ball width
+        const ORCHARD_BALL_FRAC = ORCHARD_BALL_W / ORCHARD_BAR_W;
 
-        const ORCHARD_ZONE_SIZES = [0.38, 0.26, 0.16]; // zone shrinks per hit
-        const ORCHARD_SPEEDS    = [0.008, 0.011, 0.015]; // ball gets faster per hit
+        const ORCHARD_ZONE_SIZES = [0.38, 0.26, 0.16];
+        const ORCHARD_SPEEDS     = [0.008, 0.012, 0.017];
 
-        const ORCHARD_FRUITS = ['apple','pear','orange','cherry','peach','lemon','mango','coconut'];
-        const ORCHARD_WEIGHTS = [30, 28, 20, 18, 10, 10, 4, 4]; // rarity weights
+        const ORCHARD_FRUITS  = ['apple','pear','orange','cherry','peach','lemon','mango','coconut'];
+        const ORCHARD_WEIGHTS = [30, 28, 20, 18, 10, 10, 4, 4];
 
         function orchardWeightedFruit() {
-            const total = ORCHARD_WEIGHTS.reduce((a,b) => a+b, 0);
+            const total = ORCHARD_WEIGHTS.reduce((a,b)=>a+b,0);
             let r = Math.random() * total;
             for (let i = 0; i < ORCHARD_FRUITS.length; i++) {
                 r -= ORCHARD_WEIGHTS[i];
@@ -925,32 +926,34 @@
         }
 
         function initOrchardGame() {
-            orchardActive = true;
-            orchardHits = 0;
-            orchardLocked = false;
+            orchardActive  = true;
+            orchardHits    = 0;
+            orchardLocked  = false;
             orchardBallSpeed = ORCHARD_SPEEDS[0];
-            orchardZoneH = ORCHARD_ZONE_SIZES[0];
-            orchardBallPos = Math.random() * (1 - ORCHARD_BALL_H);
-            orchardBallDir = Math.random() > 0.5 ? 1 : -1;
-            orchardZoneTop = 0.15 + Math.random() * (0.7 - orchardZoneH);
+            orchardZoneW     = ORCHARD_ZONE_SIZES[0];
+            orchardBallPos   = Math.random() * (1 - ORCHARD_BALL_FRAC);
+            orchardBallDir   = Math.random() > 0.5 ? 1 : -1;
+            orchardZoneLeft  = 0.05 + Math.random() * (0.9 - orchardZoneW);
 
-            // Show bar
+            // Show + grow bar
             const wrap = document.getElementById('orchard-bar-wrap');
             if (wrap) {
-                wrap.style.transform = 'scaleY(0)';
-                wrap.style.transformOrigin = 'bottom center';
+                wrap.style.visibility = '';
+                wrap.style.opacity = '1';
+                wrap.style.transform = 'scaleX(0)';
+                wrap.style.transformOrigin = 'left center';
                 wrap.style.transition = 'none';
                 requestAnimationFrame(() => requestAnimationFrame(() => {
                     wrap.style.transition = 'transform 0.25s ease-out';
-                    wrap.style.transform = 'scaleY(1)';
+                    wrap.style.transform = 'scaleX(1)';
                 }));
             }
 
-            // Reset ball color
+            // Reset ball colour
             const ball = document.getElementById('orchard-ball');
-            if (ball) ball.style.background = 'linear-gradient(180deg,#fde047,#eab308)';
+            if (ball) ball.style.background = 'linear-gradient(135deg,#f87171,#dc2626)';
 
-            renderOrcardZone();
+            renderOrchardZone();
             updateOrchardDots();
             document.getElementById('orchard-result').textContent = '';
 
@@ -964,37 +967,37 @@
                 const pos = orchardBallPos + orchardBallDir * orchardBallSpeed;
                 if (pos <= 0) {
                     orchardBallPos = 0; orchardBallDir = 1;
-                } else if (pos + ORCHARD_BALL_H >= 1) {
-                    orchardBallPos = 1 - ORCHARD_BALL_H; orchardBallDir = -1;
+                } else if (pos + ORCHARD_BALL_FRAC >= 1) {
+                    orchardBallPos = 1 - ORCHARD_BALL_FRAC; orchardBallDir = -1;
                 } else {
                     orchardBallPos = pos;
                 }
                 const ball = document.getElementById('orchard-ball');
-                if (ball) ball.style.top = (orchardBallPos * ORCHARD_BAR_H) + 'px';
+                if (ball) ball.style.left = (orchardBallPos * ORCHARD_BAR_W) + 'px';
             }
             orchardAnimFrame = requestAnimationFrame(orchardLoop);
         }
 
-        function renderOrcardZone() {
+        function renderOrchardZone() {
             const zone = document.getElementById('orchard-zone');
             if (!zone) return;
-            zone.style.top    = (orchardZoneTop * ORCHARD_BAR_H) + 'px';
-            zone.style.height = (orchardZoneH   * ORCHARD_BAR_H) + 'px';
+            zone.style.left  = (orchardZoneLeft * ORCHARD_BAR_W) + 'px';
+            zone.style.width = (orchardZoneW    * ORCHARD_BAR_W) + 'px';
         }
 
         function orchardTap() {
             if (!orchardActive || orchardLocked) return;
 
-            const ballTop = orchardBallPos;
-            const ballBot = ballTop + ORCHARD_BALL_H;
-            const zoneBot = orchardZoneTop + orchardZoneH;
-            const hit = ballTop < zoneBot && ballBot > orchardZoneTop;
+            const ballL = orchardBallPos;
+            const ballR = ballL + ORCHARD_BALL_FRAC;
+            const zoneR = orchardZoneLeft + orchardZoneW;
+            const hit   = ballL < zoneR && ballR > orchardZoneLeft;
 
             if (hit) {
                 orchardLocked = true;
                 orchardHits++;
 
-                // Shake the bar
+                // Shake bar
                 const wrap = document.getElementById('orchard-bar-wrap');
                 if (wrap) {
                     wrap.classList.remove('orchard-shake');
@@ -1023,10 +1026,10 @@
                             top: ${rect.top + rect.height*0.2 + Math.random()*rect.height*0.6}px;
                             position: fixed;
                             background: ${leafColors[Math.floor(Math.random()*leafColors.length)]};
-                            animation: ${anims[l % 5]} ${0.3 + Math.random()*0.3}s cubic-bezier(0.1,0,0.3,1) forwards;
+                            animation: ${anims[l%5]} ${0.3+Math.random()*0.3}s cubic-bezier(0.1,0,0.3,1) forwards;
                             animation-delay: ${l*0.03}s;
-                            width: ${5 + Math.random()*6}px;
-                            height: ${5 + Math.random()*6}px;
+                            width: ${5+Math.random()*6}px;
+                            height: ${5+Math.random()*6}px;
                             opacity: 1;
                         `;
                         document.body.appendChild(leaf);
@@ -1042,10 +1045,10 @@
                     cancelAnimationFrame(orchardAnimFrame);
 
                     const farmLv = gs.skills && gs.skills.farming ? gs.skills.farming.level : 1;
-                    const bonus = Math.floor(farmLv / 5);
-                    const xp = 25 + bonus * 5;
-                    const fruit = orchardWeightedFruit();
-                    const qty = 1 + bonus;
+                    const bonus  = Math.floor(farmLv / 5);
+                    const xp     = 25 + bonus * 5;
+                    const fruit  = orchardWeightedFruit();
+                    const qty    = 1 + bonus;
                     addItem(fruit, qty);
                     addSkillXP('farming', xp);
 
@@ -1053,9 +1056,8 @@
                     document.getElementById('orchard-result').textContent =
                         '🎉 ' + (cropData ? cropData.emoji + ' ×' + qty : '✅') + ' Picked!';
 
-                    // Rip bar away
+                    // Rip bar away then respawn fresh
                     setTimeout(() => {
-                        const wrap = document.getElementById('orchard-bar-wrap');
                         if (wrap) {
                             wrap.classList.add('field-bar-rip');
                             wrap.addEventListener('animationend', () => {
@@ -1069,14 +1071,12 @@
                     setTimeout(() => initOrchardGame(), 1800);
 
                 } else {
-                    // Shrink zone and speed up for next hit
-                    orchardZoneH = ORCHARD_ZONE_SIZES[orchardHits];
+                    // Shrink zone, speed up, new position
+                    orchardZoneW     = ORCHARD_ZONE_SIZES[orchardHits];
                     orchardBallSpeed = ORCHARD_SPEEDS[orchardHits];
-                    // Move zone to a new random position
-                    orchardZoneTop = 0.05 + Math.random() * (0.9 - orchardZoneH);
-
+                    orchardZoneLeft  = 0.05 + Math.random() * (0.9 - orchardZoneW);
                     setTimeout(() => {
-                        renderOrcardZone();
+                        renderOrchardZone();
                         orchardLocked = false;
                     }, 350);
                 }
@@ -1087,7 +1087,7 @@
                 cancelAnimationFrame(orchardAnimFrame);
 
                 const ball = document.getElementById('orchard-ball');
-                if (ball) ball.style.background = 'linear-gradient(180deg,#ef4444,#b91c1c)';
+                if (ball) ball.style.background = 'linear-gradient(135deg,#ef4444,#b91c1c)';
 
                 document.getElementById('orchard-result').textContent = '❌ Missed! Try again';
 
@@ -1106,15 +1106,15 @@
                 if (i < orchardHits) {
                     dot.style.background = '#fde047';
                     dot.style.borderColor = '#eab308';
-                    dot.style.boxShadow = '0 0 6px #fde047';
+                    dot.style.boxShadow   = '0 0 6px #fde047';
                 } else if (i === orchardHits) {
                     dot.style.background = '#fff';
                     dot.style.borderColor = '#fff';
-                    dot.style.boxShadow = '0 0 8px rgba(255,255,255,0.8)';
+                    dot.style.boxShadow   = '0 0 8px rgba(255,255,255,0.8)';
                 } else {
-                    dot.style.background = 'rgba(255,255,255,0.2)';
+                    dot.style.background  = 'rgba(255,255,255,0.2)';
                     dot.style.borderColor = 'rgba(255,255,255,0.4)';
-                    dot.style.boxShadow = 'none';
+                    dot.style.boxShadow   = 'none';
                 }
             }
         }
@@ -1124,7 +1124,7 @@
             if (orchardAnimFrame) { cancelAnimationFrame(orchardAnimFrame); orchardAnimFrame = null; }
         }
 
-        function stopFieldGame() {
+                function stopFieldGame() {
             fieldActive = false;
             if (fieldAnimFrame) cancelAnimationFrame(fieldAnimFrame);
             fieldAnimFrame = null;

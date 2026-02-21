@@ -418,25 +418,33 @@
             
             xpBar.style.background = color;
             const targetPct = (skill.xp / skill.xpNeeded) * 100;
+
+            const xpText = document.getElementById('last-skill-xp-text');
+            const updateXpText = (pct) => {
+                if (!xpText) return;
+                xpText.textContent = `${skill.xp} / ${skill.xpNeeded} XP`;
+            };
             
             if (leveledUp) {
-                // Drain to 0 then fill back up to current XP
                 xpBar.style.transition = 'none';
                 xpBar.style.width = '100%';
-                // Let the 100% paint, then animate down to 0, then up to target
+                if (xpText) xpText.textContent = `${skill.xpNeeded} / ${skill.xpNeeded} XP`;
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         xpBar.style.transition = 'width 0.3s ease-in';
                         xpBar.style.width = '0%';
+                        if (xpText) xpText.textContent = '0 / ' + skill.xpNeeded + ' XP';
                         setTimeout(() => {
                             xpBar.style.transition = 'width 0.5s ease-out';
                             xpBar.style.width = targetPct + '%';
+                            updateXpText();
                         }, 350);
                     });
                 });
             } else {
                 xpBar.style.transition = 'width 0.4s ease-out';
                 xpBar.style.width = targetPct + '%';
+                updateXpText();
             }
         }
         
