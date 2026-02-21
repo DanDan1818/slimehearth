@@ -34,9 +34,9 @@
             const imgSrc = ITEM_IMAGES[itemId];
             const nameStr = data ? data.name.replace(/[^\w\s'\-]/g,'').trim() : itemId;
             const iconHtml = imgSrc
-                ? `<img src="${imgSrc}" style="width:44px;height:44px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`
-                : `<span style="font-size:30px;line-height:1;animation:geodeLock 0.3s ease-out;">${data ? data.emoji || '📦' : '📦'}</span>`;
-            return iconHtml + `<span style="font-size:8px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:68px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${nameStr}</span>`;
+                ? `<img src="${imgSrc}" style="width:36px;height:36px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`
+                : `<span style="font-size:24px;line-height:1;animation:geodeLock 0.3s ease-out;">${data ? data.emoji || '📦' : '📦'}</span>`;
+            return iconHtml + `<span style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${nameStr}</span>`;
         }
         
         // Release a locked body back to physics
@@ -78,26 +78,42 @@
             
             // Name is already set inside slotLockedHTML
             
+            // Persist slot state so it survives leaving/re-entering
+            if (!gs.hearthSlots) gs.hearthSlots = {};
+            gs.hearthSlots[slotNumber] = itemId;
+            save();
             updateHearthDisplay();
             notify(`${data.name} added to slot ${slotNumber}!`);
         }
         
         function clearHearthSlot(slotNumber) {
             if (slotNumber === 1) {
-                releaseLockedBody(hearthLockedBody1);
+                if (hearthLockedBody1) {
+                    releaseLockedBody(hearthLockedBody1);
+                } else if (hearthSlot1ItemId) {
+                    // Body lost (left & returned) — give item back to inventory
+                    addItem(hearthSlot1ItemId, 1);
+                }
                 hearthLockedBody1 = null;
                 hearthSlot1ItemId = null;
             } else {
-                releaseLockedBody(hearthLockedBody2);
+                if (hearthLockedBody2) {
+                    releaseLockedBody(hearthLockedBody2);
+                } else if (hearthSlot2ItemId) {
+                    addItem(hearthSlot2ItemId, 1);
+                }
                 hearthLockedBody2 = null;
                 hearthSlot2ItemId = null;
             }
             const slotEl = document.getElementById(`hearth-slot-${slotNumber}`);
             if (slotEl) {
-                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:32px;line-height:1;">+</span><span id="hearth-slot-${slotNumber}-name" style="font-size:8px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:68px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
+                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:26px;line-height:1;">+</span><span id="hearth-slot-${slotNumber}-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
                 slotEl.style.border = '3px dashed #f59e0b';
                 slotEl.style.boxShadow = '';
             }
+            // Remove from persisted state
+            if (gs.hearthSlots) delete gs.hearthSlots[slotNumber];
+            save();
             const clearBtn = document.getElementById(`hearth-clear-${slotNumber}`);
             if (clearBtn) clearBtn.style.display = 'none';
             updateHearthDisplay();
@@ -210,10 +226,20 @@
         }
         
         function initHearth() {
+            // Release any locked bodies before clearing refs (prevents item loss on re-enter)
+            if (hearthLockedBody1) { releaseLockedBody(hearthLockedBody1); }
+            if (hearthLockedBody2) { releaseLockedBody(hearthLockedBody2); }
             hearthSlot1ItemId = null;
             hearthSlot2ItemId = null;
             hearthLockedBody1 = null;
             hearthLockedBody2 = null;
+            // Also reset slot visuals
+            ['1','2'].forEach(n => {
+                const s = document.getElementById(`hearth-slot-${n}`);
+                if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:26px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                const b = document.getElementById(`hearth-clear-${n}`);
+                if (b) b.style.display = 'none';
+            });
             updateHearthDisplay();
             
             const cookBtn = document.getElementById('cook-hearth-btn');
@@ -447,7 +473,7 @@
             hearthSlot2ItemId = null;
             hearthCooking = false;
             ['1','2'].forEach(n => {
-                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:32px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:8px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:68px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:26px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:7px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
                 const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
             });
             if (cookBtn) { cookBtn.style.opacity = '1'; cookBtn.style.cursor = 'pointer'; cookBtn.onclick = cookHearth; }
@@ -542,7 +568,7 @@
                     icon.style.border = '';
                     icon.style.boxShadow = '';
                     icon.style.animation = 'geodeLock 0.3s ease-out';
-                    icon.innerHTML = `<img src="${imgSrc}" style="width:44px;height:44px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
+                    icon.innerHTML = `<img src="${imgSrc}" style="width:36px;height:36px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
                 } else {
                     icon.style.display = 'flex';
                     icon.style.animation = 'geodeLock 0.3s ease-out';
