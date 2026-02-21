@@ -356,6 +356,18 @@
             100% { opacity: 0;   transform: translate(calc(var(--tx)*1.4), calc(var(--ty)*1.4)) scale(0.3); }
         }
 
+        /* --- FIELD: bar rip animation on lock-in --- */
+        @keyframes fieldBarRip {
+            0%   { transform: translateY(0) rotate(0deg) scaleX(1);   opacity: 1; }
+            30%  { transform: translateY(-18px) rotate(-4deg) scaleX(1.05); opacity: 0.9; }
+            60%  { transform: translateY(-44px) rotate(6deg) scaleX(0.85);  opacity: 0.5; }
+            100% { transform: translateY(-80px) rotate(-8deg) scaleX(0.6);  opacity: 0; }
+        }
+        .field-bar-rip {
+            animation: fieldBarRip 0.45s cubic-bezier(0.4, 0, 0.6, 1) forwards !important;
+            pointer-events: none;
+        }
+
         /* --- FIELD: green leaf specks per bar, burst on hit --- */
         .fspeck {
             position: absolute;

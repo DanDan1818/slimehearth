@@ -666,7 +666,10 @@
                 fieldSpeeds[i]  = FIELD_BASE_SPEED + i * 0.003 + Math.random() * 0.003;
             }
             
-            // Reset all indicators to brown
+            // Ensure all bars are visible
+            showAllFieldBars();
+            
+            // Reset all indicators to green
             for (let i = 0; i < 3; i++) {
                 const ind = document.getElementById('field-ind-' + i);
                 if (ind) {
@@ -719,6 +722,26 @@
             if (zone) zone.style.top = (fieldZonePos[i] * h) + 'px';
         }
         
+        function ripFieldBar(i) {
+            const wrap = document.getElementById('field-bar-wrap-' + i);
+            if (!wrap) return;
+            wrap.classList.remove('field-bar-rip');
+            void wrap.offsetWidth; // reflow
+            wrap.classList.add('field-bar-rip');
+            wrap.addEventListener('animationend', () => {
+                wrap.style.visibility = 'hidden';
+                wrap.style.opacity = '0';
+                wrap.classList.remove('field-bar-rip');
+            }, { once: true });
+        }
+        
+        function showAllFieldBars() {
+            for (let i = 0; i < 3; i++) {
+                const wrap = document.getElementById('field-bar-wrap-' + i);
+                if (wrap) { wrap.style.visibility = ''; wrap.style.opacity = '1'; }
+            }
+        }
+        
         function fieldTap() {
             if (!fieldActive || fieldLocked) return;
             
@@ -767,16 +790,22 @@
                     document.getElementById('field-result').textContent =
                         '🎉 ' + (cropData ? cropData.emoji + ' ×' + qty : '✅') + ' Farmed!';
                     
-                    setTimeout(() => initFieldGame(), 1800);
+                    setTimeout(() => ripFieldBar(i), 120);
+                    setTimeout(() => {
+                        showAllFieldBars();
+                        initFieldGame();
+                    }, 1800);
                     
                 } else {
-                    // ✅ Advance to next bar — freeze this one green, unlock next
+                    // ✅ Advance to next bar — rip the bar away, then unlock next
                     setTimeout(() => {
-                        // Freeze hit bar: keep indicator green, stop it moving
+                        ripFieldBar(i);
+                    }, 120);
+                    setTimeout(() => {
                         fieldCurrentBar++;
                         fieldLocked = false;
                         updateFieldDots();
-                    }, 350);
+                    }, 500);
                 }
                 
             } else {
@@ -793,7 +822,7 @@
                 document.getElementById('field-result').textContent = '❌ Missed! Try again';
                 
                 setTimeout(() => {
-                    // Restore brown before reinit
+                    showAllFieldBars();
                     for (let j = 0; j < 3; j++) {
                         const ind = document.getElementById('field-ind-' + j);
                         if (ind) ind.style.background = 'linear-gradient(180deg,#4ade80,#16a34a)';
