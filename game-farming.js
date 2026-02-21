@@ -894,6 +894,236 @@
             }
         }
         
+        // ===== ORCHARD MINIGAME: 1 bar, ball bounces, zone shrinks each hit, 3 hits to win =====
+        let orchardActive = false;
+        let orchardAnimFrame = null;
+        let orchardHits = 0;
+        let orchardBallPos = 0;     // 0..1
+        let orchardBallDir = 1;
+        let orchardBallSpeed = 0.008;
+        let orchardZoneTop = 0;     // 0..1
+        let orchardZoneH = 0.38;    // shrinks each hit: 0.38 → 0.26 → 0.16
+        let orchardLocked = false;
+
+        const ORCHARD_BALL_H = 40 / 220;  // ball height as fraction of bar
+        const ORCHARD_BAR_H  = 220;
+
+        const ORCHARD_ZONE_SIZES = [0.38, 0.26, 0.16]; // zone shrinks per hit
+        const ORCHARD_SPEEDS    = [0.008, 0.011, 0.015]; // ball gets faster per hit
+
+        const ORCHARD_FRUITS = ['apple','pear','orange','cherry','peach','lemon','mango','coconut'];
+        const ORCHARD_WEIGHTS = [30, 28, 20, 18, 10, 10, 4, 4]; // rarity weights
+
+        function orchardWeightedFruit() {
+            const total = ORCHARD_WEIGHTS.reduce((a,b) => a+b, 0);
+            let r = Math.random() * total;
+            for (let i = 0; i < ORCHARD_FRUITS.length; i++) {
+                r -= ORCHARD_WEIGHTS[i];
+                if (r <= 0) return ORCHARD_FRUITS[i];
+            }
+            return ORCHARD_FRUITS[0];
+        }
+
+        function initOrchardGame() {
+            orchardActive = true;
+            orchardHits = 0;
+            orchardLocked = false;
+            orchardBallSpeed = ORCHARD_SPEEDS[0];
+            orchardZoneH = ORCHARD_ZONE_SIZES[0];
+            orchardBallPos = Math.random() * (1 - ORCHARD_BALL_H);
+            orchardBallDir = Math.random() > 0.5 ? 1 : -1;
+            orchardZoneTop = 0.15 + Math.random() * (0.7 - orchardZoneH);
+
+            // Show bar
+            const wrap = document.getElementById('orchard-bar-wrap');
+            if (wrap) {
+                wrap.style.transform = 'scaleY(0)';
+                wrap.style.transformOrigin = 'bottom center';
+                wrap.style.transition = 'none';
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    wrap.style.transition = 'transform 0.25s ease-out';
+                    wrap.style.transform = 'scaleY(1)';
+                }));
+            }
+
+            // Reset ball color
+            const ball = document.getElementById('orchard-ball');
+            if (ball) ball.style.background = 'linear-gradient(180deg,#fde047,#eab308)';
+
+            renderOrcardZone();
+            updateOrchardDots();
+            document.getElementById('orchard-result').textContent = '';
+
+            if (orchardAnimFrame) { cancelAnimationFrame(orchardAnimFrame); orchardAnimFrame = null; }
+            orchardAnimFrame = requestAnimationFrame(orchardLoop);
+        }
+
+        function orchardLoop() {
+            if (!orchardActive) { orchardAnimFrame = null; return; }
+            if (!orchardLocked) {
+                const pos = orchardBallPos + orchardBallDir * orchardBallSpeed;
+                if (pos <= 0) {
+                    orchardBallPos = 0; orchardBallDir = 1;
+                } else if (pos + ORCHARD_BALL_H >= 1) {
+                    orchardBallPos = 1 - ORCHARD_BALL_H; orchardBallDir = -1;
+                } else {
+                    orchardBallPos = pos;
+                }
+                const ball = document.getElementById('orchard-ball');
+                if (ball) ball.style.top = (orchardBallPos * ORCHARD_BAR_H) + 'px';
+            }
+            orchardAnimFrame = requestAnimationFrame(orchardLoop);
+        }
+
+        function renderOrcardZone() {
+            const zone = document.getElementById('orchard-zone');
+            if (!zone) return;
+            zone.style.top    = (orchardZoneTop * ORCHARD_BAR_H) + 'px';
+            zone.style.height = (orchardZoneH   * ORCHARD_BAR_H) + 'px';
+        }
+
+        function orchardTap() {
+            if (!orchardActive || orchardLocked) return;
+
+            const ballTop = orchardBallPos;
+            const ballBot = ballTop + ORCHARD_BALL_H;
+            const zoneBot = orchardZoneTop + orchardZoneH;
+            const hit = ballTop < zoneBot && ballBot > orchardZoneTop;
+
+            if (hit) {
+                orchardLocked = true;
+                orchardHits++;
+
+                // Shake the bar
+                const wrap = document.getElementById('orchard-bar-wrap');
+                if (wrap) {
+                    wrap.classList.remove('orchard-shake');
+                    void wrap.offsetWidth;
+                    wrap.classList.add('orchard-shake');
+                    wrap.addEventListener('animationend', () => wrap.classList.remove('orchard-shake'), { once: true });
+                }
+
+                // Burst specks
+                document.querySelectorAll('.orchard-speck').forEach(s => {
+                    s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                    s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+                });
+
+                // Leaf rip particles
+                const wrapEl = document.getElementById('orchard-bar-wrap');
+                if (wrapEl) {
+                    const rect = wrapEl.getBoundingClientRect();
+                    const leafColors = ['#fde047','#fb923c','#4ade80','#fef08a','#86efac','#fbbf24'];
+                    const anims = ['ripLeaf1','ripLeaf2','ripLeaf3','ripLeaf4','ripLeaf5'];
+                    for (let l = 0; l < 6; l++) {
+                        const leaf = document.createElement('div');
+                        leaf.className = 'rip-leaf';
+                        leaf.style.cssText = `
+                            left: ${rect.left + rect.width*0.1 + Math.random()*rect.width*0.8}px;
+                            top: ${rect.top + rect.height*0.2 + Math.random()*rect.height*0.6}px;
+                            position: fixed;
+                            background: ${leafColors[Math.floor(Math.random()*leafColors.length)]};
+                            animation: ${anims[l % 5]} ${0.3 + Math.random()*0.3}s cubic-bezier(0.1,0,0.3,1) forwards;
+                            animation-delay: ${l*0.03}s;
+                            width: ${5 + Math.random()*6}px;
+                            height: ${5 + Math.random()*6}px;
+                            opacity: 1;
+                        `;
+                        document.body.appendChild(leaf);
+                        leaf.addEventListener('animationend', () => leaf.remove(), { once: true });
+                    }
+                }
+
+                updateOrchardDots();
+
+                if (orchardHits === 3) {
+                    // 🎉 Success!
+                    orchardActive = false;
+                    cancelAnimationFrame(orchardAnimFrame);
+
+                    const farmLv = gs.skills && gs.skills.farming ? gs.skills.farming.level : 1;
+                    const bonus = Math.floor(farmLv / 5);
+                    const xp = 25 + bonus * 5;
+                    const fruit = orchardWeightedFruit();
+                    const qty = 1 + bonus;
+                    addItem(fruit, qty);
+                    addSkillXP('farming', xp);
+
+                    const cropData = ITEM_DATA[fruit];
+                    document.getElementById('orchard-result').textContent =
+                        '🎉 ' + (cropData ? cropData.emoji + ' ×' + qty : '✅') + ' Picked!';
+
+                    // Rip bar away
+                    setTimeout(() => {
+                        const wrap = document.getElementById('orchard-bar-wrap');
+                        if (wrap) {
+                            wrap.classList.add('field-bar-rip');
+                            wrap.addEventListener('animationend', () => {
+                                wrap.style.visibility = 'hidden';
+                                wrap.style.opacity = '0';
+                                wrap.classList.remove('field-bar-rip');
+                            }, { once: true });
+                        }
+                    }, 120);
+
+                    setTimeout(() => initOrchardGame(), 1800);
+
+                } else {
+                    // Shrink zone and speed up for next hit
+                    orchardZoneH = ORCHARD_ZONE_SIZES[orchardHits];
+                    orchardBallSpeed = ORCHARD_SPEEDS[orchardHits];
+                    // Move zone to a new random position
+                    orchardZoneTop = 0.05 + Math.random() * (0.9 - orchardZoneH);
+
+                    setTimeout(() => {
+                        renderOrcardZone();
+                        orchardLocked = false;
+                    }, 350);
+                }
+
+            } else {
+                // ❌ Miss
+                orchardLocked = true;
+                cancelAnimationFrame(orchardAnimFrame);
+
+                const ball = document.getElementById('orchard-ball');
+                if (ball) ball.style.background = 'linear-gradient(180deg,#ef4444,#b91c1c)';
+
+                document.getElementById('orchard-result').textContent = '❌ Missed! Try again';
+
+                setTimeout(() => {
+                    orchardActive = true;
+                    orchardLocked = false;
+                    initOrchardGame();
+                }, 900);
+            }
+        }
+
+        function updateOrchardDots() {
+            for (let i = 0; i < 3; i++) {
+                const dot = document.getElementById('orchard-dot-' + i);
+                if (!dot) continue;
+                if (i < orchardHits) {
+                    dot.style.background = '#fde047';
+                    dot.style.borderColor = '#eab308';
+                    dot.style.boxShadow = '0 0 6px #fde047';
+                } else if (i === orchardHits) {
+                    dot.style.background = '#fff';
+                    dot.style.borderColor = '#fff';
+                    dot.style.boxShadow = '0 0 8px rgba(255,255,255,0.8)';
+                } else {
+                    dot.style.background = 'rgba(255,255,255,0.2)';
+                    dot.style.borderColor = 'rgba(255,255,255,0.4)';
+                    dot.style.boxShadow = 'none';
+                }
+            }
+        }
+
+        function stopOrchardGame() {
+            orchardActive = false;
+            if (orchardAnimFrame) { cancelAnimationFrame(orchardAnimFrame); orchardAnimFrame = null; }
+        }
+
         function stopFieldGame() {
             fieldActive = false;
             if (fieldAnimFrame) cancelAnimationFrame(fieldAnimFrame);

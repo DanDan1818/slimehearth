@@ -304,6 +304,15 @@
                 stopFieldGame();
                 switchRoom('farming-menu-room');
             };
+            document.getElementById('goto-orchard').onclick = () => {
+                switchRoom('farming-orchard-room');
+                initOrchardGame();
+            };
+            document.getElementById('leave-orchard').onclick = () => {
+                stopOrchardGame();
+                switchRoom('farming-menu-room');
+            };
+            document.getElementById('orchard-tap-btn').onclick = orchardTap;
             
             // OLD SHOP BUTTONS (replaced by grid)
             /*
