@@ -647,7 +647,7 @@
         let fieldZonePos = [0, 0, 0];// 0..1 top of green zone per bar
         let fieldLocked = false;     // brief lock after tap
         
-        const FIELD_IND_H  = 0.22;   // indicator height as fraction
+        const FIELD_IND_H  = 0.1375; // indicator height as fraction (22px / 160px)
         const FIELD_ZONE_H = 0.30;   // zone height as fraction
         const FIELD_BASE_SPEED = 0.006;
         
@@ -760,7 +760,18 @@
         function showAllFieldBars() {
             for (let i = 0; i < 3; i++) {
                 const wrap = document.getElementById('field-bar-wrap-' + i);
-                if (wrap) { wrap.style.visibility = ''; wrap.style.opacity = '1'; }
+                if (!wrap) continue;
+                wrap.style.visibility = '';
+                wrap.style.opacity = '1';
+                wrap.style.transform = 'scaleY(0)';
+                wrap.style.transformOrigin = 'bottom center';
+                wrap.style.transition = 'none';
+                // stagger each bar slightly
+                const delay = i * 80;
+                setTimeout(() => {
+                    wrap.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+                    wrap.style.transform = 'scaleY(1)';
+                }, delay);
             }
         }
         
