@@ -235,6 +235,8 @@
             }
             
             document.getElementById('foods-eaten-stat').textContent = gs.stats.foodsEaten || 0;
+            const topuiFoods = document.getElementById('foods-eaten-topui');
+            if (topuiFoods) topuiFoods.textContent = gs.stats.foodsEaten || 0;
             document.getElementById('double-xp-stat').textContent = (gs.stats.doubleXpChance || 0).toFixed(1);
             document.getElementById('double-loot-stat').textContent = (gs.stats.doubleLootChance || 0).toFixed(1);
             document.getElementById('bonus-geode-stat').textContent = (gs.stats.bonusGeodeChance || 0).toFixed(1);
