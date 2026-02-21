@@ -32,10 +32,11 @@
         function slotLockedHTML(itemId) {
             const data = ITEM_DATA[itemId];
             const imgSrc = ITEM_IMAGES[itemId];
-            if (imgSrc) {
-                return `<img src="${imgSrc}" style="width:52px;height:52px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
-            }
-            return `<span style="font-size:32px;animation:geodeLock 0.3s ease-out;">${data.emoji || '📦'}</span>`;
+            const nameStr = data ? data.name.replace(/[^\w\s'\-]/g,'').trim() : itemId;
+            const iconHtml = imgSrc
+                ? `<img src="${imgSrc}" style="width:44px;height:44px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`
+                : `<span style="font-size:30px;line-height:1;animation:geodeLock 0.3s ease-out;">${data ? data.emoji || '📦' : '📦'}</span>`;
+            return iconHtml + `<span style="font-size:8px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:68px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${nameStr}</span>`;
         }
         
         // Release a locked body back to physics
@@ -68,16 +69,14 @@
             
             // Update slot visual
             slotEl.innerHTML = slotLockedHTML(itemId);
-            slotEl.style.border = '3px solid #f59e0b';
-            slotEl.style.boxShadow = '0 0 10px rgba(245,158,11,0.5)';
+            slotEl.style.border = '3px solid #22c55e';
+            slotEl.style.boxShadow = '0 0 8px rgba(34,197,94,0.4)';
             
             // Show clear button
             const clearBtn = document.getElementById(`hearth-clear-${slotNumber}`);
             if (clearBtn) clearBtn.style.display = 'inline-block';
             
-            // Update name label
-            const nameEl = document.getElementById(`hearth-slot-${slotNumber}-name`);
-            if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
+            // Name is already set inside slotLockedHTML
             
             updateHearthDisplay();
             notify(`${data.name} added to slot ${slotNumber}!`);
@@ -95,7 +94,7 @@
             }
             const slotEl = document.getElementById(`hearth-slot-${slotNumber}`);
             if (slotEl) {
-                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:36px;line-height:1;">+</span><div id="hearth-slot-${slotNumber}-name" style="font-size:8px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;margin-top:2px;max-width:74px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-height:10px;background:rgba(0,0,0,0.45);border-radius:3px;padding:1px 3px;display:none;"></div>`;
+                slotEl.innerHTML = `<span id="hearth-slot-${slotNumber}-icon" style="font-size:32px;line-height:1;">+</span><span id="hearth-slot-${slotNumber}-name" style="font-size:8px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:68px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`;
                 slotEl.style.border = '3px dashed #f59e0b';
                 slotEl.style.boxShadow = '';
             }
@@ -122,7 +121,8 @@
             
             // Update slot visual
             slotEl.innerHTML = slotLockedHTML(itemId);
-            slotEl.style.border = '2px solid #8bc34a';
+            slotEl.style.border = '3px solid #22c55e';
+            slotEl.style.boxShadow = '0 0 8px rgba(34,197,94,0.4)';
             slotEl.style.boxShadow = '0 0 10px rgba(139,195,74,0.5)';
             
             // Use existing garden seed selection logic
@@ -137,7 +137,8 @@
             const slotEl = document.getElementById(`garden-plot-slot-${slotIndex}`);
             if (slotEl) {
                 slotEl.innerHTML = `<span id="garden-plot-icon-${slotIndex}">+</span>`;
-                slotEl.style.border = '2px dashed #8bc34a';
+                slotEl.style.border = '3px dashed #8b7355';
+            slotEl.style.boxShadow = '';
                 slotEl.style.boxShadow = '';
             }
         }
@@ -399,8 +400,6 @@
                     else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) { delete gs.inventory[key]; removed2 = true; }
                     if (removed1 && removed2) break;
                 }
-                removeIngredientsFromBasket(hearthSlot1ItemId, hearthSlot2ItemId);
-                
                 setTimeout(() => {
                     addItem(recipe.result, 1);
                     addSkillXP('cooking', 15);
@@ -430,8 +429,6 @@
                     else if (!removed2 && gs.inventory[key] === hearthSlot2ItemId) { delete gs.inventory[key]; removed2 = true; }
                     if (removed1 && removed2) break;
                 }
-                removeIngredientsFromBasket(hearthSlot1ItemId, hearthSlot2ItemId);
-                
                 setTimeout(() => {
                     addItem('burnt_food', 1);
                     addSkillXP('cooking', 5);
@@ -450,14 +447,13 @@
             hearthSlot2ItemId = null;
             hearthCooking = false;
             ['1','2'].forEach(n => {
-                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:36px;line-height:1;">+</span><div id="hearth-slot-${n}-name" style="font-size:8px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;margin-top:2px;max-width:74px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-height:10px;background:rgba(0,0,0,0.45);border-radius:3px;padding:1px 3px;display:none;"></div>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
+                const s = document.getElementById(`hearth-slot-${n}`); if (s) { s.innerHTML = `<span id="hearth-slot-${n}-icon" style="font-size:32px;line-height:1;">+</span><span id="hearth-slot-${n}-name" style="font-size:8px;font-weight:bold;color:#444;text-align:center;margin-top:2px;max-width:68px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:none;"></span>`; s.style.border='3px dashed #f59e0b'; s.style.boxShadow=''; }
                 const nm = document.getElementById(`hearth-slot-${n}-name`); if (nm) nm.textContent='';
             });
             if (cookBtn) { cookBtn.style.opacity = '1'; cookBtn.style.cursor = 'pointer'; cookBtn.onclick = cookHearth; }
             
             updateHearthDisplay();
             updateInventoryCounter();
-            if (typeof populateBasket === 'function') populateBasket();
             save();
         }
         
@@ -546,14 +542,14 @@
                     icon.style.border = '';
                     icon.style.boxShadow = '';
                     icon.style.animation = 'geodeLock 0.3s ease-out';
-                    icon.innerHTML = `<img src="${imgSrc}" style="width:52px;height:52px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
+                    icon.innerHTML = `<img src="${imgSrc}" style="width:44px;height:44px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`;
                 } else {
                     icon.style.display = 'flex';
                     icon.style.animation = 'geodeLock 0.3s ease-out';
                     icon.textContent = '💎';
                 }
             }
-            if (nameEl) nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim();
+            if (nameEl) { nameEl.textContent = data.name.replace(/[^\w\s'-]/g, '').trim(); nameEl.style.display = ''; }
             if (clearBtn) clearBtn.style.display = 'block';
             if (slotDiv) {
                 slotDiv.style.border = '3px solid #4ade80';
@@ -617,7 +613,7 @@
                 icon.style.boxShadow = '';
                 icon.style.animation = '';
             }
-            if (nameEl) nameEl.textContent = '';
+            if (nameEl) { nameEl.textContent = ''; nameEl.style.display = 'none'; }
             if (clearBtn) clearBtn.style.display = 'none';
             if (slotDiv) {
                 slotDiv.style.border = '3px dashed #8b7355';
@@ -762,7 +758,7 @@
             const clearBtn = document.getElementById('shack-slot-clear');
             const slotDiv = document.getElementById('shack-geode-slot');
             if (icon) { icon.textContent = '🪨'; icon.style.display = ''; }
-            if (nameEl) nameEl.textContent = '';
+            if (nameEl) { nameEl.textContent = ''; nameEl.style.display = 'none'; }
             if (clearBtn) clearBtn.style.display = 'none';
             if (slotDiv) slotDiv.style.border = '3px dashed #8b7355';
             
