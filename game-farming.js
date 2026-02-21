@@ -726,13 +726,35 @@
             const wrap = document.getElementById('field-bar-wrap-' + i);
             if (!wrap) return;
             wrap.classList.remove('field-bar-rip');
-            void wrap.offsetWidth; // reflow
+            void wrap.offsetWidth;
             wrap.classList.add('field-bar-rip');
             wrap.addEventListener('animationend', () => {
                 wrap.style.visibility = 'hidden';
                 wrap.style.opacity = '0';
                 wrap.classList.remove('field-bar-rip');
             }, { once: true });
+            
+            // Spawn leaf/speck particles at bar position
+            const leafColors = ['#4ade80','#86efac','#fde047','#bbf7d0','#a3e635','#fef08a'];
+            const anims = ['ripLeaf1','ripLeaf2','ripLeaf3','ripLeaf4','ripLeaf5'];
+            const rect = wrap.getBoundingClientRect();
+            for (let l = 0; l < 5; l++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'rip-leaf';
+                leaf.style.cssText = `
+                    left: ${rect.left + rect.width * 0.1 + Math.random() * rect.width * 0.8}px;
+                    top: ${rect.top + rect.height * 0.2 + Math.random() * rect.height * 0.6 + window.scrollY}px;
+                    position: fixed;
+                    background: ${leafColors[Math.floor(Math.random() * leafColors.length)]};
+                    animation: ${anims[l]} ${0.35 + Math.random() * 0.25}s cubic-bezier(0.1,0,0.3,1) forwards;
+                    animation-delay: ${l * 0.03}s;
+                    width: ${5 + Math.random() * 5}px;
+                    height: ${5 + Math.random() * 5}px;
+                    opacity: 1;
+                `;
+                document.body.appendChild(leaf);
+                leaf.addEventListener('animationend', () => leaf.remove(), { once: true });
+            }
         }
         
         function showAllFieldBars() {

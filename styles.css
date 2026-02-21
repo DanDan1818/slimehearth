@@ -358,14 +358,44 @@
 
         /* --- FIELD: bar rip animation on lock-in --- */
         @keyframes fieldBarRip {
-            0%   { transform: translateY(0) rotate(0deg) scaleX(1);   opacity: 1; }
-            30%  { transform: translateY(-18px) rotate(-4deg) scaleX(1.05); opacity: 0.9; }
-            60%  { transform: translateY(-44px) rotate(6deg) scaleX(0.85);  opacity: 0.5; }
-            100% { transform: translateY(-80px) rotate(-8deg) scaleX(0.6);  opacity: 0; }
+            0%   { transform: translateY(0)     rotate(0deg)   scaleX(1);    opacity: 1; }
+            15%  { transform: translateY(-10px)  rotate(-8deg)  scaleX(1.1);  opacity: 1; }
+            40%  { transform: translateY(-50px)  rotate(12deg)  scaleX(0.75); opacity: 0.6; }
+            100% { transform: translateY(-130px) rotate(-14deg) scaleX(0.4);  opacity: 0; }
         }
         .field-bar-rip {
-            animation: fieldBarRip 0.45s cubic-bezier(0.4, 0, 0.6, 1) forwards !important;
+            animation: fieldBarRip 0.28s cubic-bezier(0.1, 0, 0.3, 1) forwards !important;
             pointer-events: none;
+        }
+
+        /* leaf/speck particles fired on rip */
+        .rip-leaf {
+            position: absolute;
+            width: 7px; height: 7px;
+            border-radius: 50% 20% 50% 20%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        @keyframes ripLeaf1 {
+            0%   { opacity:1; transform: translate(0,0)           rotate(0deg)   scale(1); }
+            100% { opacity:0; transform: translate(-28px, -55px)  rotate(-140deg) scale(0.3); }
+        }
+        @keyframes ripLeaf2 {
+            0%   { opacity:1; transform: translate(0,0)           rotate(0deg)   scale(1); }
+            100% { opacity:0; transform: translate(24px,  -60px)  rotate(120deg)  scale(0.2); }
+        }
+        @keyframes ripLeaf3 {
+            0%   { opacity:1; transform: translate(0,0)           rotate(0deg)   scale(1.2); }
+            100% { opacity:0; transform: translate(-10px, -70px)  rotate(200deg)  scale(0.1); }
+        }
+        @keyframes ripLeaf4 {
+            0%   { opacity:1; transform: translate(0,0)           rotate(0deg)   scale(0.8); }
+            100% { opacity:0; transform: translate(18px,  -45px)  rotate(-80deg)  scale(0.4); }
+        }
+        @keyframes ripLeaf5 {
+            0%   { opacity:1; transform: translate(0,0)           rotate(0deg)   scale(1); }
+            100% { opacity:0; transform: translate(-20px, -80px)  rotate(160deg)  scale(0.2); }
         }
 
         /* --- FIELD: green leaf specks per bar, burst on hit --- */
