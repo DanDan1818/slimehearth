@@ -135,6 +135,73 @@
             container.appendChild(notif);
             setTimeout(() => notif.remove(), 5000);
         }
+        function speckXPBurst(fromElementId, skillName) {
+            const fromEl = document.getElementById(fromElementId);
+            const toEl = document.getElementById('last-skill-xp-bar');
+            if (!fromEl || !toEl) return;
+
+            const skillColors = {
+                fishing:     ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe'],
+                farming:     ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0'],
+                cooking:     ['#fdba74','#fb923c','#ea580c','#fde68a','#fef3c7'],
+                mining:      ['#d4a96a','#a16207','#78350f','#fde68a','#92400e'],
+                prospecting: ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff'],
+            };
+            const colors = skillColors[skillName] || ['#fff','#ddd','#aaa'];
+
+            const fromRect = fromEl.getBoundingClientRect();
+            const toRect = toEl.getBoundingClientRect();
+            const startX = fromRect.left + fromRect.width / 2;
+            const startY = fromRect.top + fromRect.height / 2;
+            const endX = toRect.left + toRect.width / 2;
+            const endY = toRect.top + toRect.height / 2;
+
+            const count = 10 + Math.floor(Math.random() * 8);
+            for (let i = 0; i < count; i++) {
+                const speck = document.createElement('div');
+                const size = 4 + Math.random() * 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                speck.style.cssText = `
+                    position:fixed;
+                    width:${size}px;height:${size}px;
+                    border-radius:50%;
+                    background:${color};
+                    box-shadow:0 0 4px ${color};
+                    pointer-events:none;
+                    z-index:99999;
+                    left:${startX}px;top:${startY}px;
+                    transform:translate(-50%,-50%);
+                `;
+                document.body.appendChild(speck);
+
+                const delay = i * 30;
+                const spread = 30 + Math.random() * 40;
+                const angle = (Math.PI * 2 * i / count) + (Math.random() - 0.5) * 0.8;
+                const midX = startX + Math.cos(angle) * spread;
+                const midY = startY + Math.sin(angle) * spread;
+
+                // Phase 1: burst outward
+                setTimeout(() => {
+                    speck.style.transition = 'left 0.2s ease-out, top 0.2s ease-out, opacity 0.2s';
+                    speck.style.left = midX + 'px';
+                    speck.style.top = midY + 'px';
+                }, delay);
+
+                // Phase 2: fly to XP bar
+                setTimeout(() => {
+                    speck.style.transition = 'left 0.4s ease-in, top 0.4s ease-in, opacity 0.3s, width 0.4s, height 0.4s';
+                    speck.style.left = endX + 'px';
+                    speck.style.top = endY + 'px';
+                    speck.style.width = '2px';
+                    speck.style.height = '2px';
+                    speck.style.opacity = '0';
+                }, delay + 200);
+
+                setTimeout(() => speck.remove(), delay + 700);
+            }
+        }
+
+
         function notify(message, type = 'normal') {
             // Level-ups and achievements go to special top-center container
             if (type === 'levelup' || type === 'achievement') {
