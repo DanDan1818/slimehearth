@@ -138,7 +138,7 @@
                 
                 notif.textContent = message;
                 container.appendChild(notif);
-                setTimeout(() => notif.remove(), 4000);
+                setTimeout(() => notif.remove(), 5000);
                 return;
             }
             
@@ -354,7 +354,7 @@
                 skill.level++;
                 skill.xpNeeded = Math.floor(skill.xpNeeded * 1.2);
                 leveledUp = true;
-                notify('🎉 ' + skillName.charAt(0).toUpperCase() + skillName.slice(1) + ' Level ' + skill.level + '!');
+                notify('🎉 ' + skillName.charAt(0).toUpperCase() + skillName.slice(1) + ' Level Up! Now Level ' + skill.level + '!', 'levelup');
             }
             
             // Show XP gain notification (subtle)
