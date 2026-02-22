@@ -74,10 +74,8 @@
             const myRunId = automineRunId;
             currentMineDepth = depth;
             
-            // Show progress bar, reset to full
-            const barWrap = document.getElementById(ids.barWrap);
+            // Reset progress bar to full
             const barEl = document.getElementById(ids.bar);
-            if (barWrap) barWrap.style.display = 'block';
             if (barEl) { barEl.style.transition = 'none'; barEl.style.width = '100%'; }
             
             timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
@@ -161,10 +159,8 @@
             }
             if (instruction) instruction.textContent = 'Press to Automine';
             automineTimeLeft = 0;
-            // Hide and reset progress bar
-            const barWrap = document.getElementById(ids.barWrap);
+            // Reset progress bar to full
             const barEl = document.getElementById(ids.bar);
-            if (barWrap) barWrap.style.display = 'none';
             if (barEl) { barEl.style.transition = 'none'; barEl.style.width = '100%'; }
         }
         
@@ -670,7 +666,7 @@
             };
             
             console.log('Debug console initialized');
-            console.log('Game version: v0.791');
+            console.log('Game version: v0.793');
             
     
         } catch(e) {

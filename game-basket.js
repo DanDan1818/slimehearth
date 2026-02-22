@@ -505,7 +505,7 @@
                 'fishing': '#4dd0e1',
                 'farming': '#8bc34a',
                 'cooking': '#ff9800',
-                'mining':  '#78716c',
+                'mining':  'linear-gradient(90deg,#78350f,#a16207)',
                 'prospecting': '#a78bfa'
             };
             const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
