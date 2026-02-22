@@ -733,9 +733,9 @@
                 const topUI = document.getElementById('top-ui');
                 const btnRect = btn.getBoundingClientRect();
                 const uiRect = topUI.getBoundingClientRect();
-                overlay.style.width = btnRect.width + 'px';
+                overlay.style.width = (btnRect.width - 17) + 'px';
                 overlay.style.left = 'auto';
-                overlay.style.right = (window.innerWidth - btnRect.right - 17) + 'px';
+                overlay.style.right = (window.innerWidth - btnRect.right) + 'px';
                 overlay.style.top = uiRect.bottom + 'px';
                 overlay.style.display = 'block';
                 overlay.title = `w:${Math.round(btnRect.width)} l:${Math.round(btnRect.left)} r:${Math.round(btnRect.right)} winW:${window.innerWidth}`;
@@ -756,8 +756,8 @@
                 const topUI = document.getElementById('top-ui');
                 const btnRect = btn.getBoundingClientRect();
                 const uiRect = topUI.getBoundingClientRect();
-                overlay.style.width = btnRect.width + 'px';
-                overlay.style.left = (btnRect.left - 14) + 'px';
+                overlay.style.width = (btnRect.width - 14) + 'px';
+                overlay.style.left = btnRect.left + 'px';
                 overlay.style.right = 'auto';
                 overlay.style.top = uiRect.bottom + 'px';
                 overlay.style.display = 'block';
