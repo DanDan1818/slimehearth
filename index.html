@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.763</title>
+    <title>SlimeHearth v0.765</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=0.752">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.763</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.765</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -687,7 +687,7 @@
             </div>
             <!-- Skills Overlay (not a room) -->
             <div id="skills-overlay" style="display:none;">
-                <h2 style="margin:0 0 6px 0;font-size:12px;font-weight:bold;">📊 Skills</h2>
+                <h2 style="margin:0 0 6px 0;font-size:12px;font-weight:bold;color:#6b4c2a;text-align:center;font-family:'Righteous',sans-serif;">📊 Skills</h2>
                 <div style="display:flex;flex-direction:column;gap:6px;">
                     
                     <div class="skill-display">
@@ -751,7 +751,7 @@
                     </div>
                     
                 </div>
-                <button id="close-skills" style="margin-top:6px;background:#9c27b0;color:#fff;width:100%;padding:4px;font-size:9px;border:none;border-radius:3px;cursor:pointer;">Close</button>
+                <button id="close-skills" style="margin-top:6px;background:#8b6340;color:#fff;width:100%;padding:4px;font-size:9px;border:none;border-radius:4px;cursor:pointer;font-family:'Righteous',sans-serif;">Close</button>
             </div>
             
             <!-- Stats Overlay -->
@@ -760,22 +760,24 @@
                 <div style="background:#fef3c7;padding:6px;border-radius:5px;margin-bottom:8px;font-size:10px;color:#92400e;font-weight:bold;text-align:center;">
                     🍖 <span id="foods-eaten-stat">0</span> Foods
                 </div>
+                <div style="background:#fff3e0;padding:4px 6px;border-radius:5px;margin-bottom:6px;font-size:9px;color:#92400e;text-align:center;">Each food eaten has a random chance to permanently increase a 2x bonus by +0.01%</div>
+                <div style="font-family:'Righteous',sans-serif;font-size:13px;color:#f59e0b;font-weight:bold;text-align:center;margin-bottom:6px;">⚡ 2x Chances</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-                    <div style="background:#fff;padding:5px;border:2px solid #ddd;border-radius:5px;">
+                    <div style="background:#fff;padding:5px;border:2px solid #93c5fd;border-radius:5px;">
                         <div style="font-size:9px;font-weight:bold;color:#3b82f6;">⚡ XP</div>
-                        <div style="font-size:13px;color:#1d4ed8;font-weight:bold;"><span id="double-xp-stat">0</span>%</div>
+                        <div style="font-size:11px;color:#1d4ed8;font-weight:bold;"><span id="double-xp-stat">0.00</span>%</div>
                     </div>
-                    <div style="background:#fff;padding:5px;border:2px solid #ddd;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#10b981;">💎 Loot</div>
-                        <div style="font-size:13px;color:#059669;font-weight:bold;"><span id="double-loot-stat">0</span>%</div>
+                    <div style="background:#fff;padding:5px;border:2px solid #6ee7b7;border-radius:5px;">
+                        <div style="font-size:9px;font-weight:bold;color:#10b981;">📦 Loot</div>
+                        <div style="font-size:11px;color:#059669;font-weight:bold;"><span id="double-loot-stat">0.00</span>%</div>
                     </div>
-                    <div style="background:#fff;padding:5px;border:2px solid #ddd;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#a78bfa;">🪨 Geode</div>
-                        <div style="font-size:13px;color:#7c3aed;font-weight:bold;">+<span id="bonus-geode-stat">0</span>%</div>
+                    <div style="background:#fff;padding:5px;border:2px solid #c4b5fd;border-radius:5px;">
+                        <div style="font-size:9px;font-weight:bold;color:#7c3aed;">🪨 Geodes</div>
+                        <div style="font-size:11px;color:#7c3aed;font-weight:bold;"><span id="bonus-geode-stat">0.00</span>%</div>
                     </div>
-                    <div style="background:#fff;padding:5px;border:2px solid #ddd;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#f59e0b;">✨ Rare</div>
-                        <div style="font-size:13px;color:#d97706;font-weight:bold;">+<span id="rare-find-stat">0</span>%</div>
+                    <div style="background:#fff;padding:5px;border:2px solid #fcd34d;border-radius:5px;">
+                        <div style="font-size:9px;font-weight:bold;color:#d97706;">✨ Rarity</div>
+                        <div style="font-size:11px;color:#d97706;font-weight:bold;"><span id="rare-find-stat">0.00</span>%</div>
                     </div>
                 </div>
                 <button id="close-stats" style="margin-top:8px;background:#f59e0b;color:#fff;width:100%;padding:5px;font-size:11px;font-weight:bold;border-radius:5px;">Close</button>
@@ -1159,7 +1161,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.763</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.765</div>
     <div id="mouse-coords">0, 0</div>
     
 

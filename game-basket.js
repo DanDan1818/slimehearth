@@ -237,10 +237,10 @@
             document.getElementById('foods-eaten-stat').textContent = gs.stats.foodsEaten || 0;
             const topuiFoods = document.getElementById('foods-eaten-topui');
             if (topuiFoods) topuiFoods.textContent = gs.stats.foodsEaten || 0;
-            document.getElementById('double-xp-stat').textContent = (gs.stats.doubleXpChance || 0).toFixed(1);
-            document.getElementById('double-loot-stat').textContent = (gs.stats.doubleLootChance || 0).toFixed(1);
-            document.getElementById('bonus-geode-stat').textContent = (gs.stats.bonusGeodeChance || 0).toFixed(1);
-            document.getElementById('rare-find-stat').textContent = (gs.stats.rareFindChance || 0).toFixed(1);
+            document.getElementById('double-xp-stat').textContent = (gs.stats.doubleXpChance || 0).toFixed(2);
+            document.getElementById('double-loot-stat').textContent = (gs.stats.doubleLootChance || 0).toFixed(2);
+            document.getElementById('bonus-geode-stat').textContent = (gs.stats.bonusGeodeChance || 0).toFixed(2);
+            document.getElementById('rare-find-stat').textContent = (gs.stats.rareFindChance || 0).toFixed(2);
         }
         
         function updateUI() {
@@ -1089,20 +1089,23 @@
                             
                             gs.stats.foodsEaten++;
                             
-                            // Each food grants random stat boost (0.1-0.3%)
+                            // Each food has a random chance to give +0.01% to one of the 4 2x stats
                             const statRoll = Math.random();
-                            if (statRoll < 0.25) {
-                                gs.stats.doubleXpChance += 0.1 + Math.random() * 0.2;
-                                notify('📈 +Double XP Chance!', 'achievement');
-                            } else if (statRoll < 0.5) {
-                                gs.stats.doubleLootChance += 0.1 + Math.random() * 0.2;
-                                notify('📈 +Double Loot Chance!', 'achievement');
-                            } else if (statRoll < 0.75) {
-                                gs.stats.bonusGeodeChance += 0.1 + Math.random() * 0.2;
-                                notify('📈 +Bonus Geode Chance!', 'achievement');
-                            } else {
-                                gs.stats.rareFindChance += 0.1 + Math.random() * 0.2;
-                                notify('📈 +Rare Find Chance!', 'achievement');
+                            const statChance = Math.random();
+                            if (statChance < 0.25) { // 25% chance to get any boost at all
+                                if (statRoll < 0.25) {
+                                    gs.stats.doubleXpChance += 0.01;
+                                    notify('⚡ +0.01% 2x XP Chance!', 'achievement');
+                                } else if (statRoll < 0.5) {
+                                    gs.stats.doubleLootChance += 0.01;
+                                    notify('📦 +0.01% 2x Loot Chance!', 'achievement');
+                                } else if (statRoll < 0.75) {
+                                    gs.stats.bonusGeodeChance += 0.01;
+                                    notify('🪨 +0.01% 2x Geode Chance!', 'achievement');
+                                } else {
+                                    gs.stats.rareFindChance += 0.01;
+                                    notify('✨ +0.01% 2x Rarity Chance!', 'achievement');
+                                }
                             }
                             
                             gs.hunger = Math.min(100, gs.hunger + itemData.foodValue);
