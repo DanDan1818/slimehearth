@@ -184,42 +184,20 @@
                         setTimeout(() => p.remove(), (duration + 0.1) * 1000);
                     }
 
-                    // Central flash burst on first wave
-                    if (wave === 0) {
-                        const flash = document.createElement('div');
-                        flash.style.cssText = `
-                            position:fixed;
-                            left:${cx}px;top:${cy}px;
-                            width:10px;height:10px;
-                            border-radius:50%;
-                            background:white;
-                            box-shadow:0 0 0 0 ${colors[0]};
-                            transform:translate(-50%,-50%);
-                            pointer-events:none;
-                            z-index:99998;
-                            transition:width 0.3s ease-out, height 0.3s ease-out, opacity 0.3s 0.2s ease-out, box-shadow 0.3s ease-out;
-                        `;
-                        document.body.appendChild(flash);
-                        requestAnimationFrame(() => {
-                            flash.style.width = '80px';
-                            flash.style.height = '80px';
-                            flash.style.opacity = '0';
-                            flash.style.boxShadow = `0 0 40px 30px ${colors[0]}88`;
-                        });
-                        setTimeout(() => flash.remove(), 600);
-                    }
+
                 }, wave * 180);
             }
 
-            // Glow pulse the skills button itself
-            btn.style.transition = 'box-shadow 0.1s, transform 0.1s';
+            // Glow pulse the skills button itself — reset all styles fully after
+            btn.style.transition = 'box-shadow 0.15s, transform 0.15s';
             btn.style.boxShadow = `0 0 20px 8px ${colors[0]}, 0 0 40px 16px ${colors[0]}88`;
             btn.style.transform = 'scale(1.08)';
             setTimeout(() => {
-                btn.style.boxShadow = 'none';
-                btn.style.transform = 'scale(1)';
-            }, 600);
-        }
+                btn.style.transition = 'box-shadow 0.4s, transform 0.3s';
+                btn.style.boxShadow = '';
+                btn.style.transform = '';
+            }, 400);
+        };
 
         function notifySkillLevelup(skillName, level) {
             console.log('LEVEL UP:', skillName, level);
@@ -549,18 +527,18 @@
                 if (xpText) xpText.textContent = `${skill.xpNeeded} / ${skill.xpNeeded} XP`;
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        xpBar.style.transition = 'width 0.3s ease-in';
+                        xpBar.style.transition = 'width 1s ease-in';
                         xpBar.style.width = '0%';
                         if (xpText) xpText.textContent = '0 / ' + skill.xpNeeded + ' XP';
                         setTimeout(() => {
-                            xpBar.style.transition = 'width 3s ease-out';
+                            xpBar.style.transition = 'width 8s ease-out';
                             xpBar.style.width = targetPct + '%';
                             updateXpText();
                         }, 350);
                     });
                 });
             } else {
-                xpBar.style.transition = 'width 3s ease-out';
+                xpBar.style.transition = 'width 8s ease-out';
                 xpBar.style.width = targetPct + '%';
                 updateXpText();
             }
