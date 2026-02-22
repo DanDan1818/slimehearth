@@ -145,46 +145,47 @@
                 setTimeout(() => {
                     const waveCount = 20 + Math.floor(Math.random() * 15);
                     for (let i = 0; i < waveCount; i++) {
-                        const p = document.createElement('div');
-                        const color = colors[Math.floor(Math.random() * colors.length)];
-                        const size = 3 + Math.random() * 7;
-                        // Mix shapes: circles and thin streaks
-                        const isStreak = Math.random() < 0.4;
-                        const w = isStreak ? (2 + Math.random() * 3) : size;
-                        const h = isStreak ? (size * 3) : size;
-                        p.style.cssText = `
-                            position:fixed;
-                            width:${w}px;height:${h}px;
-                            border-radius:${isStreak ? '2px' : '50%'};
-                            background:${color};
-                            box-shadow:0 0 6px 2px ${color}cc, 0 0 12px ${color}66;
-                            pointer-events:none;
-                            z-index:99999;
-                            left:${cx}px;top:${cy}px;
-                            transform:translate(-50%,-50%) rotate(${Math.random()*360}deg);
-                        `;
-                        document.body.appendChild(p);
+                        (function() {
+                            const p = document.createElement('div');
+                            const color = colors[Math.floor(Math.random() * colors.length)];
+                            const size = 3 + Math.random() * 7;
+                            const isStreak = Math.random() < 0.4;
+                            const w = isStreak ? (2 + Math.random() * 3) : size;
+                            const h = isStreak ? (size * 3) : size;
+                            const angle = Math.random() * Math.PI * 2;
+                            const power = 60 + Math.random() * 120;
+                            const tx = cx + Math.cos(angle) * power;
+                            const ty = cy + Math.sin(angle) * power;
+                            const duration = 0.5 + Math.random() * 0.5;
+                            const gravity = 40 + Math.random() * 60;
+                            const rot1 = Math.random() * 360;
+                            const rot2 = Math.random() * 720;
 
-                        const angle = Math.random() * Math.PI * 2;
-                        const power = 60 + Math.random() * 120;
-                        const tx = cx + Math.cos(angle) * power;
-                        const ty = cy + Math.sin(angle) * power;
-                        const duration = 0.5 + Math.random() * 0.5;
-                        const gravity = 40 + Math.random() * 60;
+                            p.style.position = 'fixed';
+                            p.style.width = w + 'px';
+                            p.style.height = h + 'px';
+                            p.style.borderRadius = isStreak ? '2px' : '50%';
+                            p.style.background = color;
+                            p.style.boxShadow = `0 0 6px 2px ${color}cc, 0 0 12px ${color}66`;
+                            p.style.pointerEvents = 'none';
+                            p.style.zIndex = '99999';
+                            p.style.left = cx + 'px';
+                            p.style.top = cy + 'px';
+                            p.style.transform = `translate(-50%,-50%) rotate(${rot1}deg)`;
+                            document.body.appendChild(p);
 
-                        // Explode outward
-                        requestAnimationFrame(() => {
-                            p.style.transition = `left ${duration}s cubic-bezier(0.2,0.8,0.4,1), top ${duration}s cubic-bezier(0.2,0.9,0.4,1), opacity ${duration * 0.4}s ${duration * 0.6}s ease-in, transform ${duration}s linear`;
-                            p.style.left = tx + 'px';
-                            p.style.top = (ty + gravity) + 'px'; // gravity drop
-                            p.style.opacity = '0';
-                            p.style.transform = `translate(-50%,-50%) rotate(${Math.random()*720}deg) scale(0.2)`;
-                        });
+                            // Double rAF ensures element is painted before transition
+                            requestAnimationFrame(() => requestAnimationFrame(() => {
+                                p.style.transition = `left ${duration}s cubic-bezier(0.2,0.8,0.4,1), top ${duration}s cubic-bezier(0.2,0.9,0.4,1), opacity ${duration * 0.4}s ${duration * 0.6}s ease-in, transform ${duration}s linear`;
+                                p.style.left = tx + 'px';
+                                p.style.top = (ty + gravity) + 'px';
+                                p.style.opacity = '0';
+                                p.style.transform = `translate(-50%,-50%) rotate(${rot2}deg) scale(0.2)`;
+                            }));
 
-                        setTimeout(() => p.remove(), (duration + 0.1) * 1000);
+                            setTimeout(() => p.remove(), (duration + 0.2) * 1000);
+                        })();
                     }
-
-
                 }, wave * 180);
             }
 
@@ -527,18 +528,18 @@
                 if (xpText) xpText.textContent = `${skill.xpNeeded} / ${skill.xpNeeded} XP`;
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        xpBar.style.transition = 'width 1s ease-in';
+                        xpBar.style.transition = 'width 0.3s ease-in';
                         xpBar.style.width = '0%';
                         if (xpText) xpText.textContent = '0 / ' + skill.xpNeeded + ' XP';
                         setTimeout(() => {
-                            xpBar.style.transition = 'width 8s ease-out';
+                            xpBar.style.transition = 'width 3s ease-out';
                             xpBar.style.width = targetPct + '%';
                             updateXpText();
                         }, 350);
                     });
                 });
             } else {
-                xpBar.style.transition = 'width 8s ease-out';
+                xpBar.style.transition = 'width 3s ease-out';
                 xpBar.style.width = targetPct + '%';
                 updateXpText();
             }
