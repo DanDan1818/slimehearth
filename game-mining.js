@@ -64,7 +64,7 @@
             const cfg = MINE_DEPTHS[depth];
             if (!button || !timer || !result) return;
             
-            button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">STOP</div>';
+            button.innerHTML = '<div style="font-size:40px;">⛏️</div>';
             button.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
             button.onclick = () => stopAutomine(depth);
             if (instruction) instruction.textContent = 'Stop Automine';
@@ -152,7 +152,7 @@
             const button = document.getElementById(ids.btn);
             const instruction = document.getElementById(ids.instr);
             if (button) {
-                button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">START</div>';
+                button.innerHTML = '<div style="font-size:40px;">⛏️</div>';
                 button.style.background = 'linear-gradient(135deg, #8b7355 0%, #5d4e37 100%)';
                 button.onclick = () => startAutomine(depth);
                 button.disabled = false; button.style.opacity = '1'; button.style.cursor = 'pointer';
@@ -216,7 +216,7 @@
                     const timer = document.getElementById(ids.timer);
                     const instruction = document.getElementById(ids.instr);
                     if (button) {
-                        button.innerHTML = '<div style="font-size:40px;">⛏️</div><div style="font-size:14px;">STOP</div>';
+                        button.innerHTML = '<div style="font-size:40px;">⛏️</div>';
                         button.style.background = 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)';
                         button.onclick = () => stopAutomine(depth);
                     }
@@ -666,7 +666,7 @@
             };
             
             console.log('Debug console initialized');
-            console.log('Game version: v0.793');
+            console.log('Game version: v0.794');
             
     
         } catch(e) {
