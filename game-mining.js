@@ -49,8 +49,8 @@
         };
         
         function getAutomineIDs(depth) {
-            if (depth === 'cave') return { btn: 'start-automine', instr: 'automine-instruction', timer: 'automine-timer', result: 'automine-result' };
-            return { btn: `start-automine-${depth}`, instr: `automine-instruction-${depth}`, timer: `automine-timer-${depth}`, result: `automine-result-${depth}` };
+            if (depth === 'cave') return { btn: 'start-automine', instr: 'automine-instruction', timer: 'automine-timer', result: 'automine-result', barWrap: 'mining-bar-wrap-cave', bar: 'mining-bar-cave' };
+            return { btn: `start-automine-${depth}`, instr: `automine-instruction-${depth}`, timer: `automine-timer-${depth}`, result: `automine-result-${depth}`, barWrap: `mining-bar-wrap-${depth}`, bar: `mining-bar-${depth}` };
         }
         
         function startAutomine(depth) {
@@ -74,6 +74,12 @@
             const myRunId = automineRunId;
             currentMineDepth = depth;
             
+            // Show progress bar, reset to full
+            const barWrap = document.getElementById(ids.barWrap);
+            const barEl = document.getElementById(ids.bar);
+            if (barWrap) barWrap.style.display = 'block';
+            if (barEl) { barEl.style.transition = 'none'; barEl.style.width = '100%'; }
+            
             timer.textContent = `⏱️ ${automineTimeLeft}s remaining`;
             result.textContent = '';
             notify(`⛏️ Started mining at ${cfg.label}!`);
@@ -84,6 +90,10 @@
                 const timerEl = document.getElementById(ids.timer);
                 const resultEl = document.getElementById(ids.result);
                 if (timerEl) timerEl.textContent = `⏱️ ${automineTimeLeft}s remaining`;
+                
+                // Update progress bar
+                const tickBar = document.getElementById(ids.bar);
+                if (tickBar) { tickBar.style.transition = 'width 1s linear'; tickBar.style.width = `${(automineTimeLeft / 60) * 100}%`; }
                 
                 // --- Ore drops (each ore rolls independently) ---
                 const miningLv = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
@@ -151,6 +161,11 @@
             }
             if (instruction) instruction.textContent = 'Press to Automine';
             automineTimeLeft = 0;
+            // Hide and reset progress bar
+            const barWrap = document.getElementById(ids.barWrap);
+            const barEl = document.getElementById(ids.bar);
+            if (barWrap) barWrap.style.display = 'none';
+            if (barEl) { barEl.style.transition = 'none'; barEl.style.width = '100%'; }
         }
         
         // Wire up all start-automine buttons
@@ -655,7 +670,7 @@
             };
             
             console.log('Debug console initialized');
-            console.log('Game version: v0.657');
+            console.log('Game version: v0.791');
             
     
         } catch(e) {
