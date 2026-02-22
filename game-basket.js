@@ -734,8 +734,8 @@
                 const btnRect = btn.getBoundingClientRect();
                 const uiRect = topUI.getBoundingClientRect();
                 overlay.style.width = btnRect.width + 'px';
-                overlay.style.left = btnRect.left + 'px';
-                overlay.style.right = 'auto';
+                overlay.style.left = 'auto';
+                overlay.style.right = (window.innerWidth - btnRect.right) + 'px';
                 overlay.style.top = uiRect.bottom + 'px';
                 overlay.style.display = 'block';
             } else {
