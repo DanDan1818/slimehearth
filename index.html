@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.767</title>
+    <title>SlimeHearth v0.769</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=0.752">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.767</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.769</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -755,32 +755,31 @@
             </div>
             
             <!-- Stats Overlay -->
-            <div id="stats-overlay" style="display:none;position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.98);border:3px solid #fbbf24;border-radius:10px;padding:10px;z-index:650;width:240px;box-shadow:0 4px 15px rgba(0,0,0,0.3);">
-                <h2 style="margin:0 0 8px 0;font-size:14px;color:#f59e0b;text-align:center;">📈 Stats</h2>
-                <div style="background:#fef3c7;padding:6px;border-radius:5px;margin-bottom:8px;font-size:10px;color:#92400e;font-weight:bold;text-align:center;">
-                    🍖 <span id="foods-eaten-stat">0</span> Foods
+            <div id="stats-overlay" style="display:none;position:fixed;background-color:#f5f0e8;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.018 0.4%22 numOctaves=%224%22 seed=%223%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix type=%22saturate%22 values=%220%22/%3E%3C/filter%3E%3Crect width=%22400%22 height=%22400%22 filter=%22url(%23n)%22 opacity=%220.10%22/%3E%3C/svg%3E'),linear-gradient(180deg,%23f7f2e8 0%25,%23ede8d8 100%25);background-blend-mode:multiply,normal;border:2px solid #c8b89a;border-top:none;border-radius:0 0 8px 8px;padding:8px 6px 6px 6px;z-index:650;box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+                <h2 style="margin:0 0 5px 0;font-size:11px;font-weight:bold;color:#6b4c2a;text-align:center;font-family:'Righteous',sans-serif;">📈 Stats</h2>
+                <div style="background:rgba(139,99,64,0.15);padding:4px;border-radius:4px;margin-bottom:5px;font-size:9px;color:#6b4c2a;font-weight:bold;text-align:center;border:1px solid #c8b89a;">
+                    🍖 <span id="foods-eaten-stat">0</span> Foods Eaten
                 </div>
-                <div style="background:#fff3e0;padding:4px 6px;border-radius:5px;margin-bottom:6px;font-size:9px;color:#92400e;text-align:center;">Each food eaten has a random chance to permanently increase a 2x bonus by +0.01%</div>
-                <div style="font-family:'Righteous',sans-serif;font-size:13px;color:#f59e0b;font-weight:bold;text-align:center;margin-bottom:6px;">⚡ 2x Chances</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-                    <div style="background:#fff;padding:5px;border:2px solid #93c5fd;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#3b82f6;">⚡ XP</div>
-                        <div style="font-size:11px;color:#1d4ed8;font-weight:bold;"><span id="double-xp-stat">0.00</span>%</div>
+                <div style="font-family:'Righteous',sans-serif;font-size:10px;color:#6b4c2a;font-weight:bold;text-align:center;margin-bottom:4px;">⚡ 2x Chances</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
+                    <div style="background:rgba(255,255,255,0.5);padding:4px;border:1px solid #93c5fd;border-radius:4px;">
+                        <div style="font-size:8px;font-weight:bold;color:#3b82f6;">⚡ XP</div>
+                        <div style="font-size:9px;color:#1d4ed8;font-weight:bold;"><span id="double-xp-stat">0.00</span>%</div>
                     </div>
-                    <div style="background:#fff;padding:5px;border:2px solid #6ee7b7;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#10b981;">📦 Loot</div>
-                        <div style="font-size:11px;color:#059669;font-weight:bold;"><span id="double-loot-stat">0.00</span>%</div>
+                    <div style="background:rgba(255,255,255,0.5);padding:4px;border:1px solid #6ee7b7;border-radius:4px;">
+                        <div style="font-size:8px;font-weight:bold;color:#10b981;">📦 Loot</div>
+                        <div style="font-size:9px;color:#059669;font-weight:bold;"><span id="double-loot-stat">0.00</span>%</div>
                     </div>
-                    <div style="background:#fff;padding:5px;border:2px solid #c4b5fd;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#7c3aed;">🪨 Geodes</div>
-                        <div style="font-size:11px;color:#7c3aed;font-weight:bold;"><span id="bonus-geode-stat">0.00</span>%</div>
+                    <div style="background:rgba(255,255,255,0.5);padding:4px;border:1px solid #c4b5fd;border-radius:4px;">
+                        <div style="font-size:8px;font-weight:bold;color:#7c3aed;">🪨 Geodes</div>
+                        <div style="font-size:9px;color:#7c3aed;font-weight:bold;"><span id="bonus-geode-stat">0.00</span>%</div>
                     </div>
-                    <div style="background:#fff;padding:5px;border:2px solid #fcd34d;border-radius:5px;">
-                        <div style="font-size:9px;font-weight:bold;color:#d97706;">✨ Rarity</div>
-                        <div style="font-size:11px;color:#d97706;font-weight:bold;"><span id="rare-find-stat">0.00</span>%</div>
+                    <div style="background:rgba(255,255,255,0.5);padding:4px;border:1px solid #fcd34d;border-radius:4px;">
+                        <div style="font-size:8px;font-weight:bold;color:#d97706;">✨ Rarity</div>
+                        <div style="font-size:9px;color:#d97706;font-weight:bold;"><span id="rare-find-stat">0.00</span>%</div>
                     </div>
                 </div>
-                <button id="close-stats" style="margin-top:8px;background:#f59e0b;color:#fff;width:100%;padding:5px;font-size:11px;font-weight:bold;border-radius:5px;">Close</button>
+                <button id="close-stats" style="margin-top:5px;background:#8b6340;color:#fff;width:100%;padding:3px;font-size:9px;font-weight:bold;border:none;border-radius:4px;cursor:pointer;font-family:'Righteous',sans-serif;">Close</button>
             </div>
             
             <!-- Shack Room -->
@@ -1161,7 +1160,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.767</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.769</div>
     <div id="mouse-coords">0, 0</div>
     
 

@@ -734,7 +734,8 @@
                 const btnRect = btn.getBoundingClientRect();
                 const uiRect = topUI.getBoundingClientRect();
                 overlay.style.width = btnRect.width + 'px';
-                overlay.style.right = (window.innerWidth - btnRect.right) + 'px';
+                overlay.style.left = btnRect.left + 'px';
+                overlay.style.right = 'auto';
                 overlay.style.top = uiRect.bottom + 'px';
                 overlay.style.display = 'block';
             } else {
@@ -750,6 +751,14 @@
             const overlay = document.getElementById('stats-overlay');
             if (overlay.style.display === 'none') {
                 updateStatsDisplay();
+                const btn = document.getElementById('level-display-container');
+                const topUI = document.getElementById('top-ui');
+                const btnRect = btn.getBoundingClientRect();
+                const uiRect = topUI.getBoundingClientRect();
+                overlay.style.width = btnRect.width + 'px';
+                overlay.style.left = btnRect.left + 'px';
+                overlay.style.right = 'auto';
+                overlay.style.top = uiRect.bottom + 'px';
                 overlay.style.display = 'block';
             } else {
                 overlay.style.display = 'none';
