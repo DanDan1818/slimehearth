@@ -726,21 +726,34 @@
             document.getElementById('settings-overlay').style.display = 'none';
             document.getElementById('settings-backdrop').style.display = 'none';
         };
+        function openOverlay(overlay, btn) {
+            const topUI = document.getElementById('top-ui');
+            const btnRect = btn.getBoundingClientRect();
+            const uiRect = topUI.getBoundingClientRect();
+            const isSkills = overlay.id === 'skills-overlay';
+            overlay.style.width = (btnRect.width - (isSkills ? 17 : 18)) + 'px';
+            overlay.style.left = isSkills ? 'auto' : btnRect.left + 'px';
+            overlay.style.right = isSkills ? (window.innerWidth - btnRect.right) + 'px' : 'auto';
+            overlay.style.top = uiRect.bottom + 'px';
+            overlay.style.display = 'block';
+            overlay.classList.remove('rolling');
+            void overlay.offsetWidth; // force reflow
+            overlay.classList.add('unrolling');
+        }
+        function closeOverlay(overlay) {
+            overlay.classList.remove('unrolling');
+            overlay.classList.add('rolling');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.classList.remove('rolling');
+            }, 250);
+        }
         document.getElementById('skills-btn').onclick = () => {
             const overlay = document.getElementById('skills-overlay');
             if (overlay.style.display === 'none') {
-                const btn = document.getElementById('skills-btn-wrap');
-                const topUI = document.getElementById('top-ui');
-                const btnRect = btn.getBoundingClientRect();
-                const uiRect = topUI.getBoundingClientRect();
-                overlay.style.width = (btnRect.width - 17) + 'px';
-                overlay.style.left = 'auto';
-                overlay.style.right = (window.innerWidth - btnRect.right) + 'px';
-                overlay.style.top = uiRect.bottom + 'px';
-                overlay.style.display = 'block';
-                overlay.title = `w:${Math.round(btnRect.width)} l:${Math.round(btnRect.left)} r:${Math.round(btnRect.right)} winW:${window.innerWidth}`;
+                openOverlay(overlay, document.getElementById('skills-btn-wrap'));
             } else {
-                overlay.style.display = 'none';
+                closeOverlay(overlay);
             }
         };
         document.getElementById('close-skills').onclick = () => {
@@ -752,17 +765,9 @@
             const overlay = document.getElementById('stats-overlay');
             if (overlay.style.display === 'none') {
                 updateStatsDisplay();
-                const btn = document.getElementById('level-display-container');
-                const topUI = document.getElementById('top-ui');
-                const btnRect = btn.getBoundingClientRect();
-                const uiRect = topUI.getBoundingClientRect();
-                overlay.style.width = (btnRect.width - 14) + 'px';
-                overlay.style.left = btnRect.left + 'px';
-                overlay.style.right = 'auto';
-                overlay.style.top = uiRect.bottom + 'px';
-                overlay.style.display = 'block';
+                openOverlay(overlay, document.getElementById('level-display-container'));
             } else {
-                overlay.style.display = 'none';
+                closeOverlay(overlay);
             }
         };
         document.getElementById('close-stats').onclick = () => {
