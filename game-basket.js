@@ -729,6 +729,11 @@
         document.getElementById('skills-btn').onclick = () => {
             const overlay = document.getElementById('skills-overlay');
             if (overlay.style.display === 'none') {
+                // Match width and right position to the skills button
+                const btn = document.getElementById('skills-btn-wrap');
+                const rect = btn.getBoundingClientRect();
+                overlay.style.width = rect.width + 'px';
+                overlay.style.right = (window.innerWidth - rect.right) + 'px';
                 overlay.style.display = 'block';
             } else {
                 overlay.style.display = 'none';
