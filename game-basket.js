@@ -756,9 +756,7 @@
                 closeOverlay(overlay);
             }
         };
-        document.getElementById('close-skills').onclick = () => {
-            document.getElementById('skills-overlay').style.display = 'none';
-        };
+        
         
         // Stats overlay handlers
         document.getElementById('level-display-container').onclick = () => {
@@ -769,9 +767,6 @@
             } else {
                 closeOverlay(overlay);
             }
-        };
-        document.getElementById('close-stats').onclick = () => {
-            document.getElementById('stats-overlay').style.display = 'none';
         };
         
         function toggleBasket() {
