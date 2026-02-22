@@ -341,7 +341,6 @@
                     }
                     catchMsg = `🎣 Caught a ${ITEM_DATA[caughtItem].name}!`;
                     addSkillXP('fishing', 10);
-                    speckXPBurst('fishing-progress-pond', 'fishing');
                 }
 
                 result.textContent = catchMsg;

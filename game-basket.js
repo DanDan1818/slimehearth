@@ -124,16 +124,112 @@
             setTimeout(() => notif.remove(), 3000);
         }
         
+        function skillFireworks(skillName) {
+            const btn = document.getElementById('skills-btn-wrap');
+            if (!btn) return;
+            const rect = btn.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+
+            const skillColors = {
+                fishing:     ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe','#e0f2fe'],
+                farming:     ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0','#dcfce7'],
+                cooking:     ['#fdba74','#fb923c','#ea580c','#fef08a','#fde68a','#fff7ed'],
+                mining:      ['#d4a96a','#a16207','#78350f','#fbbf24','#fde68a','#d97706'],
+                prospecting: ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff','#e9d5ff'],
+            };
+            const colors = skillColors[skillName] || ['#fff','#ffd700','#ff6b6b','#4ecdc4'];
+
+            // Multiple burst waves
+            for (let wave = 0; wave < 3; wave++) {
+                setTimeout(() => {
+                    const waveCount = 20 + Math.floor(Math.random() * 15);
+                    for (let i = 0; i < waveCount; i++) {
+                        const p = document.createElement('div');
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        const size = 3 + Math.random() * 7;
+                        // Mix shapes: circles and thin streaks
+                        const isStreak = Math.random() < 0.4;
+                        const w = isStreak ? (2 + Math.random() * 3) : size;
+                        const h = isStreak ? (size * 3) : size;
+                        p.style.cssText = `
+                            position:fixed;
+                            width:${w}px;height:${h}px;
+                            border-radius:${isStreak ? '2px' : '50%'};
+                            background:${color};
+                            box-shadow:0 0 6px 2px ${color}cc, 0 0 12px ${color}66;
+                            pointer-events:none;
+                            z-index:99999;
+                            left:${cx}px;top:${cy}px;
+                            transform:translate(-50%,-50%) rotate(${Math.random()*360}deg);
+                        `;
+                        document.body.appendChild(p);
+
+                        const angle = Math.random() * Math.PI * 2;
+                        const power = 60 + Math.random() * 120;
+                        const tx = cx + Math.cos(angle) * power;
+                        const ty = cy + Math.sin(angle) * power;
+                        const duration = 0.5 + Math.random() * 0.5;
+                        const gravity = 40 + Math.random() * 60;
+
+                        // Explode outward
+                        requestAnimationFrame(() => {
+                            p.style.transition = `left ${duration}s cubic-bezier(0.2,0.8,0.4,1), top ${duration}s cubic-bezier(0.2,0.9,0.4,1), opacity ${duration * 0.4}s ${duration * 0.6}s ease-in, transform ${duration}s linear`;
+                            p.style.left = tx + 'px';
+                            p.style.top = (ty + gravity) + 'px'; // gravity drop
+                            p.style.opacity = '0';
+                            p.style.transform = `translate(-50%,-50%) rotate(${Math.random()*720}deg) scale(0.2)`;
+                        });
+
+                        setTimeout(() => p.remove(), (duration + 0.1) * 1000);
+                    }
+
+                    // Central flash burst on first wave
+                    if (wave === 0) {
+                        const flash = document.createElement('div');
+                        flash.style.cssText = `
+                            position:fixed;
+                            left:${cx}px;top:${cy}px;
+                            width:10px;height:10px;
+                            border-radius:50%;
+                            background:white;
+                            box-shadow:0 0 0 0 ${colors[0]};
+                            transform:translate(-50%,-50%);
+                            pointer-events:none;
+                            z-index:99998;
+                            transition:width 0.3s ease-out, height 0.3s ease-out, opacity 0.3s 0.2s ease-out, box-shadow 0.3s ease-out;
+                        `;
+                        document.body.appendChild(flash);
+                        requestAnimationFrame(() => {
+                            flash.style.width = '80px';
+                            flash.style.height = '80px';
+                            flash.style.opacity = '0';
+                            flash.style.boxShadow = `0 0 40px 30px ${colors[0]}88`;
+                        });
+                        setTimeout(() => flash.remove(), 600);
+                    }
+                }, wave * 180);
+            }
+
+            // Glow pulse the skills button itself
+            btn.style.transition = 'box-shadow 0.1s, transform 0.1s';
+            btn.style.boxShadow = `0 0 20px 8px ${colors[0]}, 0 0 40px 16px ${colors[0]}88`;
+            btn.style.transform = 'scale(1.08)';
+            setTimeout(() => {
+                btn.style.boxShadow = 'none';
+                btn.style.transform = 'scale(1)';
+            }, 600);
+        }
+
         function notifySkillLevelup(skillName, level) {
-            const emojis = {fishing:'🎣', farming:'🌾', cooking:'🍳', prospecting:'⛏️', mining:'🪨'};
-            const emoji = emojis[skillName] || '🎉';
             const name = skillName.charAt(0).toUpperCase() + skillName.slice(1);
             const container = document.getElementById('special-notifications');
             const notif = document.createElement('div');
             notif.className = 'special-notification skill-' + skillName;
-            notif.textContent = emoji + ' ' + name + ' Level Up! Now Level ' + level + '!';
+            notif.textContent = name + ' Level Up!  Level ' + level;
             container.appendChild(notif);
             setTimeout(() => notif.remove(), 5000);
+            skillFireworks(skillName);
         }
 
         function notify(message, type = 'normal') {
@@ -333,9 +429,16 @@
             }
         }
         
+        // Map skill names to their source element IDs for speck bursts
+        const skillSourceElements = {
+            fishing:     'fishing-progress-pond',
+            farming:     'field-bar-wrap',
+            cooking:     'hearth-bar-wrap',
+            mining:      'mining-bar-wrap',
+            prospecting: 'shack-bar-container',
+        };
+
         function addSkillXP(skillName, amount) {
-            console.log('addSkillXP called:', skillName, amount);
-            
             // Ensure skills object exists
             if (!gs.skills) {
                 gs.skills = {
@@ -345,21 +448,15 @@
                     mining:  { level: 1, xp: 0, xpNeeded: 10 }
                 };
             }
-            
-            // Auto-init individual skill if missing (handles old saves)
             if (!gs.skills[skillName]) {
                 gs.skills[skillName] = { level: 1, xp: 0, xpNeeded: 10 };
             }
-            
+
             const skill = gs.skills[skillName];
-            
             skill.xp += amount;
-            console.log(skillName + ' XP:', skill.xp + '/' + skill.xpNeeded);
-            
-            // Track last skill used
             gs.lastSkillUsed = skillName;
-            
-            // Level up check — detect before updating display
+
+            // Level up check
             let leveledUp = false;
             while (skill.xp >= skill.xpNeeded) {
                 skill.xp -= skill.xpNeeded;
@@ -368,13 +465,19 @@
                 leveledUp = true;
                 notifySkillLevelup(skillName, skill.level);
             }
-            
-            // Show XP gain notification (subtle)
+
             notify('+' + amount + ' ' + skillName + ' XP');
-            
             save();
             updateSkillsUI();
-            updateLastSkillDisplay(leveledUp);
+
+            // Fire specks: 1 speck per XP, delay bar fill to match arrival
+            const sourceEl = skillSourceElements[skillName];
+            const speckDelay = 800; // ms — matches speck travel time
+            if (window.speckXPBurst && sourceEl) {
+                window.speckXPBurst(sourceEl, skillName, amount);
+            }
+            // Delay bar fill so it matches when specks arrive
+            setTimeout(() => updateLastSkillDisplay(leveledUp), speckDelay);
         }
         
         function updateSkillsUI() {
