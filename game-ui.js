@@ -546,30 +546,26 @@
             
             display.innerHTML = '';
             
-            // Water Door - requires Water Key
-            const hasWaterKey = gs.keys.water_key || false;
-            
+            // Water Door - no key required
             const waterDoor = document.createElement('div');
-            waterDoor.style.cssText = 'padding:20px;margin:15px 0;border:4px solid ' + (hasWaterKey ? '#3b82f6' : '#9ca3af') + ';border-radius:12px;background:' + (hasWaterKey ? '#dbeafe' : '#f3f4f6') + ';cursor:' + (hasWaterKey ? 'pointer' : 'not-allowed') + ';' + (hasWaterKey ? '' : 'opacity:0.6;');
+            waterDoor.style.cssText = 'padding:20px;margin:15px 0;border:4px solid #3b82f6;border-radius:12px;background:#dbeafe;cursor:pointer;';
             
             waterDoor.innerHTML = `
                 <div style="text-align:center;">
                     <div style="font-size:48px;margin-bottom:10px;">🚪</div>
-                    <div style="font-size:24px;font-weight:bold;margin-bottom:8px;color:${hasWaterKey ? '#1e40af' : '#6b7280'};">
+                    <div style="font-size:24px;font-weight:bold;margin-bottom:8px;color:#1e40af;">
                         💧 Water Door
                     </div>
                     <div style="color:#666;font-size:14px;margin-bottom:12px;">
-                        ${hasWaterKey ? 'Click to enter!' : '🔒 Requires Water Key (10% from fishing)'}
+                        Click to enter!
                     </div>
-                    ${hasWaterKey ? '<div style="background:#3b82f6;color:#fff;padding:10px 20px;border-radius:8px;display:inline-block;font-weight:bold;">ENTER →</div>' : ''}
+                    <div style="background:#3b82f6;color:#fff;padding:10px 20px;border-radius:8px;display:inline-block;font-weight:bold;">ENTER →</div>
                 </div>
             `;
             
-            if (hasWaterKey) {
-                waterDoor.onclick = () => {
-                    switchRoom('giant-slime-room');
-                };
-            }
+            waterDoor.onclick = () => {
+                switchRoom('giant-slime-room');
+            };
             
             display.appendChild(waterDoor);
         }
