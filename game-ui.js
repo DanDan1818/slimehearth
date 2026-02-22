@@ -567,8 +567,7 @@
             
             if (hasWaterKey) {
                 waterDoor.onclick = () => {
-                    notify('🚪 Water Door coming soon!');
-                    // TODO: Open water door area
+                    switchRoom('giant-slime-room');
                 };
             }
             

@@ -339,8 +339,7 @@
                 basketCoins.textContent = formatCoins(gs.coins);
             }
             updateSkillsUI();
-            
-            // Update slime name display
+            updateGiantSlimeUI();
             const slimeNameDisplay = document.getElementById('slime-name-display');
             if (slimeNameDisplay && gs.slimeName) {
                 slimeNameDisplay.textContent = gs.slimeName;
@@ -460,6 +459,17 @@
             setTimeout(() => updateLastSkillDisplay(leveledUp), speckDelay);
         }
         
+        function updateGiantSlimeUI() {
+            if (!gs.giantSlime) gs.giantSlime = { fed: 0, needed: 100 };
+            const { fed, needed } = gs.giantSlime;
+            const fedEl = document.getElementById('giant-slime-fed');
+            const neededEl = document.getElementById('giant-slime-needed');
+            const bar = document.getElementById('giant-slime-bar');
+            if (fedEl) fedEl.textContent = fed;
+            if (neededEl) neededEl.textContent = needed;
+            if (bar) bar.style.height = Math.min(100, (fed / needed) * 100) + '%';
+        }
+
         function updateSkillsUI() {
             if (!gs.skills) return; // Safety check
             
@@ -505,7 +515,7 @@
                 'fishing': '#4dd0e1',
                 'farming': '#8bc34a',
                 'cooking': '#ff9800',
-                'mining':  'linear-gradient(90deg,#78350f,#a16207)',
+                'mining':  '#78716c',
                 'prospecting': '#a78bfa'
             };
             const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
@@ -794,6 +804,10 @@
         
         document.getElementById('nav-home').onclick = () => switchRoom('home-room');
         document.getElementById('nav-area').onclick = () => switchRoom('area-room');
+        
+        // Giant Slime room back button
+        const leaveGiantSlimeBtn = document.getElementById('leave-giant-slime');
+        if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('adventure-room');
         document.getElementById('nav-shop').onclick = () => {
             switchRoom('shop-room');
             displayShopGrid();
@@ -1279,6 +1293,62 @@
                 
                 if (mouth) {
                     mouth.style.opacity = foodNearby ? '1' : '0';
+                }
+            });
+
+            // Giant Slime feeding mechanic - only in giant-slime-room
+            Events.on(basketEngine, 'beforeUpdate', () => {
+                const giantRoom = document.getElementById('giant-slime-room');
+                if (!giantRoom || !giantRoom.classList.contains('active')) return;
+
+                const targetEl = document.getElementById('giant-slime-target');
+                const basketCanvas = document.getElementById('basket-canvas');
+                if (!targetEl || !basketCanvas) return;
+
+                const targetRect = targetEl.getBoundingClientRect();
+                const canvasRect = basketCanvas.getBoundingClientRect();
+
+                // Target center in canvas coords
+                const targetX = (targetRect.left + targetRect.width / 2) - canvasRect.left;
+                const targetY = (targetRect.top + targetRect.height / 2) - canvasRect.top;
+
+                for (let i = basketBodies.length - 1; i >= 0; i--) {
+                    const b = basketBodies[i];
+                    if (!b || !b.itemId) continue;
+                    const itemData = ITEM_DATA[b.itemId];
+                    if (!itemData || !itemData.feedable) continue;
+
+                    const dist = Math.sqrt((b.position.x - targetX) ** 2 + (b.position.y - targetY) ** 2);
+                    if (dist < 55) {
+                        // Consume item
+                        World.remove(basketEngine.world, b);
+                        basketBodies.splice(i, 1);
+                        delete gs.inventory[b.itemKey];
+
+                        const food = itemData.foodValue || 1;
+
+                        // Init giant slime state if needed
+                        if (!gs.giantSlime) gs.giantSlime = { fed: 0, needed: 100 };
+                        gs.giantSlime.fed += food;
+
+                        // Level up: every `needed` food = next tier
+                        while (gs.giantSlime.fed >= gs.giantSlime.needed) {
+                            gs.giantSlime.fed -= gs.giantSlime.needed;
+                            gs.giantSlime.needed = Math.floor(gs.giantSlime.needed * 1.5);
+                            notify('🌑 The Giant Slime grows stronger!', 'achievement');
+                        }
+
+                        // Play eat sound
+                        const eatSound1 = document.getElementById('eat-sound-1');
+                        const eatSound2 = document.getElementById('eat-sound-2');
+                        const randomSound = Math.random() < 0.5 ? eatSound1 : eatSound2;
+                        if (randomSound) { randomSound.currentTime = 0; randomSound.volume = 0.4; randomSound.play().catch(() => {}); }
+
+                        notify('+' + food + ' 🍖 fed!');
+                        updateGiantSlimeUI();
+                        save();
+                        updateInventoryCounter();
+                    }
                 }
             });
             
