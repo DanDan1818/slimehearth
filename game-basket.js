@@ -738,6 +738,7 @@
                 overlay.style.right = (window.innerWidth - btnRect.right) + 'px';
                 overlay.style.top = uiRect.bottom + 'px';
                 overlay.style.display = 'block';
+                overlay.title = `w:${Math.round(btnRect.width)} l:${Math.round(btnRect.left)} r:${Math.round(btnRect.right)} winW:${window.innerWidth}`;
             } else {
                 overlay.style.display = 'none';
             }
