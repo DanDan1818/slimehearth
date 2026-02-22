@@ -124,7 +124,7 @@
             setTimeout(() => notif.remove(), 3000);
         }
         
-        function skillFireworks(skillName) {
+        window.skillFireworks = function(skillName) {
             const btn = document.getElementById('skills-btn-wrap');
             if (!btn) return;
             const rect = btn.getBoundingClientRect();
@@ -222,6 +222,7 @@
         }
 
         function notifySkillLevelup(skillName, level) {
+            console.log('LEVEL UP:', skillName, level);
             const name = skillName.charAt(0).toUpperCase() + skillName.slice(1);
             const container = document.getElementById('special-notifications');
             const notif = document.createElement('div');
@@ -229,7 +230,7 @@
             notif.textContent = name + ' Level Up!  Level ' + level;
             container.appendChild(notif);
             setTimeout(() => notif.remove(), 5000);
-            skillFireworks(skillName);
+            if (window.skillFireworks) window.skillFireworks(skillName);
         }
 
         function notify(message, type = 'normal') {
@@ -552,14 +553,14 @@
                         xpBar.style.width = '0%';
                         if (xpText) xpText.textContent = '0 / ' + skill.xpNeeded + ' XP';
                         setTimeout(() => {
-                            xpBar.style.transition = 'width 0.5s ease-out';
+                            xpBar.style.transition = 'width 3s ease-out';
                             xpBar.style.width = targetPct + '%';
                             updateXpText();
                         }, 350);
                     });
                 });
             } else {
-                xpBar.style.transition = 'width 0.4s ease-out';
+                xpBar.style.transition = 'width 3s ease-out';
                 xpBar.style.width = targetPct + '%';
                 updateXpText();
             }
