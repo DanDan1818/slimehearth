@@ -799,7 +799,7 @@
         }
         
         .special-notification {
-            background: linear-gradient(135deg, #16a34a, #22c55e);
+            background: linear-gradient(135deg, #dc2626, #ef4444);
             color: #fff;
             padding: 8px 16px;
             margin-bottom: 5px;
@@ -815,9 +815,20 @@
             font-family: 'Righteous', sans-serif;
             letter-spacing: 0.5px;
         }
-        
+        .special-notification.skill-fishing  { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+        .special-notification.skill-farming  { background: linear-gradient(135deg, #15803d, #22c55e); }
+        .special-notification.skill-mining   { background: linear-gradient(135deg, #78350f, #a16207); }
+        .special-notification.skill-prospecting { background: linear-gradient(135deg, #6b21a8, #a855f7); }
+        .special-notification.skill-cooking  { background: linear-gradient(135deg, #c2410c, #f97316); }
+        @keyframes rainbowShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         .special-notification.achievement {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            background: linear-gradient(135deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #a855f7);
+            background-size: 300% 300%;
+            animation: popIn 0.3s ease-out, rainbowShift 2s ease infinite, fadeOut 0.4s 4.6s;
         }
         
         @keyframes glow {

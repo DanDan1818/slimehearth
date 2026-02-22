@@ -124,6 +124,17 @@
             setTimeout(() => notif.remove(), 3000);
         }
         
+        function notifySkillLevelup(skillName, level) {
+            const emojis = {fishing:'🎣', farming:'🌾', cooking:'🍳', prospecting:'⛏️', mining:'🪨'};
+            const emoji = emojis[skillName] || '🎉';
+            const name = skillName.charAt(0).toUpperCase() + skillName.slice(1);
+            const container = document.getElementById('special-notifications');
+            const notif = document.createElement('div');
+            notif.className = 'special-notification skill-' + skillName;
+            notif.textContent = emoji + ' ' + name + ' Level Up! Now Level ' + level + '!';
+            container.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
         function notify(message, type = 'normal') {
             // Level-ups and achievements go to special top-center container
             if (type === 'levelup' || type === 'achievement') {
@@ -354,7 +365,7 @@
                 skill.level++;
                 skill.xpNeeded = Math.floor(skill.xpNeeded * 1.2);
                 leveledUp = true;
-                notify('🎉 ' + skillName.charAt(0).toUpperCase() + skillName.slice(1) + ' Level Up! Now Level ' + skill.level + '!', 'levelup');
+                notifySkillLevelup(skillName, skill.level);
             }
             
             // Show XP gain notification (subtle)
