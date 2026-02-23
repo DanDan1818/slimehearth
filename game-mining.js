@@ -533,7 +533,7 @@
             // Shack button handlers
             document.getElementById('shack-geode-slot').onclick = showShackInventoryMenu;
             document.getElementById('crack-geode-btn').onclick = crackGeode;
-            document.getElementById('leave-shack').onclick = () => switchRoom('area-room');
+            document.getElementById('leave-shack').onclick = () => switchRoom('forge-menu-room');
             
             // Room button handlers
             document.getElementById('goto-wardrobe').onclick = () => {

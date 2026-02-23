@@ -460,11 +460,11 @@
         }
         
         function updateGiantSlimeUI() {
-            if (!gs.giantSlime) gs.giantSlime = { fed: 0, needed: 100 };
-            const { fed, needed } = gs.giantSlime;
-            const fedEl = document.getElementById('giant-slime-fed');
-            const neededEl = document.getElementById('giant-slime-needed');
-            const bar = document.getElementById('giant-slime-bar');
+            if (!gs.furnace) gs.furnace = { fed: 0, needed: 100 };
+            const { fed, needed } = gs.furnace;
+            const fedEl = document.getElementById('furnace-fed');
+            const neededEl = document.getElementById('furnace-needed');
+            const bar = document.getElementById('furnace-bar');
             if (fedEl) fedEl.textContent = fed;
             if (neededEl) neededEl.textContent = needed;
             if (bar) bar.style.height = Math.min(100, (fed / needed) * 100) + '%';
@@ -809,12 +809,12 @@
         document.getElementById('nav-area').onclick = () => switchRoom('area-room');
         
         // Giant Slime room back button
-        const leaveGiantSlimeBtn = document.getElementById('leave-giant-slime');
+        const leaveGiantSlimeBtn = document.getElementById('leave-furnace');
         if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('forge-menu-room');
 
         // Forge menu nav
-        const gotoSmithingBtn = document.getElementById('goto-smithing');
-        if (gotoSmithingBtn) gotoSmithingBtn.onclick = () => switchRoom('smithing-room');
+        const gotoSmithingBtn = document.getElementById('goto-furnace');
+        if (gotoSmithingBtn) gotoSmithingBtn.onclick = () => switchRoom('furnace-room');
         const backToForgeBtn = document.getElementById('back-to-area-forge');
         if (backToForgeBtn) backToForgeBtn.onclick = () => switchRoom('area-room');
         document.getElementById('nav-shop').onclick = () => {
@@ -1305,55 +1305,53 @@
                 }
             });
 
-            // Giant Slime feeding mechanic - only in giant-slime-room
+            // Giant Slime feeding mechanic - only in furnace-room
             Events.on(basketEngine, 'beforeUpdate', () => {
-                const giantRoom = document.getElementById('smithing-room');
+                const giantRoom = document.getElementById('furnace-room');
                 if (!giantRoom || !giantRoom.classList.contains('active')) return;
 
-                const targetEl = document.getElementById('giant-slime-target');
+                const targetEl = document.getElementById('furnace-target');
                 const basketCanvas = document.getElementById('basket-canvas');
                 if (!targetEl || !basketCanvas) return;
 
                 const targetRect = targetEl.getBoundingClientRect();
                 const canvasRect = basketCanvas.getBoundingClientRect();
 
-                // Target center in canvas coords
                 const targetX = (targetRect.left + targetRect.width / 2) - canvasRect.left;
                 const targetY = (targetRect.top + targetRect.height / 2) - canvasRect.top;
 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const b = basketBodies[i];
                     if (!b || !b.itemId) continue;
-                    const itemData = ITEM_DATA[b.itemId];
-                    if (!itemData || !itemData.feedable) continue;
+
+                    // Furnace only accepts coal (fuel items)
+                    if (b.itemId !== 'coal') continue;
 
                     const dist = Math.sqrt((b.position.x - targetX) ** 2 + (b.position.y - targetY) ** 2);
                     if (dist < 55) {
-                        // Consume item
+                        // Consume coal
                         World.remove(basketEngine.world, b);
                         basketBodies.splice(i, 1);
                         delete gs.inventory[b.itemKey];
 
-                        const food = itemData.foodValue || 1;
+                        const fuelValue = 5; // Coal = 5 fuel
 
-                        // Init giant slime state if needed
-                        if (!gs.giantSlime) gs.giantSlime = { fed: 0, needed: 100 };
-                        gs.giantSlime.fed += food;
+                        // Init furnace state if needed
+                        if (!gs.furnace) gs.furnace = { fed: 0, needed: 100 };
+                        gs.furnace.fed += fuelValue;
 
-                        // Level up: every `needed` food = next tier
-                        while (gs.giantSlime.fed >= gs.giantSlime.needed) {
-                            gs.giantSlime.fed -= gs.giantSlime.needed;
-                            gs.giantSlime.needed = Math.floor(gs.giantSlime.needed * 1.5);
-                            notify('🌑 The Giant Slime grows stronger!', 'achievement');
+                        // Level up: every `needed` fuel = next tier
+                        while (gs.furnace.fed >= gs.furnace.needed) {
+                            gs.furnace.fed -= gs.furnace.needed;
+                            gs.furnace.needed = Math.floor(gs.furnace.needed * 1.5);
+                            notify('🔥 Furnace fully fueled!', 'achievement');
                         }
 
-                        // Play eat sound
-                        const eatSound1 = document.getElementById('eat-sound-1');
-                        const eatSound2 = document.getElementById('eat-sound-2');
-                        const randomSound = Math.random() < 0.5 ? eatSound1 : eatSound2;
-                        if (randomSound) { randomSound.currentTime = 0; randomSound.volume = 0.4; randomSound.play().catch(() => {}); }
+                        // Play cook sound
+                        const cookSound = document.getElementById('cook-sound');
+                        if (cookSound) { cookSound.currentTime = 0; cookSound.volume = 0.4; cookSound.play().catch(() => {}); }
 
-                        notify('+' + food + ' 🍖 fed!');
+                        notify('+' + fuelValue + ' 🔥 Fuel!');
                         updateGiantSlimeUI();
                         save();
                         updateInventoryCounter();
