@@ -377,7 +377,7 @@
             
             if (slimeXPBar) {
                 const percent = (gs.slimeXP / gs.slimeXPNeeded) * 100;
-                slimeXPBar.style.width = percent + '%';
+                slimeXPBar.style.height = percent + '%';
             }
             if (slimeXPText) slimeXPText.textContent = gs.slimeXP;
             if (slimeXPNeededText) slimeXPNeededText.textContent = gs.slimeXPNeeded;
@@ -469,8 +469,65 @@
             setTimeout(() => updateLastSkillDisplay(leveledUp), speckDelay);
         }
         
+        function spawnLiquidDrop(barWrapId, color) {
+            const wrap = document.getElementById(barWrapId);
+            if (!wrap) return;
+
+            // Number of drops per splash
+            const count = 2 + Math.floor(Math.random() * 2);
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    const size = 8 + Math.floor(Math.random() * 8);
+                    const xPos = 10 + Math.random() * (wrap.offsetWidth - size - 10);
+                    const dur = 0.5 + Math.random() * 0.35;
+                    drop.style.cssText = `
+                        position:absolute;
+                        left:${xPos}px;
+                        top:-${size}px;
+                        width:${size}px;
+                        height:${size * 1.6}px;
+                        border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+                        background:${color};
+                        opacity:0.9;
+                        pointer-events:none;
+                        z-index:10;
+                        animation:liquidDrop ${dur}s ease-in forwards;
+                        box-shadow:0 0 4px ${color}88;
+                    `;
+                    wrap.appendChild(drop);
+
+                    // Splash at the fill surface level
+                    const fillEl = wrap.querySelector('[id$="-bar"]') || wrap.firstElementChild;
+                    const fillPct = fillEl ? parseFloat(fillEl.style.height) / 100 : 0;
+                    const splashY = wrap.offsetHeight * (1 - fillPct) - 4;
+
+                    setTimeout(() => {
+                        drop.remove();
+                        // spawn splash ring at fill surface
+                        const splash = document.createElement('div');
+                        splash.style.cssText = `
+                            position:absolute;
+                            left:${xPos - size}px;
+                            top:${splashY}px;
+                            width:${size * 2}px;
+                            height:${size * 0.5}px;
+                            border-radius:50%;
+                            background:${color};
+                            opacity:0.7;
+                            pointer-events:none;
+                            z-index:10;
+                            animation:liquidSplash 0.35s ease-out forwards;
+                        `;
+                        wrap.appendChild(splash);
+                        setTimeout(() => splash.remove(), 350);
+                    }, dur * 1000);
+                }, i * 80);
+            }
+        }
+
         function updateFurnaceUI() {
-            if (!gs.furnace) gs.furnace = { fed: 0, needed: 100 };
+            if (!gs.furnace) gs.furnace = { fed: 0, needed: 10 };
             const { fed, needed } = gs.furnace;
             const fedEl = document.getElementById('furnace-fed');
             const neededEl = document.getElementById('furnace-needed');
@@ -1387,24 +1444,31 @@
                         basketBodies.splice(i, 1);
                         delete gs.inventory[b.itemKey];
 
-                        const fuelValue = 5; // Coal = 5 fuel
-
                         // Init furnace state if needed
-                        if (!gs.furnace) gs.furnace = { fed: 0, needed: 100 };
-                        gs.furnace.fed += fuelValue;
+                        if (!gs.furnace) gs.furnace = { fed: 0, needed: 10 };
 
-                        // Level up: every `needed` fuel = next tier
-                        while (gs.furnace.fed >= gs.furnace.needed) {
-                            gs.furnace.fed -= gs.furnace.needed;
-                            gs.furnace.needed = Math.floor(gs.furnace.needed * 1.5);
-                            notify('🔥 Furnace fully fueled!', 'achievement');
+                        // Cap at max — no overflow/reset
+                        if (gs.furnace.fed < gs.furnace.needed) {
+                            gs.furnace.fed = Math.min(gs.furnace.needed, gs.furnace.fed + 1);
+                            if (gs.furnace.fed >= gs.furnace.needed) {
+                                notify('🔥 Furnace fully fueled!', 'achievement');
+                            } else {
+                                notify('+1 🔥 Fuel!');
+                            }
+                        } else {
+                            notify('🔥 Fuel tank full!');
                         }
+
+                        // +1 Smelting XP per coal
+                        addSkillXP('smelting', 1);
+
+                        // Liquid drop effect on fuel bar
+                        spawnLiquidDrop('furnace-bar-wrap', '#444');
 
                         // Play cook sound
                         const cookSound = document.getElementById('cook-sound');
                         if (cookSound) { cookSound.currentTime = 0; cookSound.volume = 0.4; cookSound.play().catch(() => {}); }
 
-                        notify('+' + fuelValue + ' 🔥 Fuel!');
                         updateFurnaceUI();
                         save();
                         updateInventoryCounter();
@@ -1414,10 +1478,10 @@
 
             // Ore smelting mechanic - only in furnace-room
             const ORE_SMELT = {
-                'copper_ore': { name: 'Copper', icon: '🟤', color: '#b45309', colorLight: '#d97706', output: 'copper_bar', needed: 10 },
-                'iron_ore':   { name: 'Iron',   icon: '⚙️',  color: '#6b7280', colorLight: '#9ca3af', output: 'iron_bar',   needed: 10 },
-                'silver_ore': { name: 'Silver', icon: '🔘',  color: '#9ca3af', colorLight: '#e5e7eb', output: 'silver_bar', needed: 10 },
-                'gold_ore':   { name: 'Gold',   icon: '🌟',  color: '#d97706', colorLight: '#fbbf24', output: 'gold_bar',   needed: 10 },
+                'copper_ore': { name: 'Copper', icon: '🟤', color: '#b45309', colorLight: '#d97706', output: 'copper_bar', needed: 5, xpPer: 2,  xpBar: 80  },
+                'iron_ore':   { name: 'Iron',   icon: '⚙️',  color: '#6b7280', colorLight: '#9ca3af', output: 'iron_bar',   needed: 5, xpPer: 3,  xpBar: 120 },
+                'silver_ore': { name: 'Silver', icon: '🔘',  color: '#9ca3af', colorLight: '#e5e7eb', output: 'silver_bar', needed: 5, xpPer: 4,  xpBar: 250 },
+                'gold_ore':   { name: 'Gold',   icon: '🌟',  color: '#d97706', colorLight: '#fbbf24', output: 'gold_bar',   needed: 5, xpPer: 10, xpBar: 500 },
             };
 
             Events.on(basketEngine, 'beforeUpdate', () => {
@@ -1434,7 +1498,7 @@
                 const targetY = (targetRect.top + targetRect.height / 2) - canvasRect.top;
 
                 // Init ore smelt state
-                if (!gs.oreSmelt) gs.oreSmelt = { oreType: null, fed: 0, needed: 10 };
+                if (!gs.oreSmelt) gs.oreSmelt = { oreType: null, fed: 0, needed: 5 };
 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const b = basketBodies[i];
@@ -1447,6 +1511,13 @@
 
                     const dist = Math.sqrt((b.position.x - targetX) ** 2 + (b.position.y - targetY) ** 2);
                     if (dist < 55) {
+                        // Check fuel
+                        if (!gs.furnace) gs.furnace = { fed: 0, needed: 10 };
+                        if (gs.furnace.fed <= 0) {
+                            notify('🔥 No fuel! Add Coal first.');
+                            continue;
+                        }
+
                         // Lock ore type
                         if (!gs.oreSmelt.oreType) {
                             gs.oreSmelt.oreType = b.itemId;
@@ -1459,13 +1530,23 @@
                         basketBodies.splice(i, 1);
                         delete gs.inventory[b.itemKey];
 
+                        // Consume 2 fuel
+                        gs.furnace.fed = Math.max(0, gs.furnace.fed - 2);
+                        updateFurnaceUI();
+
                         gs.oreSmelt.fed += 1;
 
                         // Play cook sound
                         const cookSound = document.getElementById('cook-sound');
                         if (cookSound) { cookSound.currentTime = 0; cookSound.volume = 0.3; cookSound.play().catch(() => {}); }
 
-                        notify('+1 ' + oreData.icon + ' ' + oreData.name + ' Ore smelting...');
+                        // Per-ore XP
+                        addSkillXP('smelting', oreData.xpPer);
+
+                        // Liquid drop effect on ore bar
+                        spawnLiquidDrop('ore-bar-wrap', oreData.colorLight);
+
+                        notify('+1 ' + oreData.icon + ' ' + oreData.name + ' Ore smelting... (+' + oreData.xpPer + ' XP)');
                         updateOreBarUI();
 
                         // Check if bar is full → produce bar item
@@ -1474,7 +1555,7 @@
                             notify('✨ ' + oreData.name + ' Bar crafted!', 'achievement');
                             const skillLvlSound = document.getElementById('skill-levelup-sound');
                             if (skillLvlSound) { skillLvlSound.currentTime = 0; skillLvlSound.play().catch(() => {}); }
-                            addSkillXP('smelting', 10);
+                            addSkillXP('smelting', oreData.xpBar);
                             // Reset ore bar
                             gs.oreSmelt.oreType = null;
                             gs.oreSmelt.fed = 0;
