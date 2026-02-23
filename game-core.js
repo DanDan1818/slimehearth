@@ -165,12 +165,12 @@
             'fish7': './slimehearth-assets/images/fish7.png',
             'fish8': './slimehearth-assets/images/fish8.png',
             'gem': './slimehearth-assets/images/gem1.png',
-            'emerald':  './slimehearth-assets/images/gem1.png',
+            'emerald':  './slimehearth-assets/images/gem2.png',
             'ruby':     './slimehearth-assets/images/gem1.png',
             'sapphire': './slimehearth-assets/images/gem1.png',
             'amethyst': './slimehearth-assets/images/gem1.png',
             'topaz':    './slimehearth-assets/images/gem1.png',
-            'diamond':  './slimehearth-assets/images/gem1.png',
+            'diamond':  './slimehearth-assets/images/gem3.png',
             'small_geode':   './slimehearth-assets/images/geode1.png',
             'medium_geode':  './slimehearth-assets/images/geode1.png',
             'large_geode':   './slimehearth-assets/images/geode1.png',
@@ -188,10 +188,10 @@
             'rock': './slimehearth-assets/images/rock1.png',
             'ore':         './slimehearth-assets/images/ore1.png',
             'copper_ore':  './slimehearth-assets/images/ore1.png',
-            'coal':        './slimehearth-assets/images/ore1.png',
-            'iron_ore':    './slimehearth-assets/images/ore1.png',
+            'coal':        './slimehearth-assets/images/fuel1.png',
+            'iron_ore':    './slimehearth-assets/images/ore3.png',
             'silver_ore':  './slimehearth-assets/images/ore1.png',
-            'gold_ore':    './slimehearth-assets/images/ore1.png',
+            'gold_ore':    './slimehearth-assets/images/ore2.png',
             'lily_pad': './slimehearth-assets/images/trash1.png',
             'frog_blue':   './slimehearth-assets/images/frog1.png',
             'frog_yellow': './slimehearth-assets/images/frog2.png',
@@ -599,7 +599,7 @@
                 crackable: false
             },
             'gem': {
-                name: 'Emerald', emoji: '💚', image: 'gem1.png',
+                name: 'Emerald', emoji: '💚', image: 'gem2.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A sparkling green emerald.',
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
@@ -635,7 +635,7 @@
                 foodValue: 0, sellValue: 200, cookable: false, feedable: false
             },
             'diamond': {
-                name: 'Diamond', emoji: '💎', image: 'gem1.png',
+                name: 'Diamond', emoji: '💎', image: 'gem3.png',
                 rarity: 'Rainbow', rarityColor: 'rainbow',
                 description: 'An impossibly perfect diamond. Worth a fortune.',
                 foodValue: 0, sellValue: 1000, cookable: false, feedable: false
@@ -653,13 +653,13 @@
                 foodValue: 0, sellValue: 10, cookable: false, feedable: false
             },
             'coal': {
-                name: 'Coal', emoji: '🖤', image: 'ore1.png',
+                name: 'Coal', emoji: '🖤', image: 'fuel1.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A lump of coal. Burns well.',
                 foodValue: 0, sellValue: 6, cookable: false, feedable: false
             },
             'iron_ore': {
-                name: 'Iron Ore', emoji: '⚙️', image: 'ore1.png',
+                name: 'Iron Ore', emoji: '⚙️', image: 'ore3.png',
                 rarity: 'Rare', rarityColor: '#2563eb',
                 description: 'Dense iron ore from Depth 1 and beyond.',
                 foodValue: 0, sellValue: 35, cookable: false, feedable: false
@@ -671,7 +671,7 @@
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
             },
             'gold_ore': {
-                name: 'Gold Ore', emoji: '🌟', image: 'ore1.png',
+                name: 'Gold Ore', emoji: '🌟', image: 'ore2.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'Precious gold ore found only at Depth 5.',
                 foodValue: 0, sellValue: 300, cookable: false, feedable: false

@@ -210,6 +210,8 @@
             container.appendChild(notif);
             setTimeout(() => notif.remove(), 5000);
             if (window.skillFireworks) window.skillFireworks(skillName);
+            const skillLevelupSound = document.getElementById('skill-levelup-sound');
+            if (skillLevelupSound) { skillLevelupSound.currentTime = 0; skillLevelupSound.play().catch(() => {}); }
         }
 
         function notify(message, type = 'normal') {
