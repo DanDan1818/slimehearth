@@ -679,7 +679,7 @@
             // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
             const basketContainer = document.getElementById('basket-container');
             const basketCanvas = document.getElementById('basket-canvas');
-            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room'];
+            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'forge-menu-room'];
             if (basketContainer) {
                 if (noBasketRooms.includes(roomId)) {
                     basketContainer.style.pointerEvents = 'none';
@@ -810,7 +810,13 @@
         
         // Giant Slime room back button
         const leaveGiantSlimeBtn = document.getElementById('leave-giant-slime');
-        if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('area-room');
+        if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('forge-menu-room');
+
+        // Forge menu nav
+        const gotoSmithingBtn = document.getElementById('goto-smithing');
+        if (gotoSmithingBtn) gotoSmithingBtn.onclick = () => switchRoom('smithing-room');
+        const backToForgeBtn = document.getElementById('back-to-area-forge');
+        if (backToForgeBtn) backToForgeBtn.onclick = () => switchRoom('area-room');
         document.getElementById('nav-shop').onclick = () => {
             switchRoom('shop-room');
             displayShopGrid();
@@ -1301,7 +1307,7 @@
 
             // Giant Slime feeding mechanic - only in giant-slime-room
             Events.on(basketEngine, 'beforeUpdate', () => {
-                const giantRoom = document.getElementById('giant-slime-room');
+                const giantRoom = document.getElementById('smithing-room');
                 if (!giantRoom || !giantRoom.classList.contains('active')) return;
 
                 const targetEl = document.getElementById('giant-slime-target');

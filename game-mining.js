@@ -288,7 +288,7 @@
             
             
             document.getElementById('goto-adventure').onclick = () => {
-                switchRoom('giant-slime-room');
+                switchRoom('forge-menu-room');
             };
             
             document.getElementById('goto-farming-menu').onclick = () => switchRoom('farming-menu-room');
