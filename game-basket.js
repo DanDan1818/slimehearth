@@ -132,12 +132,13 @@
             const cy = rect.top + rect.height / 2;
 
             const skillColors = {
-                fishing:     ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe','#e0f2fe'],
-                farming:     ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0','#dcfce7'],
-                cooking:     ['#fdba74','#fb923c','#ea580c','#fef08a','#fde68a','#fff7ed'],
-                mining:      ['#d4a96a','#a16207','#78350f','#fbbf24','#fde68a','#d97706'],
-                prospecting: ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff','#e9d5ff'],
-                smelting:    ['#fed7aa','#fb923c','#ea580c','#92400e','#fef3c7','#ffedd5'],
+                fishing:      ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe','#e0f2fe'],
+                farming:      ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0','#dcfce7'],
+                cooking:      ['#fdba74','#fb923c','#ea580c','#fef08a','#fde68a','#fff7ed'],
+                mining:       ['#d4a96a','#a16207','#78350f','#fbbf24','#fde68a','#d97706'],
+                prospecting:  ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff','#e9d5ff'],
+                smelting:     ['#fed7aa','#fb923c','#ea580c','#92400e','#fef3c7','#ffedd5'],
+                jewelcrafting:['#f0abfc','#e879f9','#a855f7','#7c3aed','#fde68a','#ffd700'],
             };
             const colors = skillColors[skillName] || ['#fff','#ffd700','#ff6b6b','#4ecdc4'];
 
@@ -277,17 +278,13 @@
                         farming: { level: 1, xp: 0, xpNeeded: 10 },
                         cooking: { level: 1, xp: 0, xpNeeded: 10 },
                         mining:  { level: 1, xp: 0, xpNeeded: 10 },
-                        smelting: { level: 1, xp: 0, xpNeeded: 10 }
+                        smelting: { level: 1, xp: 0, xpNeeded: 10 },
+                        jewelcrafting: { level: 1, xp: 0, xpNeeded: 10 }
                     };
                 }
-                // Patch old saves missing mining
-                if (!gs.skills.mining) {
-                    gs.skills.mining = { level: 1, xp: 0, xpNeeded: 10 };
-                }
-                // Patch old saves missing smelting
-                if (!gs.skills.smelting) {
-                    gs.skills.smelting = { level: 1, xp: 0, xpNeeded: 10 };
-                }
+                if (!gs.skills.mining)        gs.skills.mining        = { level: 1, xp: 0, xpNeeded: 10 };
+                if (!gs.skills.smelting)      gs.skills.smelting      = { level: 1, xp: 0, xpNeeded: 10 };
+                if (!gs.skills.jewelcrafting) gs.skills.jewelcrafting = { level: 1, xp: 0, xpNeeded: 10 };
                 
                 // Initialize bag upgrade system (old saves)
                 if (gs.maxInventory === undefined) {
@@ -427,14 +424,14 @@
         };
 
         function addSkillXP(skillName, amount) {
-            // Ensure skills object exists
             if (!gs.skills) {
                 gs.skills = {
                     fishing: { level: 1, xp: 0, xpNeeded: 10 },
                     farming: { level: 1, xp: 0, xpNeeded: 10 },
                     cooking: { level: 1, xp: 0, xpNeeded: 10 },
                     mining:  { level: 1, xp: 0, xpNeeded: 10 },
-                    smelting: { level: 1, xp: 0, xpNeeded: 10 }
+                    smelting: { level: 1, xp: 0, xpNeeded: 10 },
+                    jewelcrafting: { level: 1, xp: 0, xpNeeded: 10 }
                 };
             }
             if (!gs.skills[skillName]) {
@@ -581,7 +578,7 @@
         function updateSkillsUI() {
             if (!gs.skills) return; // Safety check
             
-            ['fishing', 'farming', 'cooking', 'mining', 'smelting'].forEach(skillName => {
+            ['fishing', 'farming', 'cooking', 'mining', 'smelting', 'jewelcrafting'].forEach(skillName => {
                 const skill = gs.skills[skillName];
                 if (!skill) return; // Safety check
                 
@@ -608,12 +605,9 @@
             if (!skill) return;
             
             const skillIcons = {
-                'fishing': '🎣',
-                'farming': '🌾',
-                'cooking': '🍳',
-                'mining':  '⛏️',
-                'prospecting': '⛏️',
-                'smelting': '🔥'
+                'fishing': '🎣', 'farming': '🌾', 'cooking': '🍳',
+                'mining': '⛏️', 'prospecting': '⛏️',
+                'smelting': '🔥', 'jewelcrafting': '💍'
             };
             
             const icon = skillIcons[gs.lastSkillUsed] || '';
@@ -621,12 +615,9 @@
             display.textContent = `${icon} ${name} Lv ${skill.level}`;
             
             const skillColors = {
-                'fishing': '#4dd0e1',
-                'farming': '#8bc34a',
-                'cooking': '#ff9800',
-                'mining':  '#78716c',
-                'prospecting': '#a78bfa',
-                'smelting': '#f97316'
+                'fishing': '#4dd0e1', 'farming': '#8bc34a', 'cooking': '#ff9800',
+                'mining': '#78716c', 'prospecting': '#a78bfa',
+                'smelting': '#f97316', 'jewelcrafting': '#c084fc'
             };
             const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
             
@@ -1483,6 +1474,11 @@
                 'silver_ore': { name: 'Silver', icon: '🔘',  color: '#9ca3af', colorLight: '#e5e7eb', output: 'silver_bar', needed: 5, xpPer: 4,  xpBar: 250 },
                 'gold_ore':   { name: 'Gold',   icon: '🌟',  color: '#d97706', colorLight: '#fbbf24', output: 'gold_bar',   needed: 5, xpPer: 10, xpBar: 500 },
             };
+
+            // Jewelcrafting gem drop detection
+            Events.on(basketEngine, 'beforeUpdate', () => {
+                if (window.jcCheckDrop) window.jcCheckDrop(basketBodies, basketEngine, World);
+            });
 
             Events.on(basketEngine, 'beforeUpdate', () => {
                 const furnaceRoom = document.getElementById('furnace-room');

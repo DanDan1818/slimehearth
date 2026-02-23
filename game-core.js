@@ -138,6 +138,12 @@
             'amethyst': '#a855f7',
             'topaz':    '#f59e0b',
             'diamond':  '#e0f2fe',
+            'polished_emerald':  '#34d399',
+            'polished_ruby':     '#f87171',
+            'polished_sapphire': '#60a5fa',
+            'polished_amethyst': '#c084fc',
+            'polished_topaz':    '#fbbf24',
+            'polished_diamond':  '#bfdbfe',
             'ore':         '#cd7f32',
             'copper_ore':  '#cd7f32',
             'coal':        '#374151',
@@ -643,6 +649,42 @@
                 rarity: 'Rainbow', rarityColor: 'rainbow',
                 description: 'An impossibly perfect diamond. Worth a fortune.',
                 foodValue: 0, sellValue: 1000, cookable: false, feedable: false
+            },
+            'polished_emerald': {
+                name: 'Polished Emerald', emoji: '💚', image: 'gem2.png',
+                rarity: 'Legendary', rarityColor: '#10b981',
+                description: 'A masterfully faceted emerald. Catches the light beautifully.',
+                foodValue: 0, sellValue: 300, cookable: false, feedable: false
+            },
+            'polished_ruby': {
+                name: 'Polished Ruby', emoji: '❤️‍🔥', image: 'gem4.png',
+                rarity: 'Legendary', rarityColor: '#ef4444',
+                description: 'A perfectly cut ruby, deep red and flawless.',
+                foodValue: 0, sellValue: 360, cookable: false, feedable: false
+            },
+            'polished_sapphire': {
+                name: 'Polished Sapphire', emoji: '💙', image: 'gem5.png',
+                rarity: 'Legendary', rarityColor: '#3b82f6',
+                description: 'A brilliant sapphire, cut with expert precision.',
+                foodValue: 0, sellValue: 420, cookable: false, feedable: false
+            },
+            'polished_amethyst': {
+                name: 'Polished Amethyst', emoji: '💜', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#a855f7',
+                description: 'A radiant amethyst, glowing with inner light.',
+                foodValue: 0, sellValue: 480, cookable: false, feedable: false
+            },
+            'polished_topaz': {
+                name: 'Polished Topaz', emoji: '🧡', image: 'gem1.png',
+                rarity: 'Legendary', rarityColor: '#f59e0b',
+                description: 'A warm golden topaz, perfectly faceted.',
+                foodValue: 0, sellValue: 600, cookable: false, feedable: false
+            },
+            'polished_diamond': {
+                name: 'Polished Diamond', emoji: '💎', image: 'gem3.png',
+                rarity: 'Rainbow', rarityColor: 'rainbow',
+                description: 'A flawless diamond with 58 perfect facets. Priceless.',
+                foodValue: 0, sellValue: 3000, cookable: false, feedable: false
             },
             'ore': {
                 name: 'Copper Ore', emoji: '🟤', image: 'ore1.png',

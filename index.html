@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.816</title>
+    <title>SlimeHearth v0.817</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=0.771">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.816</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.817</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -123,6 +123,46 @@
         @keyframes titleBounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+
+        @keyframes gemSpin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        @keyframes beamOrbit {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        @keyframes gemPulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor); }
+            50%       { filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 0 28px currentColor); }
+        }
+        @keyframes facetFlash {
+            0%   { opacity: 1; transform: scale(1); }
+            50%  { opacity: 0.8; transform: scale(1.18); }
+            100% { opacity: 0; transform: scale(1.4); }
+        }
+        @keyframes sparkFly {
+            0%   { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--sx),var(--sy)) scale(0); }
+        }
+        @keyframes jcWave1 {
+            0%   { transform: translateX(0) scaleY(1); }
+            40%  { transform: translateX(10px) scaleY(1.3); }
+            80%  { transform: translateX(-7px) scaleY(0.8); }
+            100% { transform: translateX(0) scaleY(1); }
+        }
+        @keyframes jcWave2 {
+            0%   { transform: translateX(0) scaleY(1); }
+            35%  { transform: translateX(-8px) scaleY(1.4); }
+            70%  { transform: translateX(5px) scaleY(0.7); }
+            100% { transform: translateX(0) scaleY(1); }
+        }
+        @keyframes perfectFlash {
+            0%   { opacity:0; transform:scale(0.6); }
+            30%  { opacity:1; transform:scale(1.15); }
+            70%  { opacity:1; transform:scale(1); }
+            100% { opacity:0; transform:scale(0.9); }
         }
         
         @keyframes pulse {
@@ -398,6 +438,7 @@
                 <h2>🔨 Forge</h2>
                 <button id="goto-shack">💎 Prospecting</button>
                 <button id="goto-furnace">🔥 Furnace</button>
+                <button id="goto-jewelcrafting">💍 Jewelcrafting</button>
                 <button id="back-to-area-forge" class="back-btn">←</button>
             </div>
 
@@ -481,6 +522,82 @@
                 </div>
 
                 <button id="leave-furnace" class="back-btn">←</button>
+            </div>
+
+            <!-- Jewelcrafting Room -->
+            <div class="room" id="jewelcrafting-room">
+                <h2 style="font-size:19px;margin-bottom:4px;">💍 Jewelcrafting</h2>
+
+                <!-- Gem slot + arena + bars layout -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:4px auto;">
+
+                    <!-- Left: Gem slot (drag gem here) -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;">
+                        <div id="jc-gem-slot" style="
+                            width:54px;height:54px;border-radius:12px;
+                            background:rgba(0,0,0,0.35);
+                            border:2px dashed rgba(255,255,255,0.35);
+                            display:flex;flex-direction:column;align-items:center;justify-content:center;
+                            position:relative;cursor:pointer;
+                        ">
+                            <span id="jc-gem-icon" style="font-size:26px;line-height:1;">💎</span>
+                            <span id="jc-gem-name" style="font-size:8px;color:rgba(255,255,255,0.6);font-family:'Righteous',sans-serif;margin-top:2px;">DROP GEM</span>
+                        </div>
+                        <button id="jc-clear-gem" style="display:none;font-size:9px;padding:2px 8px;background:#c0392b;color:#fff;border:none;border-radius:5px;cursor:pointer;">✕ Remove</button>
+                    </div>
+
+                    <!-- Centre: Cutting arena (canvas) -->
+                    <div style="position:relative;flex-shrink:0;">
+                        <canvas id="jc-canvas" width="150" height="150" style="display:block;border-radius:50%;border:2px solid rgba(255,255,255,0.2);background:radial-gradient(circle,#1a1a2e 0%,#0d0d1a 100%);box-shadow:0 0 20px rgba(160,90,255,0.4);"></canvas>
+                        <!-- Perfect! flash overlay -->
+                        <div id="jc-perfect-label" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;font-family:'Righteous',sans-serif;font-size:15px;color:#ffd700;text-shadow:0 0 10px #ffd700,0 0 20px #ff8800;animation:none;">✨ PERFECT!</div>
+                    </div>
+
+                    <!-- Right: Two vertical bars -->
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <!-- Facets bar -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                            <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;">CUT</div>
+                            <div id="jc-facet-wrap" style="width:22px;height:160px;border-radius:11px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
+                                <div id="jc-facet-bar" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#a78bfa 0%,#7c3aed 60%,#4c1d95 100%);border-radius:0 0 9px 9px;transition:height 0.3s ease-out;overflow:hidden;">
+                                    <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(196,181,253,0.6);animation:jcWave1 2.1s ease-in-out infinite;"></div>
+                                    <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(167,139,250,0.4);animation:jcWave2 1.6s ease-in-out infinite;"></div>
+                                </div>
+                            </div>
+                            <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;"><span id="jc-facets-done">0</span>/<span id="jc-facets-needed">8</span></div>
+                        </div>
+                        <!-- Precision bar -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+                            <div style="font-size:8px;color:#ffd700;font-family:'Righteous',sans-serif;">AIM</div>
+                            <div id="jc-prec-wrap" style="width:22px;height:160px;border-radius:11px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
+                                <div id="jc-prec-bar" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#fde68a 0%,#f59e0b 60%,#b45309 100%);border-radius:0 0 9px 9px;transition:height 0.25s ease-out;overflow:hidden;">
+                                    <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(253,230,138,0.6);animation:jcWave2 2.3s ease-in-out infinite;"></div>
+                                    <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(245,158,11,0.4);animation:jcWave1 1.8s ease-in-out infinite;"></div>
+                                </div>
+                            </div>
+                            <div style="font-size:8px;color:#ffd700;font-family:'Righteous',sans-serif;"><span id="jc-prec-pct">0</span>%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cut button + status -->
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:2px;">
+                    <button id="jc-cut-btn" style="
+                        width:72px;height:72px;border-radius:50%;
+                        background:linear-gradient(135deg,#7c3aed,#4c1d95);
+                        color:#fff;border:3px solid rgba(255,255,255,0.5);
+                        font-size:28px;cursor:pointer;
+                        box-shadow:0 0 16px rgba(124,58,237,0.7);
+                        transition:transform 0.08s,box-shadow 0.08s;
+                        -webkit-tap-highlight-color:transparent;
+                        display:flex;align-items:center;justify-content:center;
+                    " ontouchstart="this.style.transform='scale(0.9)';this.style.boxShadow='0 0 6px rgba(124,58,237,0.4)'"
+                       ontouchend="this.style.transform='scale(1)';this.style.boxShadow='0 0 16px rgba(124,58,237,0.7)'"
+                    >✂️</button>
+                    <div id="jc-status" style="font-size:10px;color:rgba(255,255,255,0.75);font-family:'Righteous',sans-serif;text-align:center;min-height:14px;">Drop a gem to begin</div>
+                </div>
+
+                <button id="leave-jewelcrafting" class="back-btn" style="margin-top:6px;">←</button>
             </div>
             
             <!-- Fishing Menu - Select Area -->
@@ -918,6 +1035,18 @@
                             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="smelting-xp">0</span>/<span id="smelting-xp-needed">10</span> XP</div>
                         </div>
                     </div>
+
+                    <div class="skill-display">
+                        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:3px;">
+                            <span style="font-size:11px;">💍 Jewelcrafting</span>
+                            <span style="font-size:9px;font-weight:normal;color:#666;">Lvl</span>
+                            <span id="jewelcrafting-level" style="font-size:14px;font-weight:bold;line-height:1;">1</span>
+                        </div>
+                        <div style="width:100%;height:14px;background:#ddd;border:1px solid #aaa;border-radius:7px;overflow:hidden;position:relative;">
+                            <div id="jewelcrafting-xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#e879f9);transition:width 0.3s;border-radius:7px;"></div>
+                            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:bold;color:#333;line-height:1;"><span id="jewelcrafting-xp">0</span>/<span id="jewelcrafting-xp-needed">10</span> XP</div>
+                        </div>
+                    </div>
                     
                 </div>
             </div>
@@ -1332,7 +1461,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.816</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.817</div>
     <div id="mouse-coords">0, 0</div>
     <button onclick="if(window.skillFireworks) window.skillFireworks('fishing')" style="position:fixed;bottom:130px;right:5px;z-index:99999;font-size:9px;padding:3px 5px;background:#1d4ed8;color:#fff;border:none;border-radius:3px;">TEST FW</button>
     <script>
@@ -1352,16 +1481,18 @@
         const barWrap = document.getElementById('last-skill-xp-bar').parentElement;
         if (!fromEl || !toEl) return;
         const skillColors = {
-            fishing:     ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe'],
-            farming:     ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0'],
-            cooking:     ['#fdba74','#fb923c','#ea580c','#fde68a','#fef3c7'],
-            mining:      ['#d4a96a','#a16207','#78350f','#fde68a','#92400e'],
-            prospecting: ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff'],
-            smelting:    ['#fed7aa','#fb923c','#ea580c','#92400e','#fef3c7'],
+            fishing:      ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe'],
+            farming:      ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0'],
+            cooking:      ['#fdba74','#fb923c','#ea580c','#fde68a','#fef3c7'],
+            mining:       ['#d4a96a','#a16207','#78350f','#fde68a','#92400e'],
+            prospecting:  ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff'],
+            smelting:     ['#fed7aa','#fb923c','#ea580c','#92400e','#fef3c7'],
+            jewelcrafting:['#f0abfc','#e879f9','#a855f7','#7c3aed','#fde68a'],
         };
         const glowColors = {
             fishing:'#3b82f6', farming:'#22c55e', cooking:'#f97316',
-            mining:'#a16207', prospecting:'#a855f7', smelting:'#f97316'
+            mining:'#a16207', prospecting:'#a855f7', smelting:'#f97316',
+            jewelcrafting:'#e879f9'
         };
         const colors = skillColors[skillName] || ['#fff','#ddd','#aaa'];
         const glowColor = glowColors[skillName] || '#fff';
@@ -1429,6 +1560,7 @@
     <script src="game-farming.js?v=0.771"></script>
     <script src="game-cooking.js?v=0.771"></script>
     <script src="game-mining.js?v=0.771"></script>
+    <script src="game-jewelcrafting.js?v=0.813"></script>
     <script src="game-ui.js?v=0.771"></script>
 
 </body>
