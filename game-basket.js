@@ -678,14 +678,17 @@
             
             // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
             const basketContainer = document.getElementById('basket-container');
+            const basketCanvas = document.getElementById('basket-canvas');
             const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'adventure-room'];
             if (basketContainer) {
                 if (noBasketRooms.includes(roomId)) {
                     basketContainer.style.pointerEvents = 'none';
                     basketContainer.style.opacity = '0';
+                    if (basketCanvas) basketCanvas.style.pointerEvents = 'none';
                 } else {
                     basketContainer.style.pointerEvents = '';
                     basketContainer.style.opacity = '1';
+                    if (basketCanvas) basketCanvas.style.pointerEvents = '';
                 }
             }
             
