@@ -40,7 +40,7 @@
         };
 
         const MINE_DEPTHS = {
-            'cave':   { reqLevel: 0,  rockChance: 0.05, rockXP: 1,  label: 'The Cave',  geodeItem: null,           geodeChance: 0      },
+            'cave':   { reqLevel: 0,  rockChance: 0.05, rockXP: 1,  label: 'Cave Entrance',  geodeItem: null,           geodeChance: 0      },
             'depth1': { reqLevel: 10, rockChance: 0.07, rockXP: 2,  label: 'Depth 1',  geodeItem: 'small_geode',  geodeChance: 0.01   },
             'depth2': { reqLevel: 20, rockChance: 0.09, rockXP: 3,  label: 'Depth 2',  geodeItem: 'medium_geode', geodeChance: 0.005  },
             'depth3': { reqLevel: 40, rockChance: 0.12, rockXP: 5,  label: 'Depth 3',  geodeItem: 'large_geode',  geodeChance: 0.004  },
@@ -288,10 +288,8 @@
             
             
             document.getElementById('goto-adventure').onclick = () => {
-                switchRoom('adventure-room');
-                displayAdventureDoors();
+                switchRoom('giant-slime-room');
             };
-            document.getElementById('back-to-area-adventure').onclick = () => switchRoom('area-room');
             
             document.getElementById('goto-farming-menu').onclick = () => switchRoom('farming-menu-room');
             document.getElementById('back-to-area-farm').onclick = () => switchRoom('area-room');
@@ -485,7 +483,7 @@
             };
             document.getElementById('back-to-area-cook').onclick = () => switchRoom('area-room');
             
-            // OLD COOKING MINIGAMES - buttons don't exist anymore, we go straight to The Hearth now
+            // OLD COOKING MINIGAMES - buttons don't exist anymore, we go straight to Hearth now
             /*
             document.getElementById('goto-kitchen').onclick = () => {
                 console.log('Going to kitchen...');

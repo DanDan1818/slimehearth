@@ -679,7 +679,7 @@
             // Hide basket canvas interaction in nav-only rooms where buttons would be blocked
             const basketContainer = document.getElementById('basket-container');
             const basketCanvas = document.getElementById('basket-canvas');
-            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room', 'adventure-room'];
+            const noBasketRooms = ['room-room', 'wardrobe-room', 'trophies-room', 'area-room', 'fishing-menu-room', 'farming-menu-room', 'mining-menu-room'];
             if (basketContainer) {
                 if (noBasketRooms.includes(roomId)) {
                     basketContainer.style.pointerEvents = 'none';
@@ -810,7 +810,7 @@
         
         // Giant Slime room back button
         const leaveGiantSlimeBtn = document.getElementById('leave-giant-slime');
-        if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('adventure-room');
+        if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('area-room');
         document.getElementById('nav-shop').onclick = () => {
             switchRoom('shop-room');
             displayShopGrid();

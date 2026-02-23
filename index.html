@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.798</title>
+    <title>SlimeHearth v0.801</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=0.771">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.798</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.801</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -214,13 +214,13 @@
                 <button id="goto-cooking-menu">🍳 Cooking</button>
                 <button id="goto-mining-menu">⛏️ Mining</button>
                 <button id="goto-shack">💎 Prospecting</button>
-                <button id="goto-adventure">🗝️ Adventure</button>
+                <button id="goto-adventure">🔨 Forge</button>
             </div>
             
             <!-- Mining Menu - Select Area -->
             <div class="room" id="mining-menu-room">
                 <h2 style="font-size:22px;margin-bottom:10px;">Mining Areas</h2>
-                <button id="goto-cave">⛏️ The Cave</button>
+                <button id="goto-cave">⛏️ Cave Entrance</button>
                 <button id="goto-depth1" style="border-color:#4a9eff;">🪨 Depth 1 <span style="font-size:10px;opacity:0.8;">(Lvl 10)</span></button>
                 <button id="goto-depth2" style="border-color:#9b59b6;">💜 Depth 2 <span style="font-size:10px;opacity:0.8;">(Lvl 20)</span></button>
                 <button id="goto-depth3" style="border-color:#e74c3c;">🔴 Depth 3 <span style="font-size:10px;opacity:0.8;">(Lvl 40)</span></button>
@@ -229,9 +229,9 @@
                 <button id="back-to-area-mining" class="back-btn">←</button>
             </div>
             
-            <!-- Mining - The Cave (Automine) -->
+            <!-- Mining - Cave (Automine) -->
             <div class="room" id="mining-cave-room">
-                <h2 style="font-size:22px;margin-bottom:10px;">The Cave</h2>
+                <h2 style="font-size:22px;margin-bottom:10px;">Cave Entrance</h2>
                 <div id="mining-game-cave" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
                     <div id="automine-instruction" style="font-size:14px;font-weight:bold;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.8);">Press to Automine</div>
                     <button id="start-automine" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #8b7355 0%, #5d4e37 100%);color:#fff;border:4px solid #fff;font-size:18px;cursor:pointer;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;transition:transform 0.1s;font-weight:bold;">
@@ -314,21 +314,9 @@
                 <button id="leave-depth5" class="back-btn">←</button>
             </div>
             
-            <!-- Adventure Room -->
-            <div class="room" id="adventure-room">
-                <h2>🗝️ Adventure</h2>
-                <p style="margin:20px;color:#666;">Use your keys to unlock doors and explore new areas!</p>
-                
-                <div id="adventure-doors" style="max-width:500px;margin:20px auto;">
-                    <!-- Doors will be displayed here -->
-                </div>
-                
-                <button id="back-to-area-adventure" class="back-btn">←</button>
-            </div>
-
             <!-- Giant Slime Room -->
             <div class="room" id="giant-slime-room">
-                <h2 style="font-size:20px;margin-bottom:6px;">💧 The Watery Depths</h2>
+                <h2 style="font-size:20px;margin-bottom:6px;">🔨 Forge</h2>
 
                 <!-- Feed zone: big black circle + vertical progress bar side by side -->
                 <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:10px auto 6px auto;">
@@ -379,14 +367,14 @@
             <!-- Fishing Menu - Select Area -->
             <div class="room" id="fishing-menu-room">
                 <h2>🎣 Fishing Areas</h2>
-                <button id="goto-pond">🪷 The Pond</button>
-                <button id="goto-river">🌊 The River<br><span style="font-size:10px;opacity:0.7;">Req: Fishing Net</span></button>
+                <button id="goto-pond">🪷 Pond</button>
+                <button id="goto-river">🌊 River<br><span style="font-size:10px;opacity:0.7;">Req: Fishing Net</span></button>
                 <button id="back-to-area" class="back-btn">←</button>
             </div>
             
-            <!-- Fishing Minigame - The Pond -->
+            <!-- Fishing Minigame - Pond -->
             <div class="room" id="fishing-pond-room">
-                <h2>The Pond</h2>
+                <h2>Pond</h2>
                 <div id="fishing-game-pond">
                     <div style="position:relative;display:inline-block;">
                         <div id="fishing-progress-pond" style="width:200px;height:22px;border-radius:11px;overflow:visible;position:relative;">
@@ -412,9 +400,9 @@
                 <button id="leave-pond" class="back-btn">←</button>
             </div>
             
-            <!-- Fishing Minigame - The River -->
+            <!-- Fishing Minigame - River -->
             <div class="room" id="fishing-river-room">
-                <h2>The River</h2>
+                <h2>River</h2>
                 <div id="fishing-game-river">
                     <div id="fishing-timer-river"></div>
                     <div style="position:relative;display:inline-block;">
@@ -604,9 +592,9 @@
             </div>
             
             <!-- Cooking Menu - Select Area -->
-            <!-- The Hearth - Cooking Area (Mix 2 Items) -->
+            <!-- Hearth - Cooking Area (Mix 2 Items) -->
             <div class="room" id="cooking-menu-room">
-                <h2 style="font-size:22px;margin-bottom:5px;">The Hearth</h2>
+                <h2 style="font-size:22px;margin-bottom:5px;">Hearth</h2>
                 
                 <div style="text-align:center;max-width:500px;margin:0 auto;">
                     <!-- Cooking Progress Bar (hidden until cooking starts) — top -->
@@ -680,9 +668,9 @@
                 <button id="back-to-area-cook" class="back-btn">←</button>
             </div>
             
-            <!-- Cooking - The Kitchen (Rhythm Game) -->
+            <!-- Cooking - Kitchen (Rhythm Game) -->
             <div class="room" id="cooking-kitchen-room">
-                <h2>🔥 The Kitchen</h2>
+                <h2>🔥 Kitchen</h2>
                 
                 <div style="text-align:center;max-width:400px;margin:0 auto;">
                     <p style="margin-bottom:20px;">Click the spoon when it flashes!</p>
@@ -1208,7 +1196,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.798</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.801</div>
     <div id="mouse-coords">0, 0</div>
     <button onclick="if(window.skillFireworks) window.skillFireworks('fishing')" style="position:fixed;bottom:130px;right:5px;z-index:99999;font-size:9px;padding:3px 5px;background:#1d4ed8;color:#fff;border:none;border-radius:3px;">TEST FW</button>
     <script>
