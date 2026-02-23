@@ -407,6 +407,11 @@
                 addItem(randomFrog, 1);
                 notify('🐸 Spawned a ' + FROGS_DATA[randomFrog].name + '!');
             };
+
+            document.getElementById('give-coal').onclick = () => {
+                for (let i = 0; i < 10; i++) addItem('coal', 1);
+                notify('🖤 +10 Coal!');
+            };
             
             const FONT_OPTIONS = [
                 { name: 'Press Start 2P', family: "'Press Start 2P', monospace", tag: 'Pixel / Retro' },
