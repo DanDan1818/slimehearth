@@ -137,6 +137,7 @@
                 cooking:     ['#fdba74','#fb923c','#ea580c','#fef08a','#fde68a','#fff7ed'],
                 mining:      ['#d4a96a','#a16207','#78350f','#fbbf24','#fde68a','#d97706'],
                 prospecting: ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff','#e9d5ff'],
+                smelting:    ['#fed7aa','#fb923c','#ea580c','#92400e','#fef3c7','#ffedd5'],
             };
             const colors = skillColors[skillName] || ['#fff','#ffd700','#ff6b6b','#4ecdc4'];
 
@@ -275,12 +276,17 @@
                         fishing: { level: 1, xp: 0, xpNeeded: 10 },
                         farming: { level: 1, xp: 0, xpNeeded: 10 },
                         cooking: { level: 1, xp: 0, xpNeeded: 10 },
-                        mining:  { level: 1, xp: 0, xpNeeded: 10 }
+                        mining:  { level: 1, xp: 0, xpNeeded: 10 },
+                        smelting: { level: 1, xp: 0, xpNeeded: 10 }
                     };
                 }
                 // Patch old saves missing mining
                 if (!gs.skills.mining) {
                     gs.skills.mining = { level: 1, xp: 0, xpNeeded: 10 };
+                }
+                // Patch old saves missing smelting
+                if (!gs.skills.smelting) {
+                    gs.skills.smelting = { level: 1, xp: 0, xpNeeded: 10 };
                 }
                 
                 // Initialize bag upgrade system (old saves)
@@ -341,7 +347,8 @@
                 basketCoins.textContent = formatCoins(gs.coins);
             }
             updateSkillsUI();
-            updateGiantSlimeUI();
+            updateFurnaceUI();
+            updateOreBarUI();
             const slimeNameDisplay = document.getElementById('slime-name-display');
             if (slimeNameDisplay && gs.slimeName) {
                 slimeNameDisplay.textContent = gs.slimeName;
@@ -426,7 +433,8 @@
                     fishing: { level: 1, xp: 0, xpNeeded: 10 },
                     farming: { level: 1, xp: 0, xpNeeded: 10 },
                     cooking: { level: 1, xp: 0, xpNeeded: 10 },
-                    mining:  { level: 1, xp: 0, xpNeeded: 10 }
+                    mining:  { level: 1, xp: 0, xpNeeded: 10 },
+                    smelting: { level: 1, xp: 0, xpNeeded: 10 }
                 };
             }
             if (!gs.skills[skillName]) {
@@ -461,7 +469,7 @@
             setTimeout(() => updateLastSkillDisplay(leveledUp), speckDelay);
         }
         
-        function updateGiantSlimeUI() {
+        function updateFurnaceUI() {
             if (!gs.furnace) gs.furnace = { fed: 0, needed: 100 };
             const { fed, needed } = gs.furnace;
             const fedEl = document.getElementById('furnace-fed');
@@ -472,10 +480,51 @@
             if (bar) bar.style.height = Math.min(100, (fed / needed) * 100) + '%';
         }
 
+        function updateOreBarUI() {
+            const ORE_SMELT_COLORS = {
+                'copper_ore': { name: 'Copper', icon: '🟤', color: '#b45309',  colorLight: '#d97706' },
+                'iron_ore':   { name: 'Iron',   icon: '⚙️',  color: '#6b7280',  colorLight: '#9ca3af' },
+                'silver_ore': { name: 'Silver', icon: '🔘',  color: '#9ca3af',  colorLight: '#e5e7eb' },
+                'gold_ore':   { name: 'Gold',   icon: '🌟',  color: '#d97706',  colorLight: '#fbbf24' },
+            };
+            const bar     = document.getElementById('ore-bar');
+            const label   = document.getElementById('ore-bar-label');
+            const iconEl  = document.getElementById('ore-bar-icon');
+            const nameEl  = document.getElementById('ore-bar-name');
+            const fedEl   = document.getElementById('ore-bar-fed');
+            const needEl  = document.getElementById('ore-bar-needed');
+            if (!bar) return;
+
+            const state = gs.oreSmelt || { oreType: null, fed: 0, needed: 10 };
+            const pct   = state.oreType ? Math.min(100, (state.fed / state.needed) * 100) : 0;
+            bar.style.height = pct + '%';
+
+            if (state.oreType && ORE_SMELT_COLORS[state.oreType]) {
+                const d = ORE_SMELT_COLORS[state.oreType];
+                // Update bar gradient color
+                bar.style.background = `linear-gradient(180deg, ${d.colorLight} 0%, ${d.color} 60%, ${d.color}aa 100%)`;
+                // Update wave colors to match ore
+                const w1 = document.getElementById('ore-wave1');
+                const w2 = document.getElementById('ore-wave2');
+                if (w1) w1.style.background = `radial-gradient(ellipse at 50% 100%, ${d.colorLight} 0%, ${d.color}88 50%, transparent 70%)`;
+                if (w2) w2.style.background = `radial-gradient(ellipse at 50% 100%, ${d.colorLight}88 0%, ${d.color}44 60%, transparent 75%)`;
+                // Show label
+                if (label) label.style.display = 'inline';
+                if (iconEl) iconEl.textContent = d.icon;
+                if (nameEl) nameEl.textContent = d.name;
+                if (fedEl)  fedEl.textContent  = state.fed;
+                if (needEl) needEl.textContent = state.needed;
+            } else {
+                // No ore — reset bar to grey, hide label
+                bar.style.background = 'linear-gradient(180deg,#aaa 0%,#666 100%)';
+                if (label) label.style.display = 'none';
+            }
+        }
+
         function updateSkillsUI() {
             if (!gs.skills) return; // Safety check
             
-            ['fishing', 'farming', 'cooking', 'mining'].forEach(skillName => {
+            ['fishing', 'farming', 'cooking', 'mining', 'smelting'].forEach(skillName => {
                 const skill = gs.skills[skillName];
                 if (!skill) return; // Safety check
                 
@@ -506,7 +555,8 @@
                 'farming': '🌾',
                 'cooking': '🍳',
                 'mining':  '⛏️',
-                'prospecting': '⛏️'
+                'prospecting': '⛏️',
+                'smelting': '🔥'
             };
             
             const icon = skillIcons[gs.lastSkillUsed] || '';
@@ -518,7 +568,8 @@
                 'farming': '#8bc34a',
                 'cooking': '#ff9800',
                 'mining':  '#78716c',
-                'prospecting': '#a78bfa'
+                'prospecting': '#a78bfa',
+                'smelting': '#f97316'
             };
             const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
             
@@ -811,8 +862,8 @@
         document.getElementById('nav-area').onclick = () => switchRoom('area-room');
         
         // Giant Slime room back button
-        const leaveGiantSlimeBtn = document.getElementById('leave-furnace');
-        if (leaveGiantSlimeBtn) leaveGiantSlimeBtn.onclick = () => switchRoom('forge-menu-room');
+        const leaveFurnaceBtn = document.getElementById('leave-furnace');
+        if (leaveFurnaceBtn) leaveFurnaceBtn.onclick = () => switchRoom('forge-menu-room');
 
         // Forge menu nav
         const gotoSmithingBtn = document.getElementById('goto-furnace');
@@ -1354,7 +1405,82 @@
                         if (cookSound) { cookSound.currentTime = 0; cookSound.volume = 0.4; cookSound.play().catch(() => {}); }
 
                         notify('+' + fuelValue + ' 🔥 Fuel!');
-                        updateGiantSlimeUI();
+                        updateFurnaceUI();
+                        save();
+                        updateInventoryCounter();
+                    }
+                }
+            });
+
+            // Ore smelting mechanic - only in furnace-room
+            const ORE_SMELT = {
+                'copper_ore': { name: 'Copper', icon: '🟤', color: '#b45309', colorLight: '#d97706', output: 'copper_bar', needed: 10 },
+                'iron_ore':   { name: 'Iron',   icon: '⚙️',  color: '#6b7280', colorLight: '#9ca3af', output: 'iron_bar',   needed: 10 },
+                'silver_ore': { name: 'Silver', icon: '🔘',  color: '#9ca3af', colorLight: '#e5e7eb', output: 'silver_bar', needed: 10 },
+                'gold_ore':   { name: 'Gold',   icon: '🌟',  color: '#d97706', colorLight: '#fbbf24', output: 'gold_bar',   needed: 10 },
+            };
+
+            Events.on(basketEngine, 'beforeUpdate', () => {
+                const furnaceRoom = document.getElementById('furnace-room');
+                if (!furnaceRoom || !furnaceRoom.classList.contains('active')) return;
+
+                const targetEl = document.getElementById('furnace-target');
+                const basketCanvas = document.getElementById('basket-canvas');
+                if (!targetEl || !basketCanvas) return;
+
+                const targetRect = targetEl.getBoundingClientRect();
+                const canvasRect = basketCanvas.getBoundingClientRect();
+                const targetX = (targetRect.left + targetRect.width / 2) - canvasRect.left;
+                const targetY = (targetRect.top + targetRect.height / 2) - canvasRect.top;
+
+                // Init ore smelt state
+                if (!gs.oreSmelt) gs.oreSmelt = { oreType: null, fed: 0, needed: 10 };
+
+                for (let i = basketBodies.length - 1; i >= 0; i--) {
+                    const b = basketBodies[i];
+                    if (!b || !b.itemId) continue;
+                    const oreData = ORE_SMELT[b.itemId];
+                    if (!oreData) continue;
+
+                    // Lock to current ore type if one is active
+                    if (gs.oreSmelt.oreType && gs.oreSmelt.oreType !== b.itemId) continue;
+
+                    const dist = Math.sqrt((b.position.x - targetX) ** 2 + (b.position.y - targetY) ** 2);
+                    if (dist < 55) {
+                        // Lock ore type
+                        if (!gs.oreSmelt.oreType) {
+                            gs.oreSmelt.oreType = b.itemId;
+                            gs.oreSmelt.fed = 0;
+                            gs.oreSmelt.needed = oreData.needed;
+                        }
+
+                        // Consume ore
+                        World.remove(basketEngine.world, b);
+                        basketBodies.splice(i, 1);
+                        delete gs.inventory[b.itemKey];
+
+                        gs.oreSmelt.fed += 1;
+
+                        // Play cook sound
+                        const cookSound = document.getElementById('cook-sound');
+                        if (cookSound) { cookSound.currentTime = 0; cookSound.volume = 0.3; cookSound.play().catch(() => {}); }
+
+                        notify('+1 ' + oreData.icon + ' ' + oreData.name + ' Ore smelting...');
+                        updateOreBarUI();
+
+                        // Check if bar is full → produce bar item
+                        if (gs.oreSmelt.fed >= gs.oreSmelt.needed) {
+                            addItem(oreData.output, 1);
+                            notify('✨ ' + oreData.name + ' Bar crafted!', 'achievement');
+                            const skillLvlSound = document.getElementById('skill-levelup-sound');
+                            if (skillLvlSound) { skillLvlSound.currentTime = 0; skillLvlSound.play().catch(() => {}); }
+                            addSkillXP('smelting', 10);
+                            // Reset ore bar
+                            gs.oreSmelt.oreType = null;
+                            gs.oreSmelt.fed = 0;
+                            updateOreBarUI();
+                        }
+
                         save();
                         updateInventoryCounter();
                     }

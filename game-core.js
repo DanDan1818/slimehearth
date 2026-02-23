@@ -144,6 +144,10 @@
             'iron_ore':    '#9ca3af',
             'silver_ore':  '#e2e8f0',
             'gold_ore':    '#fbbf24',
+            'copper_bar':  '#b45309',
+            'iron_bar':    '#9ca3af',
+            'silver_bar':  '#d1d5db',
+            'gold_bar':    '#fbbf24',
             'basket': '#d97706',
             'lily_pad': '#4ade80',
             'old_boot': '#78716c',
@@ -164,18 +168,18 @@
             'fish6': './slimehearth-assets/images/fish6.png',
             'fish7': './slimehearth-assets/images/fish7.png',
             'fish8': './slimehearth-assets/images/fish8.png',
-            'gem': './slimehearth-assets/images/gem1.png',
+            'gem': './slimehearth-assets/images/gem2.png',
             'emerald':  './slimehearth-assets/images/gem2.png',
-            'ruby':     './slimehearth-assets/images/gem1.png',
-            'sapphire': './slimehearth-assets/images/gem1.png',
+            'ruby':     './slimehearth-assets/images/gem4.png',
+            'sapphire': './slimehearth-assets/images/gem5.png',
             'amethyst': './slimehearth-assets/images/gem1.png',
             'topaz':    './slimehearth-assets/images/gem1.png',
             'diamond':  './slimehearth-assets/images/gem3.png',
             'small_geode':   './slimehearth-assets/images/geode1.png',
-            'medium_geode':  './slimehearth-assets/images/geode1.png',
-            'large_geode':   './slimehearth-assets/images/geode1.png',
-            'rare_geode':    './slimehearth-assets/images/geode1.png',
-            'rainbow_geode': './slimehearth-assets/images/geode1.png',
+            'medium_geode':  './slimehearth-assets/images/geode2.png',
+            'large_geode':   './slimehearth-assets/images/geode3.png',
+            'rare_geode':    './slimehearth-assets/images/geode4.png',
+            'rainbow_geode': './slimehearth-assets/images/geode5.png',
             'carrot': './slimehearth-assets/images/carrot1.png',
             'carrot_seeds':  './slimehearth-assets/images/seeds1.png',
             'tomato_seeds':  './slimehearth-assets/images/seeds1.png',
@@ -190,8 +194,12 @@
             'copper_ore':  './slimehearth-assets/images/ore1.png',
             'coal':        './slimehearth-assets/images/fuel1.png',
             'iron_ore':    './slimehearth-assets/images/ore3.png',
-            'silver_ore':  './slimehearth-assets/images/ore1.png',
+            'silver_ore':  './slimehearth-assets/images/ore4.png',
             'gold_ore':    './slimehearth-assets/images/ore2.png',
+            'copper_bar':  './slimehearth-assets/images/bar1.png',
+            'iron_bar':    './slimehearth-assets/images/bar2.png',
+            'silver_bar':  './slimehearth-assets/images/bar3.png',
+            'gold_bar':    './slimehearth-assets/images/bar4.png',
             'lily_pad': './slimehearth-assets/images/trash1.png',
             'frog_blue':   './slimehearth-assets/images/frog1.png',
             'frog_yellow': './slimehearth-assets/images/frog2.png',
@@ -548,7 +556,7 @@
             'medium_geode': {
                 name: 'Medium Geode',
                 emoji: '🪨',
-                image: 'geode1.png',
+                image: 'geode2.png',
                 rarity: 'Rare',
                 rarityColor: '#2563eb',
                 description: 'A medium geode from Depth 2. Crack it at the Shack!',
@@ -558,7 +566,7 @@
             'large_geode': {
                 name: 'Large Geode',
                 emoji: '🪨',
-                image: 'geode1.png',
+                image: 'geode3.png',
                 rarity: 'Epic',
                 rarityColor: '#7c3aed',
                 description: 'A large geode from Depth 3. Crack it at the Shack!',
@@ -568,7 +576,7 @@
             'rare_geode': {
                 name: 'Rare Geode',
                 emoji: '🪨',
-                image: 'geode1.png',
+                image: 'geode4.png',
                 rarity: 'Legendary',
                 rarityColor: '#ea580c',
                 description: 'A rare golden geode from Depth 4. Crack it at the Shack!',
@@ -578,7 +586,7 @@
             'rainbow_geode': {
                 name: 'Rainbow Geode',
                 emoji: '🌈🪨',
-                image: 'geode1.png',
+                image: 'geode5.png',
                 rarity: 'Rainbow',
                 rarityColor: 'rainbow',
                 description: 'An impossibly rare geode from the deepest depths. Crack it at the Shack!',
@@ -605,19 +613,19 @@
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
             },
             'emerald': {
-                name: 'Emerald',  emoji: '💚', image: 'gem1.png',
+                name: 'Emerald', emoji: '💚', image: 'gem2.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A sparkling green emerald.',
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
             },
             'ruby': {
-                name: 'Ruby', emoji: '❤️', image: 'gem1.png',
+                name: 'Ruby', emoji: '❤️', image: 'gem4.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A brilliant red ruby.',
                 foodValue: 0, sellValue: 120, cookable: false, feedable: false
             },
             'sapphire': {
-                name: 'Sapphire', emoji: '💙', image: 'gem1.png',
+                name: 'Sapphire', emoji: '💙', image: 'gem5.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A deep blue sapphire.',
                 foodValue: 0, sellValue: 140, cookable: false, feedable: false
@@ -665,7 +673,7 @@
                 foodValue: 0, sellValue: 35, cookable: false, feedable: false
             },
             'silver_ore': {
-                name: 'Silver Ore', emoji: '🔘', image: 'ore1.png',
+                name: 'Silver Ore', emoji: '🔘', image: 'ore4.png',
                 rarity: 'Epic', rarityColor: '#7c3aed',
                 description: 'Gleaming silver ore from deep within Depth 3.',
                 foodValue: 0, sellValue: 100, cookable: false, feedable: false
@@ -675,6 +683,30 @@
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'Precious gold ore found only at Depth 5.',
                 foodValue: 0, sellValue: 300, cookable: false, feedable: false
+            },
+            'copper_bar': {
+                name: 'Copper Bar', emoji: '🟫', image: 'bar1.png',
+                rarity: 'Common', rarityColor: '#b45309',
+                description: 'A smelted copper bar, forged in the Furnace.',
+                foodValue: 0, sellValue: 40, cookable: false, feedable: false
+            },
+            'iron_bar': {
+                name: 'Iron Bar', emoji: '⬜', image: 'bar2.png',
+                rarity: 'Uncommon', rarityColor: '#6b7280',
+                description: 'A smelted iron bar, forged in the Furnace.',
+                foodValue: 0, sellValue: 80, cookable: false, feedable: false
+            },
+            'silver_bar': {
+                name: 'Silver Bar', emoji: '🔲', image: 'bar3.png',
+                rarity: 'Rare', rarityColor: '#9ca3af',
+                description: 'A smelted silver bar, forged in the Furnace.',
+                foodValue: 0, sellValue: 200, cookable: false, feedable: false
+            },
+            'gold_bar': {
+                name: 'Gold Bar', emoji: '🟨', image: 'bar4.png',
+                rarity: 'Legendary', rarityColor: '#d97706',
+                description: 'A smelted gold bar, forged in the Furnace.',
+                foodValue: 0, sellValue: 600, cookable: false, feedable: false
             },
             'basket': {
                 name: '🧺 Basket',
