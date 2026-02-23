@@ -412,6 +412,13 @@
                 for (let i = 0; i < 10; i++) addItem('coal', 1);
                 notify('🖤 +10 Coal!');
             };
+
+            document.getElementById('give-ores').onclick = () => {
+                ['copper_ore','iron_ore','silver_ore','gold_ore'].forEach(id => {
+                    for (let i = 0; i < 5; i++) addItem(id, 1);
+                });
+                notify('⛏️ +5 of each Ore!');
+            };
             
             const FONT_OPTIONS = [
                 { name: 'Press Start 2P', family: "'Press Start 2P', monospace", tag: 'Pixel / Retro' },

@@ -196,10 +196,6 @@
             'iron_ore':    './slimehearth-assets/images/ore3.png',
             'silver_ore':  './slimehearth-assets/images/ore4.png',
             'gold_ore':    './slimehearth-assets/images/ore2.png',
-            'copper_bar':  './slimehearth-assets/images/bar1.png',
-            'iron_bar':    './slimehearth-assets/images/bar2.png',
-            'silver_bar':  './slimehearth-assets/images/bar3.png',
-            'gold_bar':    './slimehearth-assets/images/bar4.png',
             'lily_pad': './slimehearth-assets/images/trash1.png',
             'frog_blue':   './slimehearth-assets/images/frog1.png',
             'frog_yellow': './slimehearth-assets/images/frog2.png',
@@ -685,25 +681,25 @@
                 foodValue: 0, sellValue: 300, cookable: false, feedable: false
             },
             'copper_bar': {
-                name: 'Copper Bar', emoji: '🟫', image: 'bar1.png',
+                name: 'Copper Bar', emoji: '🟫',
                 rarity: 'Common', rarityColor: '#b45309',
                 description: 'A smelted copper bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 40, cookable: false, feedable: false
             },
             'iron_bar': {
-                name: 'Iron Bar', emoji: '⬜', image: 'bar2.png',
+                name: 'Iron Bar', emoji: '⬜',
                 rarity: 'Uncommon', rarityColor: '#6b7280',
                 description: 'A smelted iron bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 80, cookable: false, feedable: false
             },
             'silver_bar': {
-                name: 'Silver Bar', emoji: '🔲', image: 'bar3.png',
+                name: 'Silver Bar', emoji: '🔲',
                 rarity: 'Rare', rarityColor: '#9ca3af',
                 description: 'A smelted silver bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 200, cookable: false, feedable: false
             },
             'gold_bar': {
-                name: 'Gold Bar', emoji: '🟨', image: 'bar4.png',
+                name: 'Gold Bar', emoji: '🟨',
                 rarity: 'Legendary', rarityColor: '#d97706',
                 description: 'A smelted gold bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 600, cookable: false, feedable: false
