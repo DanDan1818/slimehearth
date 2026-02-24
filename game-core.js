@@ -355,7 +355,7 @@
                 isPlantable: true, harvestItem: 'carrot', harvestCount: 3
             },
             'tomato': {
-                name: 'Tomato', emoji: '🍅',
+                name: 'Tomato', emoji: '🍅', image: 'veg6.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A juicy red tomato.',
                 foodValue: 12, sellValue: 5, cookable: true, feedable: true
@@ -369,7 +369,7 @@
                 isPlantable: true, harvestItem: 'tomato', harvestCount: 2
             },
             'potato': {
-                name: 'Potato', emoji: '🥔',
+                name: 'Potato', emoji: '🥔', image: 'veg2.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A hearty starchy potato.',
                 foodValue: 8, sellValue: 4, cookable: true, feedable: true
@@ -383,7 +383,7 @@
                 isPlantable: true, harvestItem: 'potato', harvestCount: 4
             },
             'corn': {
-                name: 'Corn', emoji: '🌽',
+                name: 'Corn', emoji: '🌽', image: 'veg5.png',
                 rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Sweet golden corn.',
                 foodValue: 15, sellValue: 8, cookable: true, feedable: true
@@ -397,7 +397,7 @@
                 isPlantable: true, harvestItem: 'corn', harvestCount: 2
             },
             'onion': {
-                name: 'Onion', emoji: '🧅',
+                name: 'Onion', emoji: '🧅', image: 'veg3.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'Brings tears of joy.',
                 foodValue: 10, sellValue: 6, cookable: true, feedable: true
@@ -411,7 +411,7 @@
                 isPlantable: true, harvestItem: 'onion', harvestCount: 3
             },
             'pumpkin': {
-                name: 'Pumpkin', emoji: '🎃',
+                name: 'Pumpkin', emoji: '🎃', image: 'veg4.png',
                 rarity: 'Rare', rarityColor: '#2563eb',
                 description: 'A prize-winning pumpkin.',
                 foodValue: 25, sellValue: 20, cookable: true, feedable: true

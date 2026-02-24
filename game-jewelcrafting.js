@@ -61,6 +61,24 @@
         });
 
         window.jcCheckDrop = jcCheckDrop;
+        window.jcOnEnter   = onEnterRoom;
+        refreshAll();
+    }
+
+    // Called every time the jewelcrafting room becomes active
+    function onEnterRoom() {
+        // Validate slot items still exist — if an itemKey was lost (e.g. from a reload
+        // or edge-case state reset), clear the orphaned slot so it doesn't ghost
+        [1, 2, 3].forEach(n => {
+            if (!slots[n]) return;
+            const key = slots[n].itemKey;
+            // If the item no longer exists in inventory (was already removed when slotted)
+            // that's expected — BUT if gs itself was reset/reloaded and slots wasn't,
+            // the itemKey will be stale. Re-validate by checking itemId is still known.
+            if (!slots[n].itemId) {
+                slots[n] = null;
+            }
+        });
         refreshAll();
     }
 

@@ -904,6 +904,9 @@
                     World.add(basketEngine.world, sellWalls);
                 }
             }
+
+            // Notify jewelcrafting to re-render slots whenever the room is entered
+            if (roomId === 'jewelcrafting-room' && window.jcOnEnter) window.jcOnEnter();
         }
         
         document.getElementById('nav-home').onclick = () => switchRoom('home-room');

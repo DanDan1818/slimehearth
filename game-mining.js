@@ -428,6 +428,11 @@
                 ['emerald','ruby','sapphire','amethyst','topaz','diamond'].forEach(id => addItem(id, 1));
                 notify('💎 +1 of each Gem!');
             };
+
+            if (dbg('give-bars')) dbg('give-bars').onclick = () => {
+                ['copper_bar','iron_bar','silver_bar','gold_bar'].forEach(id => addItem(id, 1));
+                notify('🔩 +1 of each Bar!');
+            };
             
             const FONT_OPTIONS = [
                 { name: 'Press Start 2P', family: "'Press Start 2P', monospace", tag: 'Pixel / Retro' },
