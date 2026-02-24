@@ -96,6 +96,7 @@
     // ── Clear a slot (X button) — return item to inventory ───────
     window.jcClearSlot = function(n) {
         if (!jcSlots[n]) return;
+        spawnSlotEject(document.getElementById('jc-slot' + n));
         addItem(jcSlots[n].itemId, 1);
         jcSlots[n] = null;
         save();
@@ -111,27 +112,61 @@
 
     function renderSlots() {
         [1, 2, 3].forEach(n => {
-            const s    = jcSlots[n];
+            const s      = jcSlots[n];
             const itemId = s ? s.itemId : null;
-            const icon = document.getElementById('jc-slot' + n + '-icon');
-            const name = document.getElementById('jc-slot' + n + '-name');
-            const clr  = document.getElementById('jc-slot' + n + '-clear');
-            const wrap = document.getElementById('jc-slot' + n);
-            if (!icon || !name) return;
+            const wrap   = document.getElementById('jc-slot' + n);
+            const clr    = document.getElementById('jc-slot' + n + '-clear');
+            if (!wrap) return;
+
             if (itemId) {
-                icon.textContent  = n < 3 ? (BAR_ICONS[itemId] || '⬜') : (GEM_ICONS[itemId] || '💎');
-                name.textContent  = n < 3 ? (BAR_NAMES[itemId] || itemId) : (GEM_NAMES[itemId] || itemId);
-                name.style.color  = 'rgba(255,255,255,0.9)';
+                const data   = typeof ITEM_DATA !== 'undefined' ? ITEM_DATA[itemId] : null;
+                const imgSrc = typeof ITEM_IMAGES !== 'undefined' ? ITEM_IMAGES[itemId] : null;
+                const nameStr = data ? data.name.replace(/[^\w\s'\-]/g, '').trim() : itemId;
+                const iconHtml = imgSrc
+                    ? `<img src="${imgSrc}" style="width:34px;height:34px;object-fit:contain;animation:geodeLock 0.3s ease-out;" />`
+                    : `<span style="font-size:22px;line-height:1;animation:geodeLock 0.3s ease-out;">${data ? (data.emoji || (n < 3 ? '⬜' : '💎')) : (n < 3 ? '⬜' : '💎')}</span>`;
+                wrap.innerHTML = iconHtml + `<span style="font-size:7px;font-weight:bold;color:#fff;text-align:center;margin-top:2px;max-width:52px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:'Righteous',sans-serif;">${nameStr}</span>`;
+                wrap.style.border     = '2px solid #22c55e';
+                wrap.style.boxShadow  = '0 0 8px rgba(34,197,94,0.4)';
+                wrap.style.background = 'rgba(88,28,135,0.3)';
                 if (clr) clr.style.display = 'block';
-                if (wrap) { wrap.style.border = '2px solid rgba(168,85,247,0.6)'; wrap.style.background = 'rgba(88,28,135,0.3)'; }
             } else {
-                icon.textContent  = n < 3 ? '⬜' : '💎';
-                name.textContent  = n < 3 ? 'BAR' : 'GEM';
-                name.style.color  = n < 3 ? 'rgba(255,255,255,0.5)' : 'rgba(200,160,255,0.7)';
+                const isGem = n === 3;
+                wrap.innerHTML = `<span style="font-size:20px;line-height:1;">${isGem ? '💎' : '⬜'}</span><span style="font-size:7px;color:${isGem ? 'rgba(200,160,255,0.7)' : 'rgba(255,255,255,0.5)'};font-family:'Righteous',sans-serif;margin-top:2px;">${isGem ? 'GEM' : 'BAR'}</span>`;
+                wrap.style.border     = isGem ? '2px dashed rgba(160,100,255,0.4)' : '2px dashed rgba(255,255,255,0.25)';
+                wrap.style.boxShadow  = '';
+                wrap.style.background = 'rgba(0,0,0,0.3)';
                 if (clr) clr.style.display = 'none';
-                if (wrap) { wrap.style.border = n < 3 ? '2px dashed rgba(255,255,255,0.25)' : '2px dashed rgba(160,100,255,0.4)'; wrap.style.background = 'rgba(0,0,0,0.3)'; }
             }
         });
+    }
+
+    // Burst particles outward from the slot element when clearing
+    function spawnSlotEject(slotEl) {
+        if (!slotEl) return;
+        const room = slotEl.closest('.room') || document.body;
+        const sr   = slotEl.getBoundingClientRect();
+        const rr   = room.getBoundingClientRect();
+        const cx   = sr.left - rr.left + sr.width  / 2;
+        const cy   = sr.top  - rr.top  + sr.height / 2;
+        const cols = ['#c084fc','#a855f7','#e879f9','#ffd700','#fff'];
+        for (let i = 0; i < 10; i++) {
+            const p  = document.createElement('div');
+            const a  = (i / 10) * Math.PI * 2;
+            const d  = 18 + Math.random() * 22;
+            const sz = 5 + Math.random() * 5;
+            p.style.cssText = `
+                position:absolute;left:${cx}px;top:${cy}px;
+                width:${sz}px;height:${sz}px;border-radius:50%;
+                background:${cols[i % cols.length]};
+                pointer-events:none;z-index:200;
+                transform:translate(-50%,-50%);
+                animation:jcEject 0.4s ease-out forwards;
+                --ex:${Math.cos(a) * d}px;--ey:${Math.sin(a) * d}px;
+            `;
+            room.appendChild(p);
+            setTimeout(() => p.remove(), 420);
+        }
     }
 
     function updateBarsAndOrb() {
