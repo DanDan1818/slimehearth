@@ -1417,9 +1417,11 @@
 
                 const targetRect = targetEl.getBoundingClientRect();
                 const canvasRect = basketCanvas.getBoundingClientRect();
+                const scaleX = basketCanvas.width  / canvasRect.width;
+                const scaleY = basketCanvas.height / canvasRect.height;
 
-                const targetX = (targetRect.left + targetRect.width / 2) - canvasRect.left;
-                const targetY = (targetRect.top + targetRect.height / 2) - canvasRect.top;
+                const targetX = ((targetRect.left + targetRect.width  / 2) - canvasRect.left) * scaleX;
+                const targetY = ((targetRect.top  + targetRect.height / 2) - canvasRect.top)  * scaleY;
 
                 for (let i = basketBodies.length - 1; i >= 0; i--) {
                     const b = basketBodies[i];
@@ -1490,8 +1492,10 @@
 
                 const targetRect = targetEl.getBoundingClientRect();
                 const canvasRect = basketCanvas.getBoundingClientRect();
-                const targetX = (targetRect.left + targetRect.width / 2) - canvasRect.left;
-                const targetY = (targetRect.top + targetRect.height / 2) - canvasRect.top;
+                const scaleX = basketCanvas.width  / canvasRect.width;
+                const scaleY = basketCanvas.height / canvasRect.height;
+                const targetX = ((targetRect.left + targetRect.width  / 2) - canvasRect.left) * scaleX;
+                const targetY = ((targetRect.top  + targetRect.height / 2) - canvasRect.top)  * scaleY;
 
                 // Init ore smelt state
                 if (!gs.oreSmelt) gs.oreSmelt = { oreType: null, fed: 0, needed: 5 };

@@ -220,7 +220,9 @@
         if (!room || !room.classList.contains('active')) return;
         const canvasEl = document.getElementById('basket-canvas');
         if (!canvasEl) return;
-        const cr = canvasEl.getBoundingClientRect();
+        const cr    = canvasEl.getBoundingClientRect();
+        const scaleX = canvasEl.width  / cr.width;
+        const scaleY = canvasEl.height / cr.height;
 
         for (let i = bodies.length - 1; i >= 0; i--) {
             const b = bodies[i];
@@ -235,8 +237,8 @@
                 const slotEl = document.getElementById('jc-slot' + sn);
                 if (!slotEl) continue;
                 const sr  = slotEl.getBoundingClientRect();
-                const scx = (sr.left + sr.width / 2)  - cr.left;
-                const scy = (sr.top  + sr.height / 2) - cr.top;
+                const scx = ((sr.left + sr.width  / 2) - cr.left) * scaleX;
+                const scy = ((sr.top  + sr.height / 2) - cr.top)  * scaleY;
                 const dist = Math.sqrt((b.position.x - scx) ** 2 + (b.position.y - scy) ** 2);
                 if (dist < 38) {
                     const id = b.itemId, key = b.itemKey;
