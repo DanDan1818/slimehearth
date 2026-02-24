@@ -219,7 +219,7 @@
             const lvlSound = document.getElementById('skill-levelup-sound');
             if (lvlSound) { lvlSound.currentTime = 0; lvlSound.play().catch(() => {}); }
             if (window.addSkillXP) window.addSkillXP('jewelcrafting', 50);
-            spawnSuccessBurst();
+            spawnCardExplosion(document.getElementById('jc-card-' + picked));
         } else {
             if (window.notify) window.notify('💔 Craft failed! (rolled ' + Math.round(roll) + '%, needed <' + Math.round(totalChance) + '%)');
             if (window.addSkillXP) window.addSkillXP('jewelcrafting', 10);
@@ -292,19 +292,75 @@
         }
     }
 
-    function spawnSuccessBurst() {
+    // ── VFX — Card Explosion ──────────────────────────────────────
+    function spawnCardExplosion(cardEl) {
         const room = document.getElementById('jewelcrafting-room');
-        if (!room) return;
-        const cols = ['#ffd700','#f0abfc','#c084fc','#fff','#fbbf24'];
-        for (let i = 0; i < 20; i++) {
+        if (!room || !cardEl) return;
+
+        const roomRect = room.getBoundingClientRect();
+        const cardRect = cardEl.getBoundingClientRect();
+
+        const cardLeft   = cardRect.left   - roomRect.left;
+        const cardRight  = cardRect.right  - roomRect.left;
+        const cardTop    = cardRect.top    - roomRect.top;
+        const cardBottom = cardRect.bottom - roomRect.top;
+        const cardCX     = (cardLeft + cardRight) / 2;
+        const cardW      = cardRect.width;
+        const distToBottom = roomRect.height - cardBottom;
+
+        room.style.position = 'relative';
+
+        // Flash the card white
+        cardEl.style.transition = 'none';
+        cardEl.style.boxShadow  = '0 0 0 4px #fff, 0 0 40px 12px rgba(255,255,255,0.9)';
+        cardEl.style.transform  = 'scale(1.12)';
+        setTimeout(() => {
+            cardEl.style.transition = 'box-shadow 0.4s ease-out, transform 0.4s ease-out';
+            cardEl.style.boxShadow  = '';
+            cardEl.style.transform  = '';
+        }, 120);
+
+        // ── SPLINTERS — shoot downward from card bottom edge ─────
+        const splinterCols = ['#d4a017','#c0c0c0','#8B4513','#e8e8e8','#ffd700','#b8860b','#aaa','#fff'];
+        const splinterCount = 34;
+        for (let i = 0; i < splinterCount; i++) {
             setTimeout(() => {
-                const p = document.createElement('div');
-                const a = Math.random() * Math.PI * 2;
-                const d = 30 + Math.random() * 60;
-                p.style.cssText = `position:absolute;left:50%;top:40%;width:${4+Math.random()*5}px;height:${4+Math.random()*5}px;border-radius:50%;background:${cols[Math.floor(Math.random()*cols.length)]};pointer-events:none;z-index:50;--sx:${Math.cos(a)*d}px;--sy:${Math.sin(a)*d}px;animation:sparkFly ${0.5+Math.random()*0.5}s ease-out forwards;`;
+                const p   = document.createElement('div');
+                const spawnX = cardLeft + Math.random() * cardW;
+                const spawnY = cardBottom - Math.random() * 8;
+                // Mostly straight down, small horizontal spread
+                const angle = (Math.PI * 0.5) + (Math.random() - 0.5) * 0.55;
+                const speed = 280 + Math.random() * 480;
+                const sx    = Math.cos(angle) * speed;
+                const sy    = Math.sin(angle) * speed;
+                const w     = 2 + Math.random() * 3;
+                const h     = 7 + Math.random() * 20;
+                const rot   = (Math.random() - 0.5) * 60;
+                const dur   = 0.32 + Math.random() * 0.28;
+                const col   = splinterCols[Math.floor(Math.random() * splinterCols.length)];
+                p.style.cssText = `position:absolute;left:${spawnX}px;top:${spawnY}px;width:${w}px;height:${h}px;background:${col};border-radius:1px;pointer-events:none;z-index:100;--sx:${sx}px;--sy:${sy}px;--rot:${rot}deg;animation:cardSplinter ${dur}s cubic-bezier(0.1,0,0.8,0.6) forwards;transform-origin:center center;`;
                 room.appendChild(p);
-                setTimeout(() => p.remove(), 1100);
-            }, i * 35);
+                setTimeout(() => p.remove(), dur * 1000 + 60);
+            }, i * 7);
+        }
+
+        // ── SMOKE — large dark puffs billowing straight down ─────
+        const smokeCount = 20;
+        for (let i = 0; i < smokeCount; i++) {
+            setTimeout(() => {
+                const p     = document.createElement('div');
+                const spawnX = cardLeft + (Math.random() * (cardW + 16)) - 8;
+                const spawnY = cardTop  + cardRect.height * (0.3 + Math.random() * 0.7);
+                const sz    = 32 + Math.random() * 52;
+                const sy    = (distToBottom + 80) * (0.65 + Math.random() * 0.5);
+                const wx    = (Math.random() - 0.5) * 35;
+                const dur   = 0.45 + Math.random() * 0.35;
+                const grey  = Math.floor(20 + Math.random() * 55);
+                const col   = `rgba(${grey},${grey},${grey},0.78)`;
+                p.style.cssText = `position:absolute;left:${spawnX - sz/2}px;top:${spawnY - sz/2}px;width:${sz}px;height:${sz}px;background:radial-gradient(circle, ${col} 0%, transparent 68%);border-radius:50%;pointer-events:none;z-index:99;--sy:${sy}px;--wx:${wx}px;animation:cardSmoke ${dur}s ease-out forwards;`;
+                room.appendChild(p);
+                setTimeout(() => p.remove(), dur * 1000 + 60);
+            }, i * 15);
         }
     }
 
