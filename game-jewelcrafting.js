@@ -107,6 +107,8 @@
         if (!slots[n]) return;
         if (window.addItem) window.addItem(slots[n].itemId, 1);
         slots[n] = null;
+        if (window.save) window.save();
+        if (window.updateInventoryCounter) window.updateInventoryCounter();
         refreshAll();
     };
 

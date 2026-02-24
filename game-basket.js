@@ -259,6 +259,13 @@
         function save() {
             localStorage.setItem('slimeKeeper', JSON.stringify(gs));
         }
+
+        // Expose core functions globally so other script files can call them
+        window.save                    = save;
+        window.notify                  = notify;
+        window.addItem                 = function(itemId, qty) { return addItem(itemId, qty); };
+        window.updateInventoryCounter  = updateInventoryCounter;
+        window.gs                      = gs;
         
         function load() {
             const saved = localStorage.getItem('slimeKeeper');
