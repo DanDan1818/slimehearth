@@ -71,6 +71,7 @@
     function lockItemInJCSlot(body, slotNumber) {
         const itemId  = body.itemId;
         const itemKey = body.itemKey;
+        console.log('[JC] lockItemInJCSlot called', slotNumber, itemId, itemKey);
         if (!itemId) return;
 
         // If slot already occupied, return old item to inventory first
@@ -87,6 +88,7 @@
 
         // Store slot state
         jcSlots[slotNumber] = { itemId, itemKey };
+        console.log('[JC] jcSlots after set:', JSON.stringify(jcSlots));
 
         save();
         refreshAll();
@@ -232,6 +234,7 @@
 
     // ── Craft ────────────────────────────────────────────────────
     function onCraft() {
+        console.log('[JC] onCraft called, jcSlots:', JSON.stringify(jcSlots));
         if (!jcSlots[1] || !jcSlots[2] || !jcSlots[3]) {
             notify('💍 Fill all 3 slots first!');
             return;

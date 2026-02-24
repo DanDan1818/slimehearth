@@ -1650,17 +1650,22 @@
                 if (jcRoom && jcRoom.classList.contains('active')) {
                     const isBar = ['copper_bar','iron_bar','silver_bar','gold_bar'].includes(itemId);
                     const isGem = ['gem','emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
+                    console.log('[JC enddrag]', itemId, 'isBar:', isBar, 'isGem:', isGem);
                     if (isBar) {
                         for (const sn of [1, 2]) {
                             const slotEl = document.getElementById('jc-slot' + sn);
-                            if (slotEl && isBodyOverElement(body, slotEl)) {
+                            const over = slotEl && isBodyOverElement(body, slotEl);
+                            console.log('[JC enddrag] slot', sn, 'over:', over);
+                            if (over) {
                                 if (window.lockItemInJCSlot) window.lockItemInJCSlot(body, sn);
                                 return;
                             }
                         }
                     } else if (isGem) {
                         const slotEl = document.getElementById('jc-slot3');
-                        if (slotEl && isBodyOverElement(body, slotEl)) {
+                        const over = slotEl && isBodyOverElement(body, slotEl);
+                        console.log('[JC enddrag] slot 3 over:', over);
+                        if (over) {
                             if (window.lockItemInJCSlot) window.lockItemInJCSlot(body, 3);
                             return;
                         }
