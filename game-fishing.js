@@ -376,3 +376,171 @@
         }
         
         
+
+        // ===== LAKE FISHING: Moving Target Minigame =====
+        // The green zone bounces back and forth at variable speed.
+        // Player hits the button when the fixed red marker overlaps the green zone.
+
+        let lakeActive      = false;
+        let lakeTargetPos   = 0;      // left px of green zone
+        let lakeTargetDir   = 1;      // 1 = moving right, -1 = moving left
+        let lakeTargetSpeed = 3;      // px per tick — changes per fish
+        let lakeInterval    = null;
+        const LAKE_BAR_W    = 280;
+        const LAKE_TARGET_W = 60;
+        const LAKE_MARKER   = 125;    // fixed red marker position (center of bar)
+
+        // Fish personalities: name, speed range, zone width label, drop table key
+        const LAKE_FISH = [
+            { name: 'Perch',    speedMin: 2,  speedMax: 3,  mood: '😴 Lazy Perch...', item: 'fish1' },
+            { name: 'Bass',     speedMin: 3,  speedMax: 5,  mood: '🐟 Steady Bass',   item: 'fish2' },
+            { name: 'Trout',    speedMin: 5,  speedMax: 7,  mood: '💨 Darting Trout!', item: 'fish3' },
+            { name: 'Pike',     speedMin: 7,  speedMax: 10, mood: '⚡ Wild Pike!!',    item: 'fish4' },
+            { name: 'Sturgeon', speedMin: 2,  speedMax: 4,  mood: '🦕 Ancient Sturgeon', item: 'fish8' },
+        ];
+
+        function startLakeFishing() {
+            if (lakeActive) {
+                // Button pressed during active session = catch attempt
+                stopLakeFishing();
+                return;
+            }
+
+            const castBtn = document.getElementById('cast-lake');
+            const timer   = document.getElementById('fishing-timer-lake');
+            const mood    = document.getElementById('lake-fish-mood');
+            const target  = document.getElementById('fishing-target-lake');
+
+            // Pick a fish personality weighted by fishing level
+            const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+            const weights = [40, 30, 15, 8, 7]; // perch, bass, trout, pike, sturgeon
+            // Higher level shifts weight toward harder fish
+            const lvShift = Math.min(Math.floor((fishLv - 1) / 5), 4);
+            const picked  = pickWeighted(weights, lvShift);
+            const fish    = LAKE_FISH[picked];
+
+            lakeActive      = true;
+            lakeTargetPos   = Math.random() * (LAKE_BAR_W - LAKE_TARGET_W);
+            lakeTargetDir   = Math.random() < 0.5 ? 1 : -1;
+            lakeTargetSpeed = fish.speedMin + Math.random() * (fish.speedMax - fish.speedMin);
+
+            target.style.left = lakeTargetPos + 'px';
+            if (timer) timer.textContent = 'Hit when marker is in green!';
+            if (mood)  mood.textContent  = fish.mood;
+
+            // Burst specks on cast
+            document.querySelectorAll('.lspeck').forEach(s => {
+                s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+            });
+
+            lakeInterval = setInterval(() => {
+                lakeTargetPos += lakeTargetDir * lakeTargetSpeed;
+
+                // Bounce off edges
+                if (lakeTargetPos <= 0) {
+                    lakeTargetPos = 0;
+                    lakeTargetDir = 1;
+                    // Slightly randomize speed on bounce for unpredictability
+                    lakeTargetSpeed = fish.speedMin + Math.random() * (fish.speedMax - fish.speedMin);
+                }
+                if (lakeTargetPos >= LAKE_BAR_W - LAKE_TARGET_W) {
+                    lakeTargetPos = LAKE_BAR_W - LAKE_TARGET_W;
+                    lakeTargetDir = -1;
+                    lakeTargetSpeed = fish.speedMin + Math.random() * (fish.speedMax - fish.speedMin);
+                }
+
+                target.style.left = lakeTargetPos + 'px';
+            }, 30);
+
+            // Store picked fish for result
+            lakeActive = { fish };
+        }
+
+        function stopLakeFishing() {
+            if (!lakeActive || lakeActive === true) return;
+            clearInterval(lakeInterval);
+            lakeInterval = null;
+
+            const fish   = lakeActive.fish;
+            const timer  = document.getElementById('fishing-timer-lake');
+            const mood   = document.getElementById('lake-fish-mood');
+            const target = document.getElementById('fishing-target-lake');
+
+            lakeActive = false;
+
+            // Check: is fixed marker (LAKE_MARKER) inside the green zone?
+            const zoneLeft  = lakeTargetPos;
+            const zoneRight = lakeTargetPos + LAKE_TARGET_W;
+            const hit = LAKE_MARKER >= zoneLeft && LAKE_MARKER <= zoneRight;
+
+            if (hit) {
+                // Burst specks
+                document.querySelectorAll('.lspeck').forEach(s => {
+                    s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
+                    s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
+                });
+
+                const fishLv  = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+                const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30);
+
+                // Trash chance reduces with level
+                const trashChance = Math.max(0.20 - lvBonus * 1.5, 0.03);
+                let caughtItem, catchMsg;
+
+                if (Math.random() < trashChance) {
+                    caughtItem = 'seaweed';
+                    catchMsg   = '🌿 Pulled up Seaweed...';
+                    addSkillXP('fishing', 1);
+                } else {
+                    // Fish determined by which personality was picked + level bonus
+                    const epicCut  = Math.min(0.05 + lvBonus * 0.6, 0.22);
+                    const rareCut  = Math.min(0.14 + lvBonus,       0.40);
+                    const uncomCut = Math.min(0.32 + lvBonus * 0.8, 0.55);
+                    const fishRand = Math.random();
+                    if (fishRand < epicCut) {
+                        caughtItem = 'fish8'; // Sturgeon (Epic)
+                    } else if (fishRand < rareCut) {
+                        caughtItem = 'fish7';
+                    } else if (fishRand < uncomCut) {
+                        caughtItem = 'fish6';
+                    } else {
+                        caughtItem = fish.item; // Personality-matched catch
+                    }
+                    catchMsg = '🎣 Caught ' + ITEM_DATA[caughtItem].name + '!';
+                    addSkillXP('fishing', 12);
+                }
+
+                if (timer) timer.textContent = catchMsg;
+                if (mood)  mood.textContent  = '';
+                addItem(caughtItem, 1);
+
+                // 5% basket chance
+                if (Math.random() < 0.05) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
+                // Blue frog
+                if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
+                    addItem('frog_blue', 1);
+                    notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
+                }
+            } else {
+                if (timer) timer.textContent = '❌ Missed! Try again.';
+                if (mood)  mood.textContent  = '';
+            }
+
+            setTimeout(() => {
+                if (timer) timer.textContent = '';
+                if (target) target.style.left = (LAKE_BAR_W / 2 - LAKE_TARGET_W / 2) + 'px';
+            }, 1500);
+        }
+
+        function pickWeighted(weights, shift) {
+            // Shift weight toward higher indices based on level
+            const shifted = weights.map((w, i) => Math.max(1, w - shift * i * 3 + shift * (weights.length - 1 - i) * 2));
+            const total = shifted.reduce((a, b) => a + b, 0);
+            let r = Math.random() * total;
+            for (let i = 0; i < shifted.length; i++) {
+                r -= shifted[i];
+                if (r <= 0) return i;
+            }
+            return shifted.length - 1;
+        }

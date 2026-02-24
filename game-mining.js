@@ -202,6 +202,15 @@
                 switchRoom('fishing-river-room');
             };
             document.getElementById('leave-river').onclick = () => switchRoom('fishing-menu-room');
+
+            document.getElementById('goto-lake').onclick = () => {
+                if (!gs.tools || !gs.tools.better_net) {
+                    notify('❌ You need a Fishing Net to fish at the Lake! Buy it from the shop.');
+                    return;
+                }
+                switchRoom('fishing-lake-room');
+            };
+            document.getElementById('leave-lake').onclick = () => switchRoom('fishing-menu-room');
             function enterMineDepth(depth) {
                 const cfg = MINE_DEPTHS[depth];
                 const miningLevel = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
@@ -287,6 +296,14 @@
             riverBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 stopRiverBar();
+            });
+
+            // Lake: tap once to cast, tap again to catch
+            const lakeBtn = document.getElementById('cast-lake');
+            lakeBtn.addEventListener('mousedown', startLakeFishing);
+            lakeBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startLakeFishing();
             });
             
             
@@ -427,11 +444,6 @@
             if (dbg('give-gems')) dbg('give-gems').onclick = () => {
                 ['emerald','ruby','sapphire','amethyst','topaz','diamond'].forEach(id => addItem(id, 1));
                 notify('💎 +1 of each Gem!');
-            };
-
-            if (dbg('give-bars')) dbg('give-bars').onclick = () => {
-                ['copper_bar','iron_bar','silver_bar','gold_bar'].forEach(id => addItem(id, 1));
-                notify('🔩 +1 of each Bar!');
             };
             
             const FONT_OPTIONS = [
