@@ -88,9 +88,10 @@
         const gs = window.gs;
         if (!gs || !gs.inventory) return;
         const allowed = n < 3 ? METAL_BARS : GEMS;
-        const key = Object.keys(gs.inventory).find(k => gs.inventory[k] && allowed.includes(gs.inventory[k].itemId));
+        // inventory values are plain itemId strings (e.g. "copper_bar"), not objects
+        const key = Object.keys(gs.inventory).find(k => allowed.includes(gs.inventory[k]));
         if (!key) { if (window.notify) window.notify(n < 3 ? 'No Metal Bars!' : 'No Gems!'); return; }
-        fillSlot(n, gs.inventory[key].itemId, key);
+        fillSlot(n, gs.inventory[key], key);
     }
 
     function fillSlot(n, itemId, itemKey) {
@@ -203,7 +204,7 @@
 
     // ── Craft ────────────────────────────────────────────────────
     function onCraft() {
-        if (!slots[1] || !slots[2] || !slots[3]) {
+        if (!slots[1]?.itemId || !slots[2]?.itemId || !slots[3]?.itemId) {
             if (window.notify) window.notify('💍 Fill all 3 slots first!');
             return;
         }
