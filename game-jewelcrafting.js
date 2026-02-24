@@ -224,12 +224,16 @@
         const amuletBonus = Math.max(0, ((jc.amulet || 1) - 1));
         const totalChance = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletBonus);
 
-        // Consume slots — move bodies off-screen and release them (they'll fall away and be ignored)
-        // The items were removed from inventory when they were dropped into the slots
+        // Consume slots — delete items from inventory and destroy bodies (matches hearth cook pattern)
         [jcLockedBody1, jcLockedBody2, jcLockedBody3].forEach(b => {
             if (!b) return;
-            if (typeof Matter !== 'undefined') Matter.Body.setPosition(b, { x: -500, y: 2000 });
-            if (typeof releaseLockedBody === 'function') releaseLockedBody(b);
+            // Delete from gs.inventory by itemKey
+            if (b.itemKey && gs.inventory) delete gs.inventory[b.itemKey];
+            // Remove from Matter world
+            if (typeof Matter !== 'undefined' && basketEngine) {
+                Matter.World.remove(basketEngine.world, b);
+            }
+            // Remove from basketBodies tracking array
             if (typeof basketBodies !== 'undefined') {
                 const idx = basketBodies.indexOf(b);
                 if (idx > -1) basketBodies.splice(idx, 1);
@@ -238,6 +242,7 @@
         jcLockedBody1 = null; jcSlot1ItemId = null;
         jcLockedBody2 = null; jcSlot2ItemId = null;
         jcLockedBody3 = null; jcSlot3ItemId = null;
+        updateInventoryCounter();
 
         // Roll
         const roll = Math.random() * 100;
