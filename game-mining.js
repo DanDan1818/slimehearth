@@ -347,14 +347,15 @@
             */
             
             // Debug functions
-            document.getElementById('fill-bag').onclick = () => {
-                addItem('carrot', 3);  // Carrots
-                addItem('fish7', 1);  // Crab
-                addItem('fish8', 1);  // Shark
-                addItem('fish5', 1);  // Lobster
+            const dbg = id => document.getElementById(id);
+            if (dbg('fill-bag')) dbg('fill-bag').onclick = () => {
+                addItem('carrot', 3);
+                addItem('fish7', 1);
+                addItem('fish8', 1);
+                addItem('fish5', 1);
             };
             
-            document.getElementById('toggle-debug-console').onclick = () => {
+            if (dbg('toggle-debug-console')) dbg('toggle-debug-console').onclick = () => {
                 const debugConsole = document.getElementById('debug-console');
                 if (debugConsole.style.display === 'none') {
                     debugConsole.style.display = 'block';
@@ -365,7 +366,7 @@
                 }
             };
             
-            document.getElementById('clear-bag').onclick = () => {
+            if (dbg('clear-bag')) dbg('clear-bag').onclick = () => {
                 gs.inventory = {};
                 save();
                 notify('Inventory cleared');
@@ -373,19 +374,19 @@
                 if (basketEngine) populateBasket();
             };
             
-            document.getElementById('fill-geodes').onclick = () => {
+            if (dbg('fill-geodes')) dbg('fill-geodes').onclick = () => {
                 addItem('small_geode', 6);
                 notify('Added 6 Small Geodes!');
             };
             
-            document.getElementById('give-coins').onclick = () => {
+            if (dbg('give-coins')) dbg('give-coins').onclick = () => {
                 gs.coins += 1000;
                 save();
                 updateUI();
                 notify('Added 1000 coins!');
             };
             
-            document.getElementById('boost-skills').onclick = () => {
+            if (dbg('boost-skills')) dbg('boost-skills').onclick = () => {
                 if (!gs.skills) gs.skills = {};
                 ['fishing','mining','farming','cooking'].forEach(skill => {
                     if (!gs.skills[skill]) gs.skills[skill] = { level: 1, xp: 0, xpNeeded: 10 };
@@ -395,29 +396,34 @@
                 notify('📈 +5 to all Skills!', 'achievement');
                 displayMiningMenu();
             };
-            
-            document.getElementById('give-geodes').onclick = () => {
+
+            if (dbg('give-geodes')) dbg('give-geodes').onclick = () => {
                 ['small_geode','medium_geode','large_geode','rare_geode','rainbow_geode'].forEach(id => addItem(id, 1));
                 notify('🪨 Gave 1 of each geode!');
             };
             
-            document.getElementById('give-frog').onclick = () => {
+            if (dbg('give-frog')) dbg('give-frog').onclick = () => {
                 const frogIds = Object.keys(FROGS_DATA);
                 const randomFrog = frogIds[Math.floor(Math.random() * frogIds.length)];
                 addItem(randomFrog, 1);
                 notify('🐸 Spawned a ' + FROGS_DATA[randomFrog].name + '!');
             };
 
-            document.getElementById('give-coal').onclick = () => {
+            if (dbg('give-coal')) dbg('give-coal').onclick = () => {
                 for (let i = 0; i < 10; i++) addItem('coal', 1);
                 notify('🖤 +10 Coal!');
             };
 
-            document.getElementById('give-ores').onclick = () => {
+            if (dbg('give-ores')) dbg('give-ores').onclick = () => {
                 ['copper_ore','iron_ore','silver_ore','gold_ore'].forEach(id => {
                     for (let i = 0; i < 5; i++) addItem(id, 1);
                 });
                 notify('⛏️ +5 of each Ore!');
+            };
+
+            if (dbg('give-gems')) dbg('give-gems').onclick = () => {
+                ['emerald','ruby','sapphire','amethyst','topaz','diamond'].forEach(id => addItem(id, 1));
+                notify('💎 +1 of each Gem!');
             };
             
             const FONT_OPTIONS = [

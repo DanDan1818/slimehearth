@@ -131,10 +131,10 @@
         const pct3 = slots[3] ? (GEM_CHANCE[slots[3].itemId] || 0) : 0;
         const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
 
-        setBar('jc-bar1', pct1, 25, slots[1] ? BAR_COLOR[slots[1].itemId] : null, 'jc-bar1-pct', pct1 + '%');
-        setBar('jc-bar2', pct2, 25, slots[2] ? BAR_COLOR[slots[2].itemId] : null, 'jc-bar2-pct', pct2 + '%');
-        setBar('jc-bar3', pct3, 30, slots[3] ? GEM_COLOR[slots[3].itemId] : null, 'jc-bar3-pct', pct3 + '%');
-        setBar('jc-bar4', pct4, 20, null /* always gold */, 'jc-bar4-pct', pct4.toFixed(1) + '%');
+        setBar('jc-bar1', !!slots[1], pct1, slots[1] ? BAR_COLOR[slots[1].itemId] : null, 'jc-bar1-pct', pct1 ? pct1 + '%' : '0%');
+        setBar('jc-bar2', !!slots[2], pct2, slots[2] ? BAR_COLOR[slots[2].itemId] : null, 'jc-bar2-pct', pct2 ? pct2 + '%' : '0%');
+        setBar('jc-bar3', !!slots[3], pct3, slots[3] ? GEM_COLOR[slots[3].itemId] : null, 'jc-bar3-pct', pct3 ? pct3 + '%' : '0%');
+        setBar4(pct4);
 
         const total = Math.min(100, pct1 + pct2 + pct3 + pct4);
         const orbFill = document.getElementById('jc-orb-fill');
@@ -143,14 +143,21 @@
         if (orbPct)  orbPct.textContent   = Math.round(total);
     }
 
-    function setBar(barId, value, max, color, pctId, label) {
+    // Bars 1-3: fill proportionally where 30% = 100% full bar
+    function setBar(barId, filled, chancePct, color, pctId, label) {
         const bar   = document.getElementById(barId);
         const pctEl = document.getElementById(pctId);
         if (!bar) return;
-        const fillPct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
-        bar.style.height = fillPct + '%';
+        bar.style.height = filled ? Math.min(100, (chancePct / 30) * 100) + '%' : '0%';
         if (color) bar.style.background = color;
         if (pctEl) pctEl.textContent = label;
+    }
+    // Bar 4: skill level fills proportionally (1%–20% of bar)
+    function setBar4(pct4) {
+        const bar   = document.getElementById('jc-bar4');
+        const pctEl = document.getElementById('jc-bar4-pct');
+        if (bar) bar.style.height = Math.min(100, (pct4 / 20) * 100) + '%';
+        if (pctEl) pctEl.textContent = pct4.toFixed(1) + '%';
     }
 
     function updateCardLevels() {
