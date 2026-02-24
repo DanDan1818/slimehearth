@@ -1023,34 +1023,39 @@
         #fishing-bar-container-lake {
             position: relative;
             width: 280px;
-            height: 22px;
+            height: 26px;
             background: rgba(255,255,255,0.6);
             border: 1px solid #000;
-            border-radius: 11px;
+            border-radius: 13px;
             overflow: hidden;
         }
 
         #fishing-target-lake {
             position: absolute;
             top: 0;
-            width: 60px;
+            width: 70px;
             height: 100%;
             background: linear-gradient(90deg,#4ade80,#16a34a);
-            border-radius: 11px;
+            border-radius: 13px;
             opacity: 0.85;
-            transition: left 0.03s linear;
         }
 
-        #fishing-marker-lake {
+        #fishing-pill-lake {
             position: absolute;
-            top: 0;
-            left: 125px; /* center of 280px bar */
-            width: 6px;
-            height: 100%;
-            background: #ef4444;
-            border-radius: 3px;
-            box-shadow: 0 0 4px rgba(239,68,68,0.8);
+            top: 3px;
+            width: 36px;
+            height: 20px;
+            background: linear-gradient(135deg, #f0f9ff, #bae6fd, #38bdf8);
+            border: 2px solid #0284c7;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.7);
             z-index: 2;
+        }
+
+        #fishing-pill-lake.in-zone {
+            background: linear-gradient(135deg, #f0fdf4, #bbf7d0, #4ade80);
+            border-color: #16a34a;
+            box-shadow: 0 0 6px rgba(74,222,128,0.8), inset 0 1px 0 rgba(255,255,255,0.7);
         }
 
         .lspeck {

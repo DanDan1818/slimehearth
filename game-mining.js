@@ -307,12 +307,22 @@
                 stopRiverBar();
             });
 
-            // Lake: tap once to cast, tap again to catch
+            // Lake: hold to accumulate time in green zone, release to pause, hold again to resume
             const lakeBtn = document.getElementById('cast-lake');
-            lakeBtn.addEventListener('mousedown', startLakeFishing);
+            lakeBtn.addEventListener('mousedown', () => {
+                if (!lakeActive) startLakeFishing();
+                else holdLakeButton();
+            });
+            lakeBtn.addEventListener('mouseup', releaseLakeButton);
+            lakeBtn.addEventListener('mouseleave', releaseLakeButton);
             lakeBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
-                startLakeFishing();
+                if (!lakeActive) startLakeFishing();
+                else holdLakeButton();
+            });
+            lakeBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                releaseLakeButton();
             });
 
             // Sea: tap once to cast all 4, tap again to stop and score
