@@ -211,6 +211,15 @@
                 switchRoom('fishing-lake-room');
             };
             document.getElementById('leave-lake').onclick = () => switchRoom('fishing-menu-room');
+
+            document.getElementById('goto-sea-menu').onclick = () => {
+                if (!gs.tools || !gs.tools.better_net) {
+                    notify('❌ You need a Fishing Net to fish at the Sea! Buy it from the shop.');
+                    return;
+                }
+                switchRoom('fishing-sea-room');
+            };
+            document.getElementById('leave-sea').onclick = () => switchRoom('fishing-menu-room');
             function enterMineDepth(depth) {
                 const cfg = MINE_DEPTHS[depth];
                 const miningLevel = gs.skills && gs.skills.mining ? gs.skills.mining.level : 1;
@@ -305,6 +314,14 @@
                 e.preventDefault();
                 startLakeFishing();
             });
+
+            // Sea: tap once to cast all 4, tap again to stop and score
+            const seaBtn = document.getElementById('cast-sea');
+            seaBtn.addEventListener('mousedown', startSeaFishing);
+            seaBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startSeaFishing();
+            });
             
             
             document.getElementById('goto-adventure').onclick = () => {
@@ -341,6 +358,10 @@
                 stopOrchardGame();
                 switchRoom('farming-menu-room');
             };
+            document.getElementById('goto-coop').onclick = () => switchRoom('farming-coop-room');
+            document.getElementById('leave-coop').onclick = () => switchRoom('farming-menu-room');
+            document.getElementById('goto-barn').onclick = () => switchRoom('farming-barn-room');
+            document.getElementById('leave-barn').onclick = () => switchRoom('farming-menu-room');
             document.getElementById('orchard-tap-btn').onclick = orchardTap;
             
             // OLD SHOP BUTTONS (replaced by grid)

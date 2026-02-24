@@ -544,3 +544,157 @@
             }
             return shifted.length - 1;
         }
+
+        // ===== SEA FISHING: 4 Vertical Bars =====
+        // All 4 green zones move independently at their fish's speed.
+        // Tap cast to start all 4, tap again to stop all 4 and score.
+
+        const SEA_BAR_H    = 140;   // px height of each bar
+        const SEA_TARGET_H = 44;    // px height of green zone
+        const SEA_MARKER_Y = 67;    // fixed red marker position (center of bar)
+
+        // Sea fish pool — each bar gets one independently
+        const SEA_FISH_POOL = [
+            { emoji: '🐟', name: 'Sardine',   item: 'fish1', speedMin: 1.5, speedMax: 2.5 },
+            { emoji: '🐠', name: 'Mackerel',  item: 'fish2', speedMin: 2,   speedMax: 4   },
+            { emoji: '🐡', name: 'Tuna',      item: 'fish3', speedMin: 3.5, speedMax: 6   },
+            { emoji: '🦈', name: 'Shark',     item: 'fish8', speedMin: 6,   speedMax: 9   },
+            { emoji: '🦞', name: 'Lobster',   item: 'fish5', speedMin: 1,   speedMax: 2   },
+            { emoji: '🦐', name: 'Shrimp',    item: 'fish6', speedMin: 2,   speedMax: 3.5 },
+            { emoji: '🦀', name: 'Crab',      item: 'fish7', speedMin: 1.5, speedMax: 3   },
+            { emoji: '🎣', name: 'Swordfish', item: 'fish4', speedMin: 5,   speedMax: 8   },
+        ];
+
+        let seaActive   = false;
+        let seaInterval = null;
+        let seaBars     = []; // per-bar state: { fish, pos, dir, speed }
+
+        function startSeaFishing() {
+            if (seaActive) {
+                stopSeaFishing();
+                return;
+            }
+
+            const timer     = document.getElementById('fishing-timer-sea');
+            const scoreLabel = document.getElementById('sea-score-label');
+            const fishLv    = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+
+            // Assign a random fish to each bar, weighted by level
+            seaBars = [0, 1, 2, 3].map(i => {
+                // Higher level → harder fish available
+                const maxIdx = Math.min(Math.floor(fishLv / 3) + 3, SEA_FISH_POOL.length - 1);
+                const pool = SEA_FISH_POOL.slice(0, maxIdx + 1);
+                const fish = pool[Math.floor(Math.random() * pool.length)];
+                const speed = fish.speedMin + Math.random() * (fish.speedMax - fish.speedMin);
+                return {
+                    fish,
+                    pos: Math.random() * (SEA_BAR_H - SEA_TARGET_H),
+                    dir: Math.random() < 0.5 ? 1 : -1,
+                    speed,
+                };
+            });
+
+            seaActive = true;
+
+            // Set labels, clear results
+            seaBars.forEach((b, i) => {
+                const label = document.getElementById('sea-label-' + i);
+                const result = document.getElementById('sea-result-' + i);
+                const target = document.getElementById('sea-target-' + i);
+                if (label)  label.textContent  = b.fish.emoji;
+                if (result) result.textContent = '';
+                if (target) target.style.top   = b.pos + 'px';
+                // Reset bar background
+                const container = document.getElementById('sea-bar-' + i);
+                if (container) container.style.background = 'rgba(255,255,255,0.55)';
+            });
+
+            if (timer)      timer.textContent = 'Stop when markers hit green!';
+            if (scoreLabel) scoreLabel.textContent = '';
+
+            // Animation loop
+            seaInterval = setInterval(() => {
+                seaBars.forEach((b, i) => {
+                    b.pos += b.dir * b.speed;
+                    // Bounce + re-randomize speed
+                    if (b.pos <= 0) {
+                        b.pos = 0; b.dir = 1;
+                        b.speed = b.fish.speedMin + Math.random() * (b.fish.speedMax - b.fish.speedMin);
+                    }
+                    if (b.pos >= SEA_BAR_H - SEA_TARGET_H) {
+                        b.pos = SEA_BAR_H - SEA_TARGET_H; b.dir = -1;
+                        b.speed = b.fish.speedMin + Math.random() * (b.fish.speedMax - b.fish.speedMin);
+                    }
+                    const target = document.getElementById('sea-target-' + i);
+                    if (target) target.style.top = b.pos + 'px';
+                });
+            }, 30);
+        }
+
+        function stopSeaFishing() {
+            if (!seaActive) return;
+            clearInterval(seaInterval);
+            seaInterval = null;
+            seaActive   = false;
+
+            const timer      = document.getElementById('fishing-timer-sea');
+            const scoreLabel = document.getElementById('sea-score-label');
+            const fishLv     = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+
+            let hits = 0;
+            const caughtItems = [];
+
+            seaBars.forEach((b, i) => {
+                const zoneTop    = b.pos;
+                const zoneBottom = b.pos + SEA_TARGET_H;
+                const hit = SEA_MARKER_Y >= zoneTop && SEA_MARKER_Y <= zoneBottom;
+
+                const result    = document.getElementById('sea-result-' + i);
+                const container = document.getElementById('sea-bar-' + i);
+
+                if (hit) {
+                    hits++;
+                    if (result)    result.textContent = '✅';
+                    if (container) container.style.background = 'rgba(74,222,128,0.3)';
+                    caughtItems.push(b.fish.item);
+                } else {
+                    if (result)    result.textContent = '❌';
+                    if (container) container.style.background = 'rgba(239,68,68,0.15)';
+                }
+            });
+
+            // Award catches
+            if (hits > 0) {
+                caughtItems.forEach(itemId => addItem(itemId, 1));
+                addSkillXP('fishing', hits * 8);
+                const names = caughtItems.map(id => ITEM_DATA[id] ? ITEM_DATA[id].name : id).join(', ');
+                if (timer)      timer.textContent = '🎣 Caught ' + hits + '/4! ' + (hits === 4 ? '🔥 Perfect!' : '');
+                if (scoreLabel) scoreLabel.textContent = names;
+
+                // Bonuses
+                if (Math.random() < 0.05 * hits) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
+                if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
+                    addItem('frog_blue', 1);
+                    notify('🔵🐸 A Blue Frog leapt from the sea!', 'achievement');
+                }
+            } else {
+                if (timer)      timer.textContent = '❌ Nothing caught!';
+                if (scoreLabel) scoreLabel.textContent = '';
+            }
+
+            // Reset after delay
+            setTimeout(() => {
+                if (timer)      timer.textContent = '';
+                if (scoreLabel) scoreLabel.textContent = '';
+                [0,1,2,3].forEach(i => {
+                    const result    = document.getElementById('sea-result-' + i);
+                    const container = document.getElementById('sea-bar-' + i);
+                    const target    = document.getElementById('sea-target-' + i);
+                    const label     = document.getElementById('sea-label-' + i);
+                    if (result)    result.textContent = '';
+                    if (label)     label.textContent  = '';
+                    if (container) container.style.background = 'rgba(255,255,255,0.55)';
+                    if (target)    target.style.top = ((SEA_BAR_H - SEA_TARGET_H) / 2) + 'px';
+                });
+            }, 2000);
+        }
