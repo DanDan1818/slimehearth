@@ -123,9 +123,10 @@
     }
 
     function updateBarsAndOrb() {
-        const jcLevel = window.gs?.skills?.jewelcrafting?.level || 1;
+        const jcLevel   = window.gs?.skills?.jewelcrafting?.level || 1;
+        const jc        = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
+        const amuletPct = Math.max(0, ((jc.amulet || 1) - 1)); // level 1 = 0%, level 2 = 1%...
 
-        // Bar 1: slot1 metal bar % (max 25 → fill = pct/25 * 100%)
         const pct1 = slots[1] ? (BAR_CHANCE[slots[1].itemId] || 0) : 0;
         const pct2 = slots[2] ? (BAR_CHANCE[slots[2].itemId] || 0) : 0;
         const pct3 = slots[3] ? (GEM_CHANCE[slots[3].itemId] || 0) : 0;
@@ -136,7 +137,8 @@
         setBar('jc-bar3', !!slots[3], pct3, slots[3] ? GEM_COLOR[slots[3].itemId] : null, 'jc-bar3-pct', pct3 ? pct3 + '%' : '0%');
         setBar4(pct4);
 
-        const total = Math.min(100, pct1 + pct2 + pct3 + pct4);
+        // Total = all 4 ingredient bars + amulet passive bonus
+        const total = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletPct);
         const orbFill = document.getElementById('jc-orb-fill');
         const orbPct  = document.getElementById('jc-orb-pct');
         if (orbFill) orbFill.style.height = total + '%';
@@ -162,12 +164,23 @@
 
     function updateCardLevels() {
         const jc = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
+        const rLv = jc.ring   || 1;
+        const aLv = jc.amulet || 1;
+        const wLv = jc.watch  || 1;
+
         const rEl = document.getElementById('jc-ring-level');
         const aEl = document.getElementById('jc-amulet-level');
         const wEl = document.getElementById('jc-watch-level');
-        if (rEl) rEl.textContent = jc.ring   || 1;
-        if (aEl) aEl.textContent = jc.amulet || 1;
-        if (wEl) wEl.textContent = jc.watch  || 1;
+        if (rEl) rEl.textContent = rLv;
+        if (aEl) aEl.textContent = aLv;
+        if (wEl) wEl.textContent = wLv;
+
+        const rStat = document.getElementById('jc-ring-stat');
+        const aStat = document.getElementById('jc-amulet-stat');
+        const wStat = document.getElementById('jc-watch-stat');
+        if (rStat) rStat.textContent = '+' + (rLv - 1) + '% 2x Sell';
+        if (aStat) aStat.textContent = '+' + (aLv - 1) + '% Craft';
+        if (wStat) wStat.textContent = '+' + (wLv - 1) + 's Mine';
     }
 
     // ── Craft ────────────────────────────────────────────────────
@@ -178,11 +191,13 @@
         }
 
         const jcLevel = window.gs?.skills?.jewelcrafting?.level || 1;
+        const jc      = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
         const pct1 = BAR_CHANCE[slots[1].itemId] || 0;
         const pct2 = BAR_CHANCE[slots[2].itemId] || 0;
         const pct3 = GEM_CHANCE[slots[3].itemId] || 0;
         const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
-        const totalChance = Math.min(100, pct1 + pct2 + pct3 + pct4);
+        const amuletBonus = Math.max(0, ((jc.amulet || 1) - 1));
+        const totalChance = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletBonus);
 
         // Consume slots (items already removed from inventory on drop)
         slots[1] = null; slots[2] = null; slots[3] = null;

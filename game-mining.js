@@ -70,6 +70,9 @@
             if (instruction) instruction.textContent = 'Stop Automine';
             
             automineTimeLeft = 60;
+            // Watch bonus: +1 second per watch level (level 1 = 0 bonus)
+            const watchLevel = (gs.jewelcraft && gs.jewelcraft.watch) ? gs.jewelcraft.watch : 1;
+            automineTimeLeft += (watchLevel - 1);
             automineRunId++;
             const myRunId = automineRunId;
             currentMineDepth = depth;

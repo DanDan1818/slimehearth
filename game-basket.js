@@ -1746,8 +1746,18 @@
                         
                         const sellPrice = itemData ? itemData.sellValue : 1;
                         
-                        gs.coins = Math.min(gs.coins + sellPrice, 999999);
-                        notify('Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + sellPrice + ' coins! 💰');
+                        // Ring bonus: +1% chance per ring level to sell at 2x price
+                        const ringLevel = (gs.jewelcraft && gs.jewelcraft.ring) ? gs.jewelcraft.ring : 1;
+                        const ringBonus = (ringLevel - 1) * 0.01; // level 1 = 0%, level 2 = 1%, etc.
+                        const doubled   = Math.random() < ringBonus;
+                        const finalSell = doubled ? sellPrice * 2 : sellPrice;
+                        
+                        gs.coins = Math.min(gs.coins + finalSell, 999999);
+                        if (doubled) {
+                            notify('💍 DOUBLE SALE! Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + finalSell + ' coins! 💰');
+                        } else {
+                            notify('Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + finalSell + ' coins! 💰');
+                        }
                         const sellSound = document.getElementById('coin-sell-sound');
                         if (sellSound) { sellSound.currentTime = 0; sellSound.play().catch(() => {}); }
                         
