@@ -41,14 +41,10 @@
     const METAL_BARS = Object.keys(BAR_CHANCE);
     const GEMS       = Object.keys(GEM_CHANCE);
 
-    // ── Slot state (mirrors hearth pattern) ──────────────────────
-    // Each slot tracks the locked physics body + itemId
-    let jcLockedBody1 = null;  // bar slot 1
-    let jcLockedBody2 = null;  // bar slot 2
-    let jcLockedBody3 = null;  // gem slot 3
-    let jcSlot1ItemId = null;
-    let jcSlot2ItemId = null;
-    let jcSlot3ItemId = null;
+    // ── Slot state — simple itemId + itemKey tracking, no body refs ──
+    // Items are removed from gs.inventory on drop; returned with addItem on clear
+    const jcSlots = { 1: null, 2: null, 3: null };
+    // { itemId: 'copper_bar', itemKey: 'copper_bar_5' }
 
     // ── Init ─────────────────────────────────────────────────────
     function init() {
@@ -71,48 +67,38 @@
         refreshAll();
     }
 
-    // ── Lock a physics body into a JC slot (mirrors lockItemInHearthSlot) ──
+    // ── Lock item into slot (called from game-basket enddrag) ─────
     function lockItemInJCSlot(body, slotNumber) {
-        const itemId = body.itemId;
+        const itemId  = body.itemId;
+        const itemKey = body.itemKey;
         if (!itemId) return;
 
-        // Release whatever was already in this slot
-        if (slotNumber === 1 && jcLockedBody1) releaseJCBody(jcLockedBody1);
-        if (slotNumber === 2 && jcLockedBody2) releaseJCBody(jcLockedBody2);
-        if (slotNumber === 3 && jcLockedBody3) releaseJCBody(jcLockedBody3);
-
-        // Use the cooking system's lockBodyInSlot to freeze/hide the physics body
-        if (typeof lockBodyInSlot === 'function') {
-            const slotEl = document.getElementById('jc-slot' + slotNumber);
-            lockBodyInSlot(body, slotEl, '#a855f7');
+        // If slot already occupied, return old item to inventory first
+        if (jcSlots[slotNumber]) {
+            addItem(jcSlots[slotNumber].itemId, 1);
         }
 
-        // Store state
-        if (slotNumber === 1) { jcLockedBody1 = body; jcSlot1ItemId = itemId; }
-        if (slotNumber === 2) { jcLockedBody2 = body; jcSlot2ItemId = itemId; }
-        if (slotNumber === 3) { jcLockedBody3 = body; jcSlot3ItemId = itemId; }
+        // Remove this item from inventory and from physics world
+        if (gs.inventory && itemKey) delete gs.inventory[itemKey];
+        if (basketEngine) Matter.World.remove(basketEngine.world, body);
+        const bIdx = basketBodies.indexOf(body);
+        if (bIdx > -1) basketBodies.splice(bIdx, 1);
+        updateInventoryCounter();
 
+        // Store slot state
+        jcSlots[slotNumber] = { itemId, itemKey };
+
+        save();
         refreshAll();
         spawnDropSpark(document.getElementById('jc-slot' + slotNumber), slotNumber === 3);
     }
 
-    // ── Release a JC body back to physics ────────────────────────
-    function releaseJCBody(body) {
-        if (typeof releaseLockedBody === 'function') releaseLockedBody(body);
-    }
-
-    // ── Clear a slot (X button) ───────────────────────────────────
+    // ── Clear a slot (X button) — return item to inventory ───────
     window.jcClearSlot = function(n) {
-        if (n === 1) {
-            if (jcLockedBody1) releaseJCBody(jcLockedBody1);
-            jcLockedBody1 = null; jcSlot1ItemId = null;
-        } else if (n === 2) {
-            if (jcLockedBody2) releaseJCBody(jcLockedBody2);
-            jcLockedBody2 = null; jcSlot2ItemId = null;
-        } else if (n === 3) {
-            if (jcLockedBody3) releaseJCBody(jcLockedBody3);
-            jcLockedBody3 = null; jcSlot3ItemId = null;
-        }
+        if (!jcSlots[n]) return;
+        addItem(jcSlots[n].itemId, 1);
+        jcSlots[n] = null;
+        save();
         refreshAll();
     };
 
@@ -124,9 +110,9 @@
     }
 
     function renderSlots() {
-        const slotItems = { 1: jcSlot1ItemId, 2: jcSlot2ItemId, 3: jcSlot3ItemId };
         [1, 2, 3].forEach(n => {
-            const itemId = slotItems[n];
+            const s    = jcSlots[n];
+            const itemId = s ? s.itemId : null;
             const icon = document.getElementById('jc-slot' + n + '-icon');
             const name = document.getElementById('jc-slot' + n + '-name');
             const clr  = document.getElementById('jc-slot' + n + '-clear');
@@ -153,14 +139,15 @@
         const jc        = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
         const amuletPct = Math.max(0, ((jc.amulet || 1) - 1));
 
-        const pct1 = jcSlot1ItemId ? (BAR_CHANCE[jcSlot1ItemId] || 0) : 0;
-        const pct2 = jcSlot2ItemId ? (BAR_CHANCE[jcSlot2ItemId] || 0) : 0;
-        const pct3 = jcSlot3ItemId ? (GEM_CHANCE[jcSlot3ItemId] || 0) : 0;
+        const id1 = jcSlots[1]?.itemId; const id2 = jcSlots[2]?.itemId; const id3 = jcSlots[3]?.itemId;
+        const pct1 = id1 ? (BAR_CHANCE[id1] || 0) : 0;
+        const pct2 = id2 ? (BAR_CHANCE[id2] || 0) : 0;
+        const pct3 = id3 ? (GEM_CHANCE[id3] || 0) : 0;
         const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
 
-        setBar('jc-bar1', !!jcSlot1ItemId, pct1, jcSlot1ItemId ? BAR_COLOR[jcSlot1ItemId] : null, 'jc-bar1-pct', pct1 ? pct1 + '%' : '0%');
-        setBar('jc-bar2', !!jcSlot2ItemId, pct2, jcSlot2ItemId ? BAR_COLOR[jcSlot2ItemId] : null, 'jc-bar2-pct', pct2 ? pct2 + '%' : '0%');
-        setBar('jc-bar3', !!jcSlot3ItemId, pct3, jcSlot3ItemId ? GEM_COLOR[jcSlot3ItemId] : null, 'jc-bar3-pct', pct3 ? pct3 + '%' : '0%');
+        setBar('jc-bar1', !!id1, pct1, id1 ? BAR_COLOR[id1] : null, 'jc-bar1-pct', pct1 ? pct1 + '%' : '0%');
+        setBar('jc-bar2', !!id2, pct2, id2 ? BAR_COLOR[id2] : null, 'jc-bar2-pct', pct2 ? pct2 + '%' : '0%');
+        setBar('jc-bar3', !!id3, pct3, id3 ? GEM_COLOR[id3] : null, 'jc-bar3-pct', pct3 ? pct3 + '%' : '0%');
         setBar4(pct4);
 
         const total = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletPct);
@@ -210,39 +197,22 @@
 
     // ── Craft ────────────────────────────────────────────────────
     function onCraft() {
-        if (!jcSlot1ItemId || !jcSlot2ItemId || !jcSlot3ItemId) {
+        if (!jcSlots[1] || !jcSlots[2] || !jcSlots[3]) {
             notify('💍 Fill all 3 slots first!');
             return;
         }
 
         const jcLevel = window.gs?.skills?.jewelcrafting?.level || 1;
         const jc      = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
-        const pct1 = BAR_CHANCE[jcSlot1ItemId] || 0;
-        const pct2 = BAR_CHANCE[jcSlot2ItemId] || 0;
-        const pct3 = GEM_CHANCE[jcSlot3ItemId] || 0;
+        const pct1 = BAR_CHANCE[jcSlots[1].itemId] || 0;
+        const pct2 = BAR_CHANCE[jcSlots[2].itemId] || 0;
+        const pct3 = GEM_CHANCE[jcSlots[3].itemId] || 0;
         const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
         const amuletBonus = Math.max(0, ((jc.amulet || 1) - 1));
         const totalChance = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletBonus);
 
-        // Consume slots — delete items from inventory and destroy bodies (matches hearth cook pattern)
-        [jcLockedBody1, jcLockedBody2, jcLockedBody3].forEach(b => {
-            if (!b) return;
-            // Delete from gs.inventory by itemKey
-            if (b.itemKey && gs.inventory) delete gs.inventory[b.itemKey];
-            // Remove from Matter world
-            if (typeof Matter !== 'undefined' && basketEngine) {
-                Matter.World.remove(basketEngine.world, b);
-            }
-            // Remove from basketBodies tracking array
-            if (typeof basketBodies !== 'undefined') {
-                const idx = basketBodies.indexOf(b);
-                if (idx > -1) basketBodies.splice(idx, 1);
-            }
-        });
-        jcLockedBody1 = null; jcSlot1ItemId = null;
-        jcLockedBody2 = null; jcSlot2ItemId = null;
-        jcLockedBody3 = null; jcSlot3ItemId = null;
-        updateInventoryCounter();
+        // Consume slots — items already removed from inventory when dropped in
+        jcSlots[1] = null; jcSlots[2] = null; jcSlots[3] = null;
 
         // Roll
         const roll = Math.random() * 100;
