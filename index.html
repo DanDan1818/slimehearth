@@ -525,166 +525,121 @@
             </div>
 
             <!-- Jewelcrafting Room -->
-            <div class="room" id="jewelcrafting-room">
-                <h2 style="font-size:19px;margin-bottom:6px;">💍 Jewelcrafting</h2>
+            <div class="room" id="jewelcrafting-room" style="justify-content:flex-start;padding-top:8px;overflow-y:auto;">
 
-                <!-- Row 1: Recipe Cards -->
-                <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;">
+                <!-- Row 1: Recipe Cards with Levels -->
+                <div style="display:flex;justify-content:center;gap:6px;width:100%;padding:0 8px;box-sizing:border-box;margin-bottom:6px;">
 
-                    <!-- RING card -->
-                    <div id="jc-card-ring" class="jc-card" onclick="jcSelectRecipe('ring')" style="
-                        width:72px;padding:7px 4px 6px;border-radius:10px;text-align:center;cursor:pointer;
-                        background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.15);
-                        transition:border-color 0.15s,background 0.15s;
-                    ">
-                        <div style="font-size:26px;line-height:1;">💍</div>
-                        <div style="font-family:'Righteous',sans-serif;font-size:10px;color:#fff;margin-top:3px;">RING</div>
+                    <div id="jc-card-ring" style="flex:1;max-width:100px;padding:5px 4px;border-radius:10px;text-align:center;background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.2);">
+                        <div style="font-size:22px;line-height:1;">💍</div>
+                        <div style="font-family:'Righteous',sans-serif;font-size:9px;color:#fff;margin-top:2px;">RING</div>
+                        <div style="font-family:'Righteous',sans-serif;font-size:8px;color:rgba(255,255,255,0.6);">Lv <span id="jc-ring-level">1</span></div>
                     </div>
 
-                    <!-- AMULET card -->
-                    <div id="jc-card-amulet" class="jc-card" onclick="jcSelectRecipe('amulet')" style="
-                        width:72px;padding:7px 4px 6px;border-radius:10px;text-align:center;cursor:pointer;
-                        background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.15);
-                        transition:border-color 0.15s,background 0.15s;
-                    ">
-                        <div style="font-size:26px;line-height:1;">📿</div>
-                        <div style="font-family:'Righteous',sans-serif;font-size:10px;color:#fff;margin-top:3px;">AMULET</div>
+                    <div id="jc-card-amulet" style="flex:1;max-width:100px;padding:5px 4px;border-radius:10px;text-align:center;background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.2);">
+                        <div style="font-size:22px;line-height:1;">📿</div>
+                        <div style="font-family:'Righteous',sans-serif;font-size:9px;color:#fff;margin-top:2px;">AMULET</div>
+                        <div style="font-family:'Righteous',sans-serif;font-size:8px;color:rgba(255,255,255,0.6);">Lv <span id="jc-amulet-level">1</span></div>
                     </div>
 
-                    <!-- WATCH card -->
-                    <div id="jc-card-watch" class="jc-card" onclick="jcSelectRecipe('watch')" style="
-                        width:72px;padding:7px 4px 6px;border-radius:10px;text-align:center;cursor:pointer;
-                        background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.15);
-                        transition:border-color 0.15s,background 0.15s;
-                    ">
-                        <div style="font-size:26px;line-height:1;">⌚</div>
-                        <div style="font-family:'Righteous',sans-serif;font-size:10px;color:#fff;margin-top:3px;">WATCH</div>
+                    <div id="jc-card-watch" style="flex:1;max-width:100px;padding:5px 4px;border-radius:10px;text-align:center;background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.2);">
+                        <div style="font-size:22px;line-height:1;">⌚</div>
+                        <div style="font-family:'Righteous',sans-serif;font-size:9px;color:#fff;margin-top:2px;">WATCH</div>
+                        <div style="font-family:'Righteous',sans-serif;font-size:8px;color:rgba(255,255,255,0.6);">Lv <span id="jc-watch-level">1</span></div>
                     </div>
                 </div>
 
                 <!-- Row 2: Bar-Bar — Orb — Bar-Bar -->
-                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;">
+                <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:6px;">
 
-                    <!-- Left bar 1 -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">FULL</div>
-                        <div id="jc-bar1-wrap" style="width:24px;height:130px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
-                            <div id="jc-bar1" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 60%,#4c1d95 100%);border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;">
-                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(196,181,253,0.6);animation:jcWave1 2.2s ease-in-out infinite;"></div>
-                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(167,139,250,0.4);animation:jcWave2 1.7s ease-in-out infinite;"></div>
+                    <!-- Bar 1: Metal Bar slot 1 -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                        <div style="font-size:7px;color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">BAR<br>1</div>
+                        <div id="jc-bar1-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
+                            <div id="jc-bar1" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 100%);">
+                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);animation:jcWave1 2.2s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);animation:jcWave2 1.7s ease-in-out infinite;"></div>
                             </div>
                         </div>
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">EMPTY</div>
+                        <div id="jc-bar1-pct" style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;">0%</div>
                     </div>
 
-                    <!-- Left bar 2 -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">FULL</div>
-                        <div id="jc-bar2-wrap" style="width:24px;height:130px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
-                            <div id="jc-bar2" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 60%,#4c1d95 100%);border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;">
-                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(196,181,253,0.6);animation:jcWave2 2.4s ease-in-out infinite;"></div>
-                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(167,139,250,0.4);animation:jcWave1 1.9s ease-in-out infinite;"></div>
+                    <!-- Bar 2: Metal Bar slot 2 -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                        <div style="font-size:7px;color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">BAR<br>2</div>
+                        <div id="jc-bar2-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
+                            <div id="jc-bar2" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 100%);">
+                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);animation:jcWave2 2.4s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);animation:jcWave1 1.9s ease-in-out infinite;"></div>
                             </div>
                         </div>
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">EMPTY</div>
+                        <div id="jc-bar2-pct" style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;">0%</div>
                     </div>
 
-                    <!-- Centre: Progress Orb -->
-                    <div style="position:relative;width:80px;height:80px;flex-shrink:0;">
-                        <!-- Outer shell -->
-                        <div style="
-                            position:absolute;inset:0;border-radius:50%;
-                            background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 55%, transparent 70%),
-                                        rgba(0,0,0,0.4);
-                            border:3px solid rgba(255,255,255,0.25);
-                            box-shadow:0 2px 14px rgba(160,90,255,0.4), inset 0 1px 4px rgba(255,255,255,0.18);
-                            overflow:hidden;z-index:2;pointer-events:none;
-                        ">
-                            <div style="position:absolute;top:10px;left:15px;width:14px;height:8px;border-radius:50%;background:rgba(255,255,255,0.45);transform:rotate(-30deg);pointer-events:none;"></div>
+                    <!-- Centre: Orb (total % chance) -->
+                    <div style="position:relative;width:76px;height:76px;flex-shrink:0;margin:0 2px;">
+                        <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 55%, transparent 70%),rgba(0,0,0,0.4);border:3px solid rgba(255,255,255,0.25);box-shadow:0 2px 14px rgba(160,90,255,0.4),inset 0 1px 4px rgba(255,255,255,0.18);overflow:hidden;z-index:2;pointer-events:none;">
+                            <div style="position:absolute;top:9px;left:14px;width:13px;height:7px;border-radius:50%;background:rgba(255,255,255,0.45);transform:rotate(-30deg);"></div>
                         </div>
-                        <!-- Fill clip -->
                         <div style="position:absolute;inset:3px;border-radius:50%;overflow:hidden;z-index:1;">
-                            <div id="jc-orb-fill" style="
-                                position:absolute;bottom:0;left:0;right:0;height:0%;
-                                background:linear-gradient(180deg,#c084fc 0%,#9333ea 55%,#6b21a8 100%);
-                                transition:height 0.45s ease-out;overflow:hidden;
-                            ">
-                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:12px;border-radius:50%;background:rgba(240,171,252,0.55);animation:jcWave1 2s ease-in-out infinite;"></div>
-                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:8px;border-radius:50%;background:rgba(192,132,252,0.4);animation:jcWave2 1.6s ease-in-out infinite;"></div>
+                            <div id="jc-orb-fill" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#c084fc 0%,#9333ea 55%,#6b21a8 100%);transition:height 0.45s ease-out;overflow:hidden;">
+                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(240,171,252,0.55);animation:jcWave1 2s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(192,132,252,0.4);animation:jcWave2 1.6s ease-in-out infinite;"></div>
                             </div>
                         </div>
-                        <!-- Orb text -->
                         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
-                            <span id="jc-orb-icon" style="font-size:20px;line-height:1;">💍</span>
-                            <span style="font-family:'Righteous',sans-serif;font-size:8px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);line-height:1.3;"><span id="jc-orb-pct">0</span>%</span>
+                            <span style="font-family:'Righteous',sans-serif;font-size:16px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);line-height:1;"><span id="jc-orb-pct">0</span>%</span>
+                            <span style="font-family:'Righteous',sans-serif;font-size:7px;color:rgba(255,255,255,0.7);text-shadow:0 1px 2px rgba(0,0,0,0.8);">CHANCE</span>
                         </div>
                     </div>
 
-                    <!-- Right bar 3 -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">FULL</div>
-                        <div id="jc-bar3-wrap" style="width:24px;height:130px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
-                            <div id="jc-bar3" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 60%,#4c1d95 100%);border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;">
-                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(196,181,253,0.6);animation:jcWave1 2.6s ease-in-out infinite;"></div>
-                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(167,139,250,0.4);animation:jcWave2 2.1s ease-in-out infinite;"></div>
+                    <!-- Bar 3: Gem chance -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                        <div style="font-size:7px;color:rgba(200,160,255,0.85);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">GEM<br>%</div>
+                        <div id="jc-bar3-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
+                            <div id="jc-bar3" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 100%);">
+                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);animation:jcWave1 2.6s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);animation:jcWave2 2.1s ease-in-out infinite;"></div>
                             </div>
                         </div>
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">EMPTY</div>
+                        <div id="jc-bar3-pct" style="font-size:8px;color:#c084fc;font-family:'Righteous',sans-serif;">0%</div>
                     </div>
 
-                    <!-- Right bar 4 -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">FULL</div>
-                        <div id="jc-bar4-wrap" style="width:24px;height:130px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
-                            <div id="jc-bar4" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 60%,#4c1d95 100%);border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;">
-                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(196,181,253,0.6);animation:jcWave2 2.8s ease-in-out infinite;"></div>
-                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(167,139,250,0.4);animation:jcWave1 2.3s ease-in-out infinite;"></div>
+                    <!-- Bar 4: Skill level % -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                        <div style="font-size:7px;color:rgba(253,230,138,0.85);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">SKILL<br>%</div>
+                        <div id="jc-bar4-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
+                            <div id="jc-bar4" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#fde68a 0%,#f59e0b 55%,#b45309 100%);">
+                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(253,230,138,0.5);animation:jcWave2 2.8s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:6px;border-radius:50%;background:rgba(245,158,11,0.35);animation:jcWave1 2.3s ease-in-out infinite;"></div>
                             </div>
                         </div>
-                        <div style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.8);">EMPTY</div>
+                        <div id="jc-bar4-pct" style="font-size:8px;color:#fde68a;font-family:'Righteous',sans-serif;">0%</div>
                     </div>
                 </div>
 
                 <!-- Row 3: Three item slots -->
-                <div style="display:flex;justify-content:center;gap:10px;margin-bottom:8px;">
+                <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;">
 
-                    <!-- Slot 1: Metal Bar only -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div id="jc-slot1" style="
-                            width:58px;height:58px;border-radius:10px;
-                            background:rgba(0,0,0,0.3);border:2px dashed rgba(255,255,255,0.25);
-                            display:flex;flex-direction:column;align-items:center;justify-content:center;
-                            cursor:pointer;position:relative;
-                        ">
-                            <span id="jc-slot1-icon" style="font-size:22px;line-height:1;">⬜</span>
+                        <div id="jc-slot1" style="width:56px;height:56px;border-radius:10px;background:rgba(0,0,0,0.3);border:2px dashed rgba(255,255,255,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;">
+                            <span id="jc-slot1-icon" style="font-size:20px;line-height:1;">⬜</span>
                             <span id="jc-slot1-name" style="font-size:7px;color:rgba(255,255,255,0.5);font-family:'Righteous',sans-serif;margin-top:2px;text-align:center;">BAR</span>
                         </div>
                         <button id="jc-slot1-clear" onclick="jcClearSlot(1)" style="display:none;font-size:8px;padding:1px 7px;background:#c0392b;color:#fff;border:none;border-radius:4px;cursor:pointer;">✕</button>
                     </div>
 
-                    <!-- Slot 2: Metal Bar only -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div id="jc-slot2" style="
-                            width:58px;height:58px;border-radius:10px;
-                            background:rgba(0,0,0,0.3);border:2px dashed rgba(255,255,255,0.25);
-                            display:flex;flex-direction:column;align-items:center;justify-content:center;
-                            cursor:pointer;position:relative;
-                        ">
-                            <span id="jc-slot2-icon" style="font-size:22px;line-height:1;">⬜</span>
+                        <div id="jc-slot2" style="width:56px;height:56px;border-radius:10px;background:rgba(0,0,0,0.3);border:2px dashed rgba(255,255,255,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;">
+                            <span id="jc-slot2-icon" style="font-size:20px;line-height:1;">⬜</span>
                             <span id="jc-slot2-name" style="font-size:7px;color:rgba(255,255,255,0.5);font-family:'Righteous',sans-serif;margin-top:2px;text-align:center;">BAR</span>
                         </div>
                         <button id="jc-slot2-clear" onclick="jcClearSlot(2)" style="display:none;font-size:8px;padding:1px 7px;background:#c0392b;color:#fff;border:none;border-radius:4px;cursor:pointer;">✕</button>
                     </div>
 
-                    <!-- Slot 3: Gem only -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-                        <div id="jc-slot3" style="
-                            width:58px;height:58px;border-radius:10px;
-                            background:rgba(0,0,0,0.3);border:2px dashed rgba(160,100,255,0.4);
-                            display:flex;flex-direction:column;align-items:center;justify-content:center;
-                            cursor:pointer;position:relative;
-                        ">
-                            <span id="jc-slot3-icon" style="font-size:22px;line-height:1;">💎</span>
+                        <div id="jc-slot3" style="width:56px;height:56px;border-radius:10px;background:rgba(0,0,0,0.3);border:2px dashed rgba(160,100,255,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;">
+                            <span id="jc-slot3-icon" style="font-size:20px;line-height:1;">💎</span>
                             <span id="jc-slot3-name" style="font-size:7px;color:rgba(200,160,255,0.7);font-family:'Righteous',sans-serif;margin-top:2px;text-align:center;">GEM</span>
                         </div>
                         <button id="jc-slot3-clear" onclick="jcClearSlot(3)" style="display:none;font-size:8px;padding:1px 7px;background:#c0392b;color:#fff;border:none;border-radius:4px;cursor:pointer;">✕</button>
@@ -692,21 +647,21 @@
                 </div>
 
                 <!-- Row 4: Craft button -->
-                <div style="display:flex;justify-content:center;">
+                <div style="display:flex;justify-content:center;margin-bottom:8px;">
                     <button id="jc-craft-btn" style="
-                        padding:10px 36px;border-radius:24px;
+                        padding:10px 40px;border-radius:24px;
                         background:linear-gradient(135deg,#7c3aed,#a855f7);
                         color:#fff;border:2px solid rgba(255,255,255,0.3);
                         font-family:'Righteous',sans-serif;font-size:15px;
                         cursor:pointer;box-shadow:0 0 18px rgba(168,85,247,0.5);
                         -webkit-tap-highlight-color:transparent;
-                        transition:transform 0.08s,box-shadow 0.08s;
+                        transition:transform 0.08s;
                     " ontouchstart="this.style.transform='scale(0.94)'" ontouchend="this.style.transform='scale(1)'">
                         ✨ CRAFT
                     </button>
                 </div>
 
-                <button id="leave-jewelcrafting" class="back-btn" style="margin-top:8px;">←</button>
+                <button id="leave-jewelcrafting" class="back-btn">←</button>
             </div>
             
             <!-- Fishing Menu - Select Area -->
@@ -1333,6 +1288,7 @@
                         <button id="give-frog" style="font-size:12px;padding:8px 12px;margin:3px;">🐸 Frog</button>
                         <button id="give-coal" style="font-size:12px;padding:8px 12px;margin:3px;background:#222;color:#fff;">🖤 Coal</button>
                         <button id="give-ores" style="font-size:12px;padding:8px 12px;margin:3px;background:#78350f;color:#fff;">⛏️ Ores</button>
+                        <button id="give-gems" style="font-size:12px;padding:8px 12px;margin:3px;background:#7c3aed;color:#fff;">💎 Gems</button>
                         <button id="give-geodes" style="font-size:12px;padding:8px 12px;margin:3px;background:#8b7355;color:#fff;">🪨 Geodes</button>
                         <button id="boost-skills" style="font-size:12px;padding:8px 12px;margin:3px;background:#10b981;color:#fff;">+5 Skills</button>
                         <button id="font-preview" style="font-size:12px;padding:8px 12px;margin:3px;background:#7c6f5e;color:#fff;">🔤 Fonts</button>

@@ -1,22 +1,50 @@
 // ============================================================
 //  SlimeHearth — Jewelcrafting  (game-jewelcrafting.js)
-//  Layout: 3 recipe cards → 4 bars + progress orb → 3 item slots → Craft
 // ============================================================
-
 (function () {
 
-    const METAL_BARS = ['copper_bar', 'iron_bar', 'silver_bar', 'gold_bar'];
-    const GEMS       = ['gem', 'emerald', 'ruby', 'sapphire', 'amethyst', 'topaz', 'diamond'];
+    // ── % chance tables ──────────────────────────────────────────
+    const BAR_CHANCE = {
+        copper_bar: 10, iron_bar: 15, silver_bar: 20, gold_bar: 25
+    };
+    const GEM_CHANCE = {
+        gem: 5, emerald: 5, topaz: 10, amethyst: 15,
+        sapphire: 20, ruby: 25, diamond: 30
+    };
+    // Skill bar: level 1→1%, level 100→20%, capped at 20%
+    // Formula: min(20, level * (19/99) + (1 - 19/99))  ≈ min(20, 0.808 + 0.192*level)
+    function skillPct(level) {
+        return Math.min(20, Math.max(1, ((level - 1) / 99) * 19 + 1));
+    }
+
+    // ── Bar liquid color per item ────────────────────────────────
+    const BAR_COLOR = {
+        copper_bar: 'linear-gradient(180deg,#fdba74 0%,#b45309 60%,#78350f 100%)',
+        iron_bar:   'linear-gradient(180deg,#e5e7eb 0%,#9ca3af 60%,#6b7280 100%)',
+        silver_bar: 'linear-gradient(180deg,#f3f4f6 0%,#d1d5db 60%,#9ca3af 100%)',
+        gold_bar:   'linear-gradient(180deg,#fde68a 0%,#fbbf24 60%,#d97706 100%)',
+    };
+    const GEM_COLOR = {
+        gem:      'linear-gradient(180deg,#6ee7b7 0%,#10b981 60%,#065f46 100%)',
+        emerald:  'linear-gradient(180deg,#6ee7b7 0%,#10b981 60%,#065f46 100%)',
+        ruby:     'linear-gradient(180deg,#fca5a5 0%,#ef4444 60%,#991b1b 100%)',
+        sapphire: 'linear-gradient(180deg,#93c5fd 0%,#3b82f6 60%,#1e3a8a 100%)',
+        amethyst: 'linear-gradient(180deg,#e9d5ff 0%,#a855f7 60%,#6b21a8 100%)',
+        topaz:    'linear-gradient(180deg,#fde68a 0%,#f59e0b 60%,#92400e 100%)',
+        diamond:  'linear-gradient(180deg,#e0f2fe 0%,#bfdbfe 60%,#93c5fd 100%)',
+    };
 
     const BAR_ICONS = { copper_bar:'🟫', iron_bar:'⬜', silver_bar:'🔲', gold_bar:'🟨' };
-    const BAR_NAMES = { copper_bar:'Copper Bar', iron_bar:'Iron Bar', silver_bar:'Silver Bar', gold_bar:'Gold Bar' };
+    const BAR_NAMES = { copper_bar:'Copper', iron_bar:'Iron', silver_bar:'Silver', gold_bar:'Gold' };
     const GEM_ICONS = { gem:'💚', emerald:'💚', ruby:'❤️', sapphire:'💙', amethyst:'💜', topaz:'🧡', diamond:'💎' };
     const GEM_NAMES = { gem:'Emerald', emerald:'Emerald', ruby:'Ruby', sapphire:'Sapphire', amethyst:'Amethyst', topaz:'Topaz', diamond:'Diamond' };
-    const RECIPE_ICONS = { ring:'💍', amulet:'📿', watch:'⌚' };
+    const METAL_BARS = Object.keys(BAR_CHANCE);
+    const GEMS       = Object.keys(GEM_CHANCE);
 
-    let selectedRecipe = 'ring';
+    // ── State ────────────────────────────────────────────────────
     let slots = { 1: null, 2: null, 3: null };
 
+    // ── Init ─────────────────────────────────────────────────────
     function init() {
         const gotoBtn = document.getElementById('goto-jewelcrafting');
         if (gotoBtn) gotoBtn.onclick = () => window.switchRoom('jewelcrafting-room');
@@ -28,88 +56,46 @@
         if (craftBtn) craftBtn.onclick = onCraft;
 
         [1, 2, 3].forEach(n => {
-            const slot = document.getElementById('jc-slot' + n);
-            if (slot) slot.addEventListener('click', () => onSlotClick(n));
+            const s = document.getElementById('jc-slot' + n);
+            if (s) s.addEventListener('click', () => onSlotClick(n));
         });
 
-        selectRecipe('ring');
         window.jcCheckDrop = jcCheckDrop;
+        refreshAll();
     }
 
-    window.jcSelectRecipe = function(recipe) { selectRecipe(recipe); };
-
-    function selectRecipe(recipe) {
-        selectedRecipe = recipe;
-        ['ring', 'amulet', 'watch'].forEach(r => {
-            const card = document.getElementById('jc-card-' + r);
-            if (!card) return;
-            if (r === recipe) {
-                card.style.border     = '2px solid rgba(168,85,247,0.9)';
-                card.style.background = 'rgba(88,28,135,0.5)';
-                card.style.boxShadow  = '0 0 12px rgba(168,85,247,0.5)';
-            } else {
-                card.style.border     = '2px solid rgba(255,255,255,0.15)';
-                card.style.background = 'rgba(0,0,0,0.3)';
-                card.style.boxShadow  = 'none';
-            }
-        });
-        const orbIcon = document.getElementById('jc-orb-icon');
-        if (orbIcon) orbIcon.textContent = RECIPE_ICONS[recipe] || '💍';
-    }
-
-    function onSlotClick(slotNum) {
-        if (slots[slotNum]) return;
+    // ── Slot click — pull from inventory ─────────────────────────
+    function onSlotClick(n) {
+        if (slots[n]) return;
         const gs = window.gs;
         if (!gs || !gs.inventory) return;
-        const allowed = (slotNum < 3) ? METAL_BARS : GEMS;
-        const key = Object.keys(gs.inventory).find(k => {
-            const it = gs.inventory[k];
-            return it && allowed.includes(it.itemId);
-        });
-        if (!key) {
-            if (window.notify) window.notify(slotNum < 3 ? 'No Metal Bars in basket!' : 'No Gems in basket!');
-            return;
-        }
-        fillSlot(slotNum, gs.inventory[key].itemId, key);
+        const allowed = n < 3 ? METAL_BARS : GEMS;
+        const key = Object.keys(gs.inventory).find(k => gs.inventory[k] && allowed.includes(gs.inventory[k].itemId));
+        if (!key) { if (window.notify) window.notify(n < 3 ? 'No Metal Bars!' : 'No Gems!'); return; }
+        fillSlot(n, gs.inventory[key].itemId, key);
     }
 
-    function fillSlot(slotNum, itemId, itemKey) {
-        slots[slotNum] = { itemId, itemKey };
-        if (window.gs && window.gs.inventory) delete window.gs.inventory[itemKey];
+    function fillSlot(n, itemId, itemKey) {
+        slots[n] = { itemId, itemKey };
+        if (window.gs?.inventory) delete window.gs.inventory[itemKey];
         if (window.save) window.save();
         if (window.updateInventoryCounter) window.updateInventoryCounter();
-        renderSlots();
-        updateOrbProgress();
+        refreshAll();
+        spawnDropSpark(document.getElementById('jc-slot' + n), n === 3);
     }
 
-    window.jcClearSlot = function(slotNum) {
-        if (!slots[slotNum]) return;
-        if (window.addItem) window.addItem(slots[slotNum].itemId, 1);
-        slots[slotNum] = null;
-        renderSlots();
-        updateOrbProgress();
+    window.jcClearSlot = function(n) {
+        if (!slots[n]) return;
+        if (window.addItem) window.addItem(slots[n].itemId, 1);
+        slots[n] = null;
+        refreshAll();
     };
 
-    function barColor(itemId) {
-        const cols = {
-            copper_bar: 'linear-gradient(180deg,#fdba74 0%,#b45309 60%,#78350f 100%)',
-            iron_bar:   'linear-gradient(180deg,#e5e7eb 0%,#9ca3af 60%,#6b7280 100%)',
-            silver_bar: 'linear-gradient(180deg,#f3f4f6 0%,#d1d5db 60%,#9ca3af 100%)',
-            gold_bar:   'linear-gradient(180deg,#fde68a 0%,#fbbf24 60%,#d97706 100%)',
-        };
-        return cols[itemId] || 'linear-gradient(180deg,#c4b5fd 0%,#7c3aed 60%,#4c1d95 100%)';
-    }
-    function gemColor(itemId) {
-        const cols = {
-            gem:      'linear-gradient(180deg,#6ee7b7 0%,#10b981 60%,#065f46 100%)',
-            emerald:  'linear-gradient(180deg,#6ee7b7 0%,#10b981 60%,#065f46 100%)',
-            ruby:     'linear-gradient(180deg,#fca5a5 0%,#ef4444 60%,#991b1b 100%)',
-            sapphire: 'linear-gradient(180deg,#93c5fd 0%,#3b82f6 60%,#1e3a8a 100%)',
-            amethyst: 'linear-gradient(180deg,#e9d5ff 0%,#a855f7 60%,#6b21a8 100%)',
-            topaz:    'linear-gradient(180deg,#fde68a 0%,#f59e0b 60%,#92400e 100%)',
-            diamond:  'linear-gradient(180deg,#e0f2fe 0%,#bfdbfe 60%,#93c5fd 100%)',
-        };
-        return cols[itemId] || 'linear-gradient(180deg,#c4b5fd 0%,#7c3aed 60%,#4c1d95 100%)';
+    // ── Refresh all UI ───────────────────────────────────────────
+    function refreshAll() {
+        renderSlots();
+        updateBarsAndOrb();
+        updateCardLevels();
     }
 
     function renderSlots() {
@@ -119,53 +105,115 @@
             const name = document.getElementById('jc-slot' + n + '-name');
             const clr  = document.getElementById('jc-slot' + n + '-clear');
             const wrap = document.getElementById('jc-slot' + n);
-            if (!icon || !name || !clr) return;
+            if (!icon || !name) return;
             if (s) {
                 icon.textContent  = n < 3 ? (BAR_ICONS[s.itemId] || '⬜') : (GEM_ICONS[s.itemId] || '💎');
                 name.textContent  = n < 3 ? (BAR_NAMES[s.itemId] || s.itemId) : (GEM_NAMES[s.itemId] || s.itemId);
                 name.style.color  = 'rgba(255,255,255,0.9)';
-                clr.style.display = 'block';
-                if (wrap) {
-                    wrap.style.border     = '2px solid rgba(168,85,247,0.6)';
-                    wrap.style.background = 'rgba(88,28,135,0.3)';
-                }
+                if (clr) clr.style.display = 'block';
+                if (wrap) { wrap.style.border = '2px solid rgba(168,85,247,0.6)'; wrap.style.background = 'rgba(88,28,135,0.3)'; }
             } else {
                 icon.textContent  = n < 3 ? '⬜' : '💎';
                 name.textContent  = n < 3 ? 'BAR' : 'GEM';
                 name.style.color  = n < 3 ? 'rgba(255,255,255,0.5)' : 'rgba(200,160,255,0.7)';
-                clr.style.display = 'none';
-                if (wrap) {
-                    wrap.style.border     = n < 3 ? '2px dashed rgba(255,255,255,0.25)' : '2px dashed rgba(160,100,255,0.4)';
-                    wrap.style.background = 'rgba(0,0,0,0.3)';
-                }
+                if (clr) clr.style.display = 'none';
+                if (wrap) { wrap.style.border = n < 3 ? '2px dashed rgba(255,255,255,0.25)' : '2px dashed rgba(160,100,255,0.4)'; wrap.style.background = 'rgba(0,0,0,0.3)'; }
             }
         });
-        // Update bar fills & colors
-        const b1 = document.getElementById('jc-bar1');
-        const b2 = document.getElementById('jc-bar2');
-        const b3 = document.getElementById('jc-bar3');
-        const b4 = document.getElementById('jc-bar4');
-        if (b1) { b1.style.height = (slots[1] ? 100 : 0) + '%'; b1.style.background = barColor(slots[1]?.itemId); }
-        if (b2) { b2.style.height = (slots[2] ? 100 : 0) + '%'; b2.style.background = barColor(slots[2]?.itemId); }
-        if (b3) { b3.style.height = (slots[3] ? 100 : 0) + '%'; b3.style.background = gemColor(slots[3]?.itemId); }
-        if (b4) { b4.style.height = (slots[3] ? 100 : 0) + '%'; b4.style.background = gemColor(slots[3]?.itemId); }
     }
 
-    function updateOrbProgress() {
-        const filled = [slots[1], slots[2], slots[3]].filter(Boolean).length;
-        const pct    = Math.round((filled / 3) * 100);
-        const fill   = document.getElementById('jc-orb-fill');
-        const pctEl  = document.getElementById('jc-orb-pct');
-        if (fill)  fill.style.height  = pct + '%';
-        if (pctEl) pctEl.textContent  = pct;
+    function updateBarsAndOrb() {
+        const jcLevel = window.gs?.skills?.jewelcrafting?.level || 1;
+
+        // Bar 1: slot1 metal bar % (max 25 → fill = pct/25 * 100%)
+        const pct1 = slots[1] ? (BAR_CHANCE[slots[1].itemId] || 0) : 0;
+        const pct2 = slots[2] ? (BAR_CHANCE[slots[2].itemId] || 0) : 0;
+        const pct3 = slots[3] ? (GEM_CHANCE[slots[3].itemId] || 0) : 0;
+        const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
+
+        setBar('jc-bar1', pct1, 25, slots[1] ? BAR_COLOR[slots[1].itemId] : null, 'jc-bar1-pct', pct1 + '%');
+        setBar('jc-bar2', pct2, 25, slots[2] ? BAR_COLOR[slots[2].itemId] : null, 'jc-bar2-pct', pct2 + '%');
+        setBar('jc-bar3', pct3, 30, slots[3] ? GEM_COLOR[slots[3].itemId] : null, 'jc-bar3-pct', pct3 + '%');
+        setBar('jc-bar4', pct4, 20, null /* always gold */, 'jc-bar4-pct', pct4.toFixed(1) + '%');
+
+        const total = Math.min(100, pct1 + pct2 + pct3 + pct4);
+        const orbFill = document.getElementById('jc-orb-fill');
+        const orbPct  = document.getElementById('jc-orb-pct');
+        if (orbFill) orbFill.style.height = total + '%';
+        if (orbPct)  orbPct.textContent   = Math.round(total);
     }
 
+    function setBar(barId, value, max, color, pctId, label) {
+        const bar   = document.getElementById(barId);
+        const pctEl = document.getElementById(pctId);
+        if (!bar) return;
+        const fillPct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
+        bar.style.height = fillPct + '%';
+        if (color) bar.style.background = color;
+        if (pctEl) pctEl.textContent = label;
+    }
+
+    function updateCardLevels() {
+        const jc = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
+        const rEl = document.getElementById('jc-ring-level');
+        const aEl = document.getElementById('jc-amulet-level');
+        const wEl = document.getElementById('jc-watch-level');
+        if (rEl) rEl.textContent = jc.ring   || 1;
+        if (aEl) aEl.textContent = jc.amulet || 1;
+        if (wEl) wEl.textContent = jc.watch  || 1;
+    }
+
+    // ── Craft ────────────────────────────────────────────────────
+    function onCraft() {
+        if (!slots[1] || !slots[2] || !slots[3]) {
+            if (window.notify) window.notify('💍 Fill all 3 slots first!');
+            return;
+        }
+
+        const jcLevel = window.gs?.skills?.jewelcrafting?.level || 1;
+        const pct1 = BAR_CHANCE[slots[1].itemId] || 0;
+        const pct2 = BAR_CHANCE[slots[2].itemId] || 0;
+        const pct3 = GEM_CHANCE[slots[3].itemId] || 0;
+        const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
+        const totalChance = Math.min(100, pct1 + pct2 + pct3 + pct4);
+
+        // Consume slots (items already removed from inventory on drop)
+        slots[1] = null; slots[2] = null; slots[3] = null;
+
+        // Roll
+        const roll = Math.random() * 100;
+        const success = roll < totalChance;
+
+        if (success) {
+            // Level up a random jewelry card
+            if (!window.gs.jewelcraft) window.gs.jewelcraft = { ring: 1, amulet: 1, watch: 1 };
+            const cards = ['ring', 'amulet', 'watch'];
+            const picked = cards[Math.floor(Math.random() * cards.length)];
+            window.gs.jewelcraft[picked] = (window.gs.jewelcraft[picked] || 1) + 1;
+
+            const icons = { ring: '💍', amulet: '📿', watch: '⌚' };
+            if (window.notify) window.notify('✨ ' + icons[picked] + ' ' + picked.charAt(0).toUpperCase() + picked.slice(1) + ' leveled up! Lv ' + window.gs.jewelcraft[picked], 'achievement');
+
+            const lvlSound = document.getElementById('skill-levelup-sound');
+            if (lvlSound) { lvlSound.currentTime = 0; lvlSound.play().catch(() => {}); }
+            if (window.addSkillXP) window.addSkillXP('jewelcrafting', 50);
+            spawnSuccessBurst();
+        } else {
+            if (window.notify) window.notify('💔 Craft failed! (rolled ' + Math.round(roll) + '%, needed <' + Math.round(totalChance) + '%)');
+            if (window.addSkillXP) window.addSkillXP('jewelcrafting', 10);
+        }
+
+        if (window.save) window.save();
+        refreshAll();
+    }
+
+    // ── Basket drop detection ─────────────────────────────────────
     function jcCheckDrop(bodies, basketEngine, World) {
         const room = document.getElementById('jewelcrafting-room');
         if (!room || !room.classList.contains('active')) return;
-        const canvasEl  = document.getElementById('basket-canvas');
+        const canvasEl = document.getElementById('basket-canvas');
         if (!canvasEl) return;
-        const canvasRect = canvasEl.getBoundingClientRect();
+        const cr = canvasEl.getBoundingClientRect();
 
         for (let i = bodies.length - 1; i >= 0; i--) {
             const b = bodies[i];
@@ -180,18 +228,16 @@
                 const slotEl = document.getElementById('jc-slot' + sn);
                 if (!slotEl) continue;
                 const sr  = slotEl.getBoundingClientRect();
-                const scx = (sr.left + sr.width / 2)  - canvasRect.left;
-                const scy = (sr.top  + sr.height / 2) - canvasRect.top;
+                const scx = (sr.left + sr.width / 2)  - cr.left;
+                const scy = (sr.top  + sr.height / 2) - cr.top;
                 const dist = Math.sqrt((b.position.x - scx) ** 2 + (b.position.y - scy) ** 2);
                 if (dist < 38) {
-                    const id  = b.itemId;
-                    const key = b.itemKey;
+                    const id = b.itemId, key = b.itemKey;
                     World.remove(basketEngine.world, b);
                     bodies.splice(i, 1);
-                    if (window.gs && window.gs.inventory) delete window.gs.inventory[key];
+                    if (window.gs?.inventory) delete window.gs.inventory[key];
                     slots[sn] = { itemId: id, itemKey: key };
-                    renderSlots();
-                    updateOrbProgress();
+                    refreshAll();
                     if (window.save) window.save();
                     if (window.updateInventoryCounter) window.updateInventoryCounter();
                     spawnDropSpark(slotEl, isGem);
@@ -201,47 +247,47 @@
         }
     }
 
-    function onCraft() {
-        if (!slots[1] || !slots[2] || !slots[3]) {
-            if (window.notify) window.notify('💍 Fill all 3 slots first!');
-            return;
-        }
-        if (window.notify) window.notify('💍 Crafting coming soon!');
-        // TODO: recipe lookup and output
-    }
-
+    // ── VFX ──────────────────────────────────────────────────────
     function spawnDropSpark(slotEl, isGem) {
+        if (!slotEl) return;
         const parent = slotEl.closest('.room');
         if (!parent) return;
         const rect = slotEl.getBoundingClientRect();
         const pr   = parent.getBoundingClientRect();
         const cx   = rect.left - pr.left + rect.width / 2;
         const cy   = rect.top  - pr.top  + rect.height / 2;
-        const cols = isGem
-            ? ['#c084fc','#e879f9','#ffd700','#fff']
-            : ['#fbbf24','#d1d5db','#f0abfc','#fff'];
+        const cols = isGem ? ['#c084fc','#e879f9','#ffd700','#fff'] : ['#fbbf24','#d1d5db','#c084fc','#fff'];
         for (let i = 0; i < 8; i++) {
-            const p   = document.createElement('div');
-            const ang = Math.random() * Math.PI * 2;
-            const d   = 16 + Math.random() * 22;
-            p.style.cssText = `
-                position:absolute;left:${cx}px;top:${cy}px;
-                width:5px;height:5px;border-radius:50%;
-                background:${cols[i % cols.length]};
-                pointer-events:none;z-index:50;
-                --sx:${Math.cos(ang)*d}px;--sy:${Math.sin(ang)*d}px;
-                animation:sparkFly 0.45s ease-out forwards;
-            `;
+            const p = document.createElement('div');
+            const a = Math.random() * Math.PI * 2;
+            const d = 14 + Math.random() * 20;
+            p.style.cssText = `position:absolute;left:${cx}px;top:${cy}px;width:5px;height:5px;border-radius:50%;background:${cols[i%cols.length]};pointer-events:none;z-index:50;--sx:${Math.cos(a)*d}px;--sy:${Math.sin(a)*d}px;animation:sparkFly 0.45s ease-out forwards;`;
             parent.style.position = 'relative';
             parent.appendChild(p);
             setTimeout(() => p.remove(), 500);
         }
     }
 
+    function spawnSuccessBurst() {
+        const room = document.getElementById('jewelcrafting-room');
+        if (!room) return;
+        const cols = ['#ffd700','#f0abfc','#c084fc','#fff','#fbbf24'];
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                const a = Math.random() * Math.PI * 2;
+                const d = 30 + Math.random() * 60;
+                p.style.cssText = `position:absolute;left:50%;top:40%;width:${4+Math.random()*5}px;height:${4+Math.random()*5}px;border-radius:50%;background:${cols[Math.floor(Math.random()*cols.length)]};pointer-events:none;z-index:50;--sx:${Math.cos(a)*d}px;--sy:${Math.sin(a)*d}px;animation:sparkFly ${0.5+Math.random()*0.5}s ease-out forwards;`;
+                room.appendChild(p);
+                setTimeout(() => p.remove(), 1100);
+            }, i * 35);
+        }
+    }
+
+    // ── Bootstrap ─────────────────────────────────────────────────
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
-
 })();
