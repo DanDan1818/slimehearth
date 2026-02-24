@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.819</title>
+    <title>SlimeHearth v0.821</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <link rel="stylesheet" href="styles.css?v=0.771">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.819</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.821</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -239,46 +239,38 @@
         </div>
         
         <!-- Middle: XP Orb — fills bottom to top -->
-        <div class="stat-display" id="level-display-container" style="flex:0.85;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;align-self:stretch;gap:2px;">
-            <div style="font-family:'Righteous',sans-serif;font-size:9px;color:rgba(255,255,255,0.8);text-align:center;text-shadow:0 1px 2px rgba(0,0,0,0.5);">🍖 <span id="foods-eaten-topui">0</span></div>
-            <!-- Orb -->
-            <div style="position:relative;width:46px;height:46px;flex-shrink:0;">
-                <!-- Outer orb shell -->
+        <div class="stat-display" id="level-display-container" style="flex:0.85;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;align-self:stretch;gap:0;">
+            <!-- Orb — red XP, no liquid -->
+            <div style="position:relative;width:62px;height:62px;flex-shrink:0;">
+                <!-- Outer shell -->
                 <div style="
                     position:absolute;inset:0;
                     border-radius:50%;
-                    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 50%, transparent 70%),
-                                rgba(0,0,0,0.35);
-                    border:2px solid rgba(255,255,255,0.3);
-                    box-shadow:0 2px 8px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.2);
-                    overflow:hidden;
-                    z-index:2;
-                    pointer-events:none;
+                    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 55%, transparent 70%),
+                                rgba(0,0,0,0.4);
+                    border:2px solid rgba(255,100,100,0.4);
+                    box-shadow:0 0 10px rgba(220,38,38,0.4), 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.15);
+                    overflow:hidden;z-index:2;pointer-events:none;
                 ">
-                    <!-- Highlight glint -->
-                    <div style="position:absolute;top:6px;left:9px;width:10px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);transform:rotate(-30deg);pointer-events:none;"></div>
+                    <div style="position:absolute;top:8px;left:12px;width:13px;height:7px;border-radius:50%;background:rgba(255,255,255,0.45);transform:rotate(-30deg);pointer-events:none;"></div>
                 </div>
-                <!-- Fill container (clipped to circle) -->
+                <!-- Fill clip -->
                 <div style="position:absolute;inset:2px;border-radius:50%;overflow:hidden;z-index:1;">
-                    <!-- Fill liquid -->
                     <div id="slime-xp-bar" style="
                         position:absolute;bottom:0;left:0;right:0;
                         height:0%;
-                        background:linear-gradient(180deg,#60a5fa 0%,#2563eb 60%,#1e40af 100%);
+                        background:linear-gradient(180deg,#f87171 0%,#dc2626 55%,#991b1b 100%);
                         transition:height 0.4s ease-out;
-                        overflow:hidden;
-                    ">
-                        <!-- Liquid wave on top -->
-                        <div style="position:absolute;top:-5px;left:-50%;width:200%;height:12px;border-radius:50%;background:rgba(147,197,253,0.6);animation:furnaceWave1 2s ease-in-out infinite;"></div>
-                        <div style="position:absolute;top:-3px;left:-30%;width:160%;height:8px;border-radius:50%;background:rgba(96,165,250,0.4);animation:furnaceWave2 1.6s ease-in-out infinite;"></div>
-                    </div>
+                    "></div>
                 </div>
-                <!-- XP text centred over orb -->
+                <!-- XP text -->
                 <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
-                    <span style="font-family:'Righteous',sans-serif;font-size:7px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.9);line-height:1;"><span id="slime-xp">0</span></span>
-                    <span style="font-family:'Righteous',sans-serif;font-size:6px;color:rgba(255,255,255,0.8);text-shadow:0 1px 2px rgba(0,0,0,0.9);line-height:1;">/<span id="slime-xp-needed">100</span></span>
+                    <span style="font-family:'Righteous',sans-serif;font-size:9px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);line-height:1;"><span id="slime-xp">0</span></span>
+                    <span style="font-family:'Righteous',sans-serif;font-size:7px;color:rgba(255,255,255,0.8);text-shadow:0 1px 2px rgba(0,0,0,0.9);line-height:1.2;">/<span id="slime-xp-needed">100</span></span>
                 </div>
             </div>
+            <!-- foods-eaten-topui kept hidden for JS compat -->
+            <span id="foods-eaten-topui" style="display:none;">0</span>
         </div>
         
         <!-- Right: Skills card — skill name + level, no "SKILLS" label -->
@@ -528,8 +520,8 @@
             <!-- Jewelcrafting Room -->
             <div class="room" id="jewelcrafting-room" style="justify-content:flex-start;padding-top:8px;overflow-y:auto;">
 
-                <!-- Row 1: Recipe Cards with Levels -->
-                <div style="display:flex;justify-content:center;gap:6px;width:100%;padding:0 8px;box-sizing:border-box;margin-bottom:6px;">
+                <!-- Row 1: Recipe Cards with Levels — pushed down below top UI -->
+                <div style="display:flex;justify-content:center;gap:6px;width:100%;padding:0 8px;box-sizing:border-box;margin-top:20px;margin-bottom:6px;">
 
                     <div id="jc-card-ring" style="flex:1;max-width:100px;padding:5px 4px;border-radius:10px;text-align:center;background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.2);">
                         <div style="font-size:22px;line-height:1;">💍</div>
@@ -554,11 +546,11 @@
                 </div>
 
                 <!-- Row 2: Bar-Bar — Orb — Bar-Bar -->
-                <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px;">
 
                     <!-- Bar 1: Metal Bar slot 1 -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                        <div style="font-size:7px;color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">BAR<br>1</div>
+                        <div style="font-size:7px;color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;text-align:center;line-height:1.2;">BAR<br>1</div>
                         <div id="jc-bar1-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
                             <div id="jc-bar1" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 100%);">
                                 <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);animation:jcWave1 2.2s ease-in-out infinite;"></div>
@@ -570,7 +562,7 @@
 
                     <!-- Bar 2: Metal Bar slot 2 -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                        <div style="font-size:7px;color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">BAR<br>2</div>
+                        <div style="font-size:7px;color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;text-align:center;line-height:1.2;">BAR<br>2</div>
                         <div id="jc-bar2-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
                             <div id="jc-bar2" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 100%);">
                                 <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);animation:jcWave2 2.4s ease-in-out infinite;"></div>
@@ -580,26 +572,26 @@
                         <div id="jc-bar2-pct" style="font-size:8px;color:#fff;font-family:'Righteous',sans-serif;">0%</div>
                     </div>
 
-                    <!-- Centre: Orb (total % chance) -->
-                    <div style="position:relative;width:76px;height:76px;flex-shrink:0;margin:0 2px;">
-                        <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 55%, transparent 70%),rgba(0,0,0,0.4);border:3px solid rgba(255,255,255,0.25);box-shadow:0 2px 14px rgba(160,90,255,0.4),inset 0 1px 4px rgba(255,255,255,0.18);overflow:hidden;z-index:2;pointer-events:none;">
-                            <div style="position:absolute;top:9px;left:14px;width:13px;height:7px;border-radius:50%;background:rgba(255,255,255,0.45);transform:rotate(-30deg);"></div>
+                    <!-- Centre: Orb — bigger (100px) -->
+                    <div style="position:relative;width:100px;height:100px;flex-shrink:0;">
+                        <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 55%, transparent 70%),rgba(0,0,0,0.4);border:3px solid rgba(255,255,255,0.25);box-shadow:0 2px 18px rgba(160,90,255,0.5),inset 0 1px 4px rgba(255,255,255,0.18);overflow:hidden;z-index:2;pointer-events:none;">
+                            <div style="position:absolute;top:13px;left:18px;width:18px;height:10px;border-radius:50%;background:rgba(255,255,255,0.45);transform:rotate(-30deg);"></div>
                         </div>
                         <div style="position:absolute;inset:3px;border-radius:50%;overflow:hidden;z-index:1;">
                             <div id="jc-orb-fill" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,#c084fc 0%,#9333ea 55%,#6b21a8 100%);transition:height 0.45s ease-out;overflow:hidden;">
-                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:11px;border-radius:50%;background:rgba(240,171,252,0.55);animation:jcWave1 2s ease-in-out infinite;"></div>
-                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:7px;border-radius:50%;background:rgba(192,132,252,0.4);animation:jcWave2 1.6s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-5px;left:-50%;width:200%;height:13px;border-radius:50%;background:rgba(240,171,252,0.55);animation:jcWave1 2s ease-in-out infinite;"></div>
+                                <div style="position:absolute;top:-3px;left:-30%;width:160%;height:9px;border-radius:50%;background:rgba(192,132,252,0.4);animation:jcWave2 1.6s ease-in-out infinite;"></div>
                             </div>
                         </div>
                         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
-                            <span style="font-family:'Righteous',sans-serif;font-size:16px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);line-height:1;"><span id="jc-orb-pct">0</span>%</span>
-                            <span style="font-family:'Righteous',sans-serif;font-size:7px;color:rgba(255,255,255,0.7);text-shadow:0 1px 2px rgba(0,0,0,0.8);">CHANCE</span>
+                            <span style="font-family:'Righteous',sans-serif;font-size:22px;font-weight:bold;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.9);line-height:1;"><span id="jc-orb-pct">0</span>%</span>
+                            <span style="font-family:'Righteous',sans-serif;font-size:8px;color:rgba(255,255,255,0.7);text-shadow:0 1px 2px rgba(0,0,0,0.8);">CHANCE</span>
                         </div>
                     </div>
 
                     <!-- Bar 3: Gem chance -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                        <div style="font-size:7px;color:rgba(200,160,255,0.85);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">GEM<br>%</div>
+                        <div style="font-size:7px;color:rgba(200,160,255,0.85);font-family:'Righteous',sans-serif;text-align:center;line-height:1.2;">GEM<br>%</div>
                         <div id="jc-bar3-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
                             <div id="jc-bar3" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#c4b5fd 0%,#7c3aed 100%);">
                                 <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);animation:jcWave1 2.6s ease-in-out infinite;"></div>
@@ -611,7 +603,7 @@
 
                     <!-- Bar 4: Skill level % -->
                     <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-                        <div style="font-size:7px;color:rgba(253,230,138,0.85);font-family:'Righteous',sans-serif;text-align:center;max-width:28px;line-height:1.2;">SKILL<br>%</div>
+                        <div style="font-size:7px;color:rgba(253,230,138,0.85);font-family:'Righteous',sans-serif;text-align:center;line-height:1.2;">SKILL<br>%</div>
                         <div id="jc-bar4-wrap" style="width:24px;height:110px;border-radius:12px;background:rgba(255,255,255,0.12);border:2px solid rgba(0,0,0,0.7);position:relative;overflow:hidden;">
                             <div id="jc-bar4" style="position:absolute;bottom:0;left:0;right:0;height:0%;border-radius:0 0 10px 10px;transition:height 0.4s ease-out;overflow:hidden;background:linear-gradient(180deg,#fde68a 0%,#f59e0b 55%,#b45309 100%);">
                                 <div style="position:absolute;top:-5px;left:-50%;width:200%;height:10px;border-radius:50%;background:rgba(253,230,138,0.5);animation:jcWave2 2.8s ease-in-out infinite;"></div>
@@ -650,18 +642,13 @@
                     </div>
                 </div>
 
-                <!-- Row 4: Craft button -->
+                <!-- Row 4: Round craft button -->
                 <div style="display:flex;justify-content:center;margin-bottom:8px;">
-                    <button id="jc-craft-btn" style="
-                        padding:10px 40px;border-radius:24px;
-                        background:linear-gradient(135deg,#7c3aed,#a855f7);
-                        color:#fff;border:2px solid rgba(255,255,255,0.3);
-                        font-family:'Righteous',sans-serif;font-size:15px;
-                        cursor:pointer;box-shadow:0 0 18px rgba(168,85,247,0.5);
-                        -webkit-tap-highlight-color:transparent;
-                        transition:transform 0.08s;
-                    " ontouchstart="this.style.transform='scale(0.94)'" ontouchend="this.style.transform='scale(1)'">
-                        ✨ CRAFT
+                    <button id="jc-craft-btn"
+                        style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:4px solid #fff;font-size:40px;cursor:pointer;box-shadow:0 4px 12px rgba(168,85,247,0.6);display:flex;align-items:center;justify-content:center;padding:0;transition:background 0.1s,transform 0.1s;-webkit-tap-highlight-color:transparent;"
+                        ontouchstart="this.style.background='#4c1d95';this.style.transform='scale(0.92)'"
+                        ontouchend="this.style.background='linear-gradient(135deg,#7c3aed,#a855f7)';this.style.transform='scale(1)'">
+                        💍
                     </button>
                 </div>
 
@@ -1530,7 +1517,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.819</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.821</div>
     <div id="mouse-coords">0, 0</div>
     <button onclick="if(window.skillFireworks) window.skillFireworks('fishing')" style="position:fixed;bottom:130px;right:5px;z-index:99999;font-size:9px;padding:3px 5px;background:#1d4ed8;color:#fff;border:none;border-radius:3px;">TEST FW</button>
     <script>
