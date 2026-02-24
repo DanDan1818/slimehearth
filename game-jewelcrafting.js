@@ -41,8 +41,14 @@
     const METAL_BARS = Object.keys(BAR_CHANCE);
     const GEMS       = Object.keys(GEM_CHANCE);
 
-    // ── State ────────────────────────────────────────────────────
-    let slots = { 1: null, 2: null, 3: null };
+    // ── Slot state (mirrors hearth pattern) ──────────────────────
+    // Each slot tracks the locked physics body + itemId
+    let jcLockedBody1 = null;  // bar slot 1
+    let jcLockedBody2 = null;  // bar slot 2
+    let jcLockedBody3 = null;  // gem slot 3
+    let jcSlot1ItemId = null;
+    let jcSlot2ItemId = null;
+    let jcSlot3ItemId = null;
 
     // ── Init ─────────────────────────────────────────────────────
     function init() {
@@ -55,60 +61,58 @@
         const craftBtn = document.getElementById('jc-craft-btn');
         if (craftBtn) craftBtn.onclick = onCraft;
 
-        [1, 2, 3].forEach(n => {
-            const s = document.getElementById('jc-slot' + n);
-            if (s) s.addEventListener('click', () => onSlotClick(n));
-        });
-
-        window.jcCheckDrop = jcCheckDrop;
-        window.jcOnEnter   = onEnterRoom;
+        window.jcOnEnter        = onEnterRoom;
+        window.lockItemInJCSlot = lockItemInJCSlot;
         refreshAll();
     }
 
-    // Called every time the jewelcrafting room becomes active
+    // Called every time the JC room becomes active — just refresh UI
     function onEnterRoom() {
-        // Validate slot items still exist — if an itemKey was lost (e.g. from a reload
-        // or edge-case state reset), clear the orphaned slot so it doesn't ghost
-        [1, 2, 3].forEach(n => {
-            if (!slots[n]) return;
-            const key = slots[n].itemKey;
-            // If the item no longer exists in inventory (was already removed when slotted)
-            // that's expected — BUT if gs itself was reset/reloaded and slots wasn't,
-            // the itemKey will be stale. Re-validate by checking itemId is still known.
-            if (!slots[n].itemId) {
-                slots[n] = null;
-            }
-        });
         refreshAll();
     }
 
-    // ── Slot click — pull from inventory ─────────────────────────
-    function onSlotClick(n) {
-        if (slots[n]) return;
-        const gs = window.gs;
-        if (!gs || !gs.inventory) return;
-        const allowed = n < 3 ? METAL_BARS : GEMS;
-        // inventory values are plain itemId strings (e.g. "copper_bar"), not objects
-        const key = Object.keys(gs.inventory).find(k => allowed.includes(gs.inventory[k]));
-        if (!key) { if (window.notify) window.notify(n < 3 ? 'No Metal Bars!' : 'No Gems!'); return; }
-        fillSlot(n, gs.inventory[key], key);
-    }
+    // ── Lock a physics body into a JC slot (mirrors lockItemInHearthSlot) ──
+    function lockItemInJCSlot(body, slotNumber) {
+        const itemId = body.itemId;
+        if (!itemId) return;
 
-    function fillSlot(n, itemId, itemKey) {
-        slots[n] = { itemId, itemKey };
-        if (window.gs?.inventory) delete window.gs.inventory[itemKey];
-        if (window.save) window.save();
-        if (window.updateInventoryCounter) window.updateInventoryCounter();
+        // Release whatever was already in this slot
+        if (slotNumber === 1 && jcLockedBody1) releaseJCBody(jcLockedBody1);
+        if (slotNumber === 2 && jcLockedBody2) releaseJCBody(jcLockedBody2);
+        if (slotNumber === 3 && jcLockedBody3) releaseJCBody(jcLockedBody3);
+
+        // Use the cooking system's lockBodyInSlot to freeze/hide the physics body
+        if (typeof lockBodyInSlot === 'function') {
+            const slotEl = document.getElementById('jc-slot' + slotNumber);
+            lockBodyInSlot(body, slotEl, '#a855f7');
+        }
+
+        // Store state
+        if (slotNumber === 1) { jcLockedBody1 = body; jcSlot1ItemId = itemId; }
+        if (slotNumber === 2) { jcLockedBody2 = body; jcSlot2ItemId = itemId; }
+        if (slotNumber === 3) { jcLockedBody3 = body; jcSlot3ItemId = itemId; }
+
         refreshAll();
-        spawnDropSpark(document.getElementById('jc-slot' + n), n === 3);
+        spawnDropSpark(document.getElementById('jc-slot' + slotNumber), slotNumber === 3);
     }
 
+    // ── Release a JC body back to physics ────────────────────────
+    function releaseJCBody(body) {
+        if (typeof releaseLockedBody === 'function') releaseLockedBody(body);
+    }
+
+    // ── Clear a slot (X button) ───────────────────────────────────
     window.jcClearSlot = function(n) {
-        if (!slots[n]) return;
-        if (window.addItem) window.addItem(slots[n].itemId, 1);
-        slots[n] = null;
-        if (window.save) window.save();
-        if (window.updateInventoryCounter) window.updateInventoryCounter();
+        if (n === 1) {
+            if (jcLockedBody1) releaseJCBody(jcLockedBody1);
+            jcLockedBody1 = null; jcSlot1ItemId = null;
+        } else if (n === 2) {
+            if (jcLockedBody2) releaseJCBody(jcLockedBody2);
+            jcLockedBody2 = null; jcSlot2ItemId = null;
+        } else if (n === 3) {
+            if (jcLockedBody3) releaseJCBody(jcLockedBody3);
+            jcLockedBody3 = null; jcSlot3ItemId = null;
+        }
         refreshAll();
     };
 
@@ -120,16 +124,17 @@
     }
 
     function renderSlots() {
+        const slotItems = { 1: jcSlot1ItemId, 2: jcSlot2ItemId, 3: jcSlot3ItemId };
         [1, 2, 3].forEach(n => {
-            const s    = slots[n];
+            const itemId = slotItems[n];
             const icon = document.getElementById('jc-slot' + n + '-icon');
             const name = document.getElementById('jc-slot' + n + '-name');
             const clr  = document.getElementById('jc-slot' + n + '-clear');
             const wrap = document.getElementById('jc-slot' + n);
             if (!icon || !name) return;
-            if (s) {
-                icon.textContent  = n < 3 ? (BAR_ICONS[s.itemId] || '⬜') : (GEM_ICONS[s.itemId] || '💎');
-                name.textContent  = n < 3 ? (BAR_NAMES[s.itemId] || s.itemId) : (GEM_NAMES[s.itemId] || s.itemId);
+            if (itemId) {
+                icon.textContent  = n < 3 ? (BAR_ICONS[itemId] || '⬜') : (GEM_ICONS[itemId] || '💎');
+                name.textContent  = n < 3 ? (BAR_NAMES[itemId] || itemId) : (GEM_NAMES[itemId] || itemId);
                 name.style.color  = 'rgba(255,255,255,0.9)';
                 if (clr) clr.style.display = 'block';
                 if (wrap) { wrap.style.border = '2px solid rgba(168,85,247,0.6)'; wrap.style.background = 'rgba(88,28,135,0.3)'; }
@@ -146,19 +151,18 @@
     function updateBarsAndOrb() {
         const jcLevel   = window.gs?.skills?.jewelcrafting?.level || 1;
         const jc        = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
-        const amuletPct = Math.max(0, ((jc.amulet || 1) - 1)); // level 1 = 0%, level 2 = 1%...
+        const amuletPct = Math.max(0, ((jc.amulet || 1) - 1));
 
-        const pct1 = slots[1] ? (BAR_CHANCE[slots[1].itemId] || 0) : 0;
-        const pct2 = slots[2] ? (BAR_CHANCE[slots[2].itemId] || 0) : 0;
-        const pct3 = slots[3] ? (GEM_CHANCE[slots[3].itemId] || 0) : 0;
+        const pct1 = jcSlot1ItemId ? (BAR_CHANCE[jcSlot1ItemId] || 0) : 0;
+        const pct2 = jcSlot2ItemId ? (BAR_CHANCE[jcSlot2ItemId] || 0) : 0;
+        const pct3 = jcSlot3ItemId ? (GEM_CHANCE[jcSlot3ItemId] || 0) : 0;
         const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
 
-        setBar('jc-bar1', !!slots[1], pct1, slots[1] ? BAR_COLOR[slots[1].itemId] : null, 'jc-bar1-pct', pct1 ? pct1 + '%' : '0%');
-        setBar('jc-bar2', !!slots[2], pct2, slots[2] ? BAR_COLOR[slots[2].itemId] : null, 'jc-bar2-pct', pct2 ? pct2 + '%' : '0%');
-        setBar('jc-bar3', !!slots[3], pct3, slots[3] ? GEM_COLOR[slots[3].itemId] : null, 'jc-bar3-pct', pct3 ? pct3 + '%' : '0%');
+        setBar('jc-bar1', !!jcSlot1ItemId, pct1, jcSlot1ItemId ? BAR_COLOR[jcSlot1ItemId] : null, 'jc-bar1-pct', pct1 ? pct1 + '%' : '0%');
+        setBar('jc-bar2', !!jcSlot2ItemId, pct2, jcSlot2ItemId ? BAR_COLOR[jcSlot2ItemId] : null, 'jc-bar2-pct', pct2 ? pct2 + '%' : '0%');
+        setBar('jc-bar3', !!jcSlot3ItemId, pct3, jcSlot3ItemId ? GEM_COLOR[jcSlot3ItemId] : null, 'jc-bar3-pct', pct3 ? pct3 + '%' : '0%');
         setBar4(pct4);
 
-        // Total = all 4 ingredient bars + amulet passive bonus
         const total = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletPct);
         const orbFill = document.getElementById('jc-orb-fill');
         const orbPct  = document.getElementById('jc-orb-pct');
@@ -206,90 +210,59 @@
 
     // ── Craft ────────────────────────────────────────────────────
     function onCraft() {
-        if (!slots[1]?.itemId || !slots[2]?.itemId || !slots[3]?.itemId) {
-            if (window.notify) window.notify('💍 Fill all 3 slots first!');
+        if (!jcSlot1ItemId || !jcSlot2ItemId || !jcSlot3ItemId) {
+            notify('💍 Fill all 3 slots first!');
             return;
         }
 
         const jcLevel = window.gs?.skills?.jewelcrafting?.level || 1;
         const jc      = window.gs?.jewelcraft || { ring: 1, amulet: 1, watch: 1 };
-        const pct1 = BAR_CHANCE[slots[1].itemId] || 0;
-        const pct2 = BAR_CHANCE[slots[2].itemId] || 0;
-        const pct3 = GEM_CHANCE[slots[3].itemId] || 0;
+        const pct1 = BAR_CHANCE[jcSlot1ItemId] || 0;
+        const pct2 = BAR_CHANCE[jcSlot2ItemId] || 0;
+        const pct3 = GEM_CHANCE[jcSlot3ItemId] || 0;
         const pct4 = parseFloat(skillPct(jcLevel).toFixed(1));
         const amuletBonus = Math.max(0, ((jc.amulet || 1) - 1));
         const totalChance = Math.min(100, pct1 + pct2 + pct3 + pct4 + amuletBonus);
 
-        // Consume slots (items already removed from inventory on drop)
-        slots[1] = null; slots[2] = null; slots[3] = null;
+        // Consume slots — move bodies off-screen and release them (they'll fall away and be ignored)
+        // The items were removed from inventory when they were dropped into the slots
+        [jcLockedBody1, jcLockedBody2, jcLockedBody3].forEach(b => {
+            if (!b) return;
+            if (typeof Matter !== 'undefined') Matter.Body.setPosition(b, { x: -500, y: 2000 });
+            if (typeof releaseLockedBody === 'function') releaseLockedBody(b);
+            if (typeof basketBodies !== 'undefined') {
+                const idx = basketBodies.indexOf(b);
+                if (idx > -1) basketBodies.splice(idx, 1);
+            }
+        });
+        jcLockedBody1 = null; jcSlot1ItemId = null;
+        jcLockedBody2 = null; jcSlot2ItemId = null;
+        jcLockedBody3 = null; jcSlot3ItemId = null;
 
         // Roll
         const roll = Math.random() * 100;
         const success = roll < totalChance;
 
         if (success) {
-            // Level up a random jewelry card
             if (!window.gs.jewelcraft) window.gs.jewelcraft = { ring: 1, amulet: 1, watch: 1 };
             const cards = ['ring', 'amulet', 'watch'];
             const picked = cards[Math.floor(Math.random() * cards.length)];
             window.gs.jewelcraft[picked] = (window.gs.jewelcraft[picked] || 1) + 1;
 
-            const icons = { ring: '💍', amulet: '📿', watch: '⌚' };
-            if (window.notify) window.notify('✨ ' + icons[picked] + ' ' + picked.charAt(0).toUpperCase() + picked.slice(1) + ' leveled up! Lv ' + window.gs.jewelcraft[picked], 'achievement');
+            const icons = { ring: '\u{1F48D}', amulet: '\u{1F4FF}', watch: '\u231A' };
+            notify('\u2728 ' + icons[picked] + ' ' + picked.charAt(0).toUpperCase() + picked.slice(1) + ' leveled up! Lv ' + window.gs.jewelcraft[picked], 'achievement');
 
             const lvlSound = document.getElementById('skill-levelup-sound');
             if (lvlSound) { lvlSound.currentTime = 0; lvlSound.play().catch(() => {}); }
-            if (window.addSkillXP) window.addSkillXP('jewelcrafting', 50);
+            if (typeof addSkillXP === 'function') addSkillXP('jewelcrafting', 50);
             spawnCardExplosion(document.getElementById('jc-card-' + picked));
         } else {
-            if (window.notify) window.notify('💔 Craft failed! (rolled ' + Math.round(roll) + '%, needed <' + Math.round(totalChance) + '%)');
-            if (window.addSkillXP) window.addSkillXP('jewelcrafting', 10);
+            notify('\uD83D\uDC94 Craft failed! (rolled ' + Math.round(roll) + '%, needed <' + Math.round(totalChance) + '%)');
+            if (typeof addSkillXP === 'function') addSkillXP('jewelcrafting', 10);
         }
 
-        if (window.save) window.save();
+        save();
         refreshAll();
-    }
-
-    // ── Basket drop detection ─────────────────────────────────────
-    function jcCheckDrop(bodies, basketEngine, World) {
-        const room = document.getElementById('jewelcrafting-room');
-        if (!room || !room.classList.contains('active')) return;
-        const canvasEl = document.getElementById('basket-canvas');
-        if (!canvasEl) return;
-        const cr    = canvasEl.getBoundingClientRect();
-        const scaleX = canvasEl.width  / cr.width;
-        const scaleY = canvasEl.height / cr.height;
-
-        for (let i = bodies.length - 1; i >= 0; i--) {
-            const b = bodies[i];
-            if (!b || !b.itemId) continue;
-            const isBar = METAL_BARS.includes(b.itemId);
-            const isGem = GEMS.includes(b.itemId);
-            if (!isBar && !isGem) continue;
-
-            const targetSlots = isBar ? [1, 2] : [3];
-            for (const sn of targetSlots) {
-                if (slots[sn]) continue;
-                const slotEl = document.getElementById('jc-slot' + sn);
-                if (!slotEl) continue;
-                const sr  = slotEl.getBoundingClientRect();
-                const scx = ((sr.left + sr.width  / 2) - cr.left) * scaleX;
-                const scy = ((sr.top  + sr.height / 2) - cr.top)  * scaleY;
-                const dist = Math.sqrt((b.position.x - scx) ** 2 + (b.position.y - scy) ** 2);
-                if (dist < 38) {
-                    const id = b.itemId, key = b.itemKey;
-                    World.remove(basketEngine.world, b);
-                    bodies.splice(i, 1);
-                    if (window.gs?.inventory) delete window.gs.inventory[key];
-                    slots[sn] = { itemId: id, itemKey: key };
-                    refreshAll();
-                    if (window.save) window.save();
-                    if (window.updateInventoryCounter) window.updateInventoryCounter();
-                    spawnDropSpark(slotEl, isGem);
-                    break;
-                }
-            }
-        }
     }
 
     // ── VFX ──────────────────────────────────────────────────────

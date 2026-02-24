@@ -259,13 +259,6 @@
         function save() {
             localStorage.setItem('slimeKeeper', JSON.stringify(gs));
         }
-
-        // Expose core functions globally so other script files can call them
-        window.save                    = save;
-        window.notify                  = notify;
-        window.addItem                 = function(itemId, qty) { return addItem(itemId, qty); };
-        window.updateInventoryCounter  = updateInventoryCounter;
-        window.gs                      = gs;
         
         function load() {
             const saved = localStorage.getItem('slimeKeeper');
@@ -912,10 +905,10 @@
                 }
             }
 
-            // Notify jewelcrafting to re-render slots whenever the room is entered
+            // Notify jewelcrafting to refresh UI whenever the room is entered
             if (roomId === 'jewelcrafting-room' && window.jcOnEnter) window.jcOnEnter();
         }
-        
+
         document.getElementById('nav-home').onclick = () => switchRoom('home-room');
         document.getElementById('nav-area').onclick = () => switchRoom('area-room');
         
@@ -1487,10 +1480,7 @@
                 'gold_ore':   { name: 'Gold',   icon: '🌟',  color: '#d97706', colorLight: '#fbbf24', output: 'gold_bar',   needed: 5, xpPer: 10, xpBar: 500 },
             };
 
-            // Jewelcrafting gem drop detection
-            Events.on(basketEngine, 'beforeUpdate', () => {
-                if (window.jcCheckDrop) window.jcCheckDrop(basketBodies, basketEngine, World);
-            });
+            // Jewelcrafting slot detection is now handled in the enddrag handler above
 
             Events.on(basketEngine, 'beforeUpdate', () => {
                 const furnaceRoom = document.getElementById('furnace-room');
@@ -1650,6 +1640,28 @@
                         const slotEl = document.getElementById(`garden-plot-slot-${i}`);
                         if (slotEl && isBodyOverElement(body, slotEl)) {
                             lockItemInGardenSlot(body, i);
+                            return;
+                        }
+                    }
+                }
+
+                // ── JEWELCRAFTING: bars → slots 1&2, gems → slot 3 ──
+                const jcRoom = document.getElementById('jewelcrafting-room');
+                if (jcRoom && jcRoom.classList.contains('active')) {
+                    const isBar = ['copper_bar','iron_bar','silver_bar','gold_bar'].includes(itemId);
+                    const isGem = ['gem','emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
+                    if (isBar) {
+                        for (const sn of [1, 2]) {
+                            const slotEl = document.getElementById('jc-slot' + sn);
+                            if (slotEl && isBodyOverElement(body, slotEl)) {
+                                if (window.lockItemInJCSlot) window.lockItemInJCSlot(body, sn);
+                                return;
+                            }
+                        }
+                    } else if (isGem) {
+                        const slotEl = document.getElementById('jc-slot3');
+                        if (slotEl && isBodyOverElement(body, slotEl)) {
+                            if (window.lockItemInJCSlot) window.lockItemInJCSlot(body, 3);
                             return;
                         }
                     }
