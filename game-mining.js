@@ -325,15 +325,21 @@
                 releaseLakeButton();
             });
 
-            // Sea: tap once to cast all 4, tap again to stop and score
+            // Sea: hold to lower lines, release to stop and score
             const seaBtn = document.getElementById('cast-sea');
             seaBtn.addEventListener('mousedown', startSeaFishing);
+            seaBtn.addEventListener('mouseup', releaseSeaButton);
+            seaBtn.addEventListener('mouseleave', releaseSeaButton);
             seaBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 startSeaFishing();
             });
-            
-            
+            seaBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                releaseSeaButton();
+            });
+
+
             document.getElementById('goto-adventure').onclick = () => {
                 switchRoom('forge-menu-room');
             };

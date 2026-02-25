@@ -574,98 +574,110 @@
             return shifted.length - 1;
         }
 
-        // ===== SEA FISHING: 4 Vertical Bars =====
-        // All 4 green zones move independently at their fish's speed.
-        // Tap cast to start all 4, tap again to stop all 4 and score.
+        // ===== SEA FISHING: Press & Hold to Lower Lines =====
+        // 4 vertical bars, each with a fixed green zone (placed randomly per fish).
+        // Red lines start at TOP. Hold button → all lines fall together.
+        // Release → lines STOP and score is checked immediately.
+        // If any line hits the BOTTOM before you release → session fails, nothing caught.
 
-        const SEA_BAR_H    = 140;   // px height of each bar
-        const SEA_TARGET_H = 44;    // px height of green zone
-        const SEA_MARKER_Y = 67;    // fixed red marker position (center of bar)
+        const SEA_BAR_H    = 140;
+        const SEA_LINE_H   = 4;    // red line thickness
+        const SEA_TARGET_H = 36;   // green zone height
 
-        // Sea fish pool — each bar gets one independently
+        // Each fish has a fall speed (px/tick) — harder fish = faster fall
         const SEA_FISH_POOL = [
-            { emoji: '🐟', name: 'Sardine',   item: 'fish1', speedMin: 1.5, speedMax: 2.5 },
-            { emoji: '🐠', name: 'Mackerel',  item: 'fish2', speedMin: 2,   speedMax: 4   },
-            { emoji: '🐡', name: 'Tuna',      item: 'fish3', speedMin: 3.5, speedMax: 6   },
-            { emoji: '🦈', name: 'Shark',     item: 'fish8', speedMin: 6,   speedMax: 9   },
-            { emoji: '🦞', name: 'Lobster',   item: 'fish5', speedMin: 1,   speedMax: 2   },
-            { emoji: '🦐', name: 'Shrimp',    item: 'fish6', speedMin: 2,   speedMax: 3.5 },
-            { emoji: '🦀', name: 'Crab',      item: 'fish7', speedMin: 1.5, speedMax: 3   },
-            { emoji: '🎣', name: 'Swordfish', item: 'fish4', speedMin: 5,   speedMax: 8   },
+            { emoji: '🦐', name: 'Shrimp',    item: 'fish6', speed: 0.8  },
+            { emoji: '🦞', name: 'Lobster',   item: 'fish5', speed: 1.0  },
+            { emoji: '🐟', name: 'Sardine',   item: 'fish1', speed: 1.3  },
+            { emoji: '🐠', name: 'Mackerel',  item: 'fish2', speed: 1.7  },
+            { emoji: '🦀', name: 'Crab',      item: 'fish7', speed: 2.0  },
+            { emoji: '🐡', name: 'Tuna',      item: 'fish3', speed: 2.5  },
+            { emoji: '🎣', name: 'Swordfish', item: 'fish4', speed: 3.2  },
+            { emoji: '🦈', name: 'Shark',     item: 'fish8', speed: 4.0  },
         ];
 
         let seaActive   = false;
+        let seaHolding  = false;
         let seaInterval = null;
-        let seaBars     = []; // per-bar state: { fish, pos, dir, speed }
+        let seaBars     = []; // { fish, zoneTop, lineY }
 
         function startSeaFishing() {
-            if (seaActive) {
-                stopSeaFishing();
-                return;
-            }
+            if (seaActive) return;
 
-            const timer     = document.getElementById('fishing-timer-sea');
+            const timer      = document.getElementById('fishing-timer-sea');
             const scoreLabel = document.getElementById('sea-score-label');
-            const fishLv    = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+            const fishLv     = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
 
-            // Assign a random fish to each bar, weighted by level
+            // Assign fish to each bar — higher level unlocks faster fish
+            const maxIdx = Math.min(Math.floor(fishLv / 2) + 2, SEA_FISH_POOL.length - 1);
             seaBars = [0, 1, 2, 3].map(i => {
-                // Higher level → harder fish available
-                const maxIdx = Math.min(Math.floor(fishLv / 3) + 3, SEA_FISH_POOL.length - 1);
                 const pool = SEA_FISH_POOL.slice(0, maxIdx + 1);
                 const fish = pool[Math.floor(Math.random() * pool.length)];
-                const speed = fish.speedMin + Math.random() * (fish.speedMax - fish.speedMin);
-                return {
-                    fish,
-                    pos: Math.random() * (SEA_BAR_H - SEA_TARGET_H),
-                    dir: Math.random() < 0.5 ? 1 : -1,
-                    speed,
-                };
+                // Place green zone at a random position, not too close to top or bottom
+                const zoneTop = 30 + Math.random() * (SEA_BAR_H - SEA_TARGET_H - 40);
+                return { fish, zoneTop, lineY: 0 };
             });
 
-            seaActive = true;
+            seaActive  = true;
+            seaHolding = true; // holding from the moment they press
 
-            // Set labels, clear results
+            // Reset visuals
             seaBars.forEach((b, i) => {
-                const label = document.getElementById('sea-label-' + i);
-                const result = document.getElementById('sea-result-' + i);
-                const target = document.getElementById('sea-target-' + i);
-                if (label)  label.textContent  = b.fish.emoji;
-                if (result) result.textContent = '';
-                if (target) target.style.top   = b.pos + 'px';
-                // Reset bar background
+                const label     = document.getElementById('sea-label-' + i);
+                const result    = document.getElementById('sea-result-' + i);
+                const target    = document.getElementById('sea-target-' + i);
+                const marker    = document.getElementById('sea-marker-' + i);
                 const container = document.getElementById('sea-bar-' + i);
+                if (label)     label.textContent  = b.fish.emoji;
+                if (result)    result.textContent = '';
+                if (target)  { target.style.top   = b.zoneTop + 'px'; target.style.height = SEA_TARGET_H + 'px'; }
+                if (marker)    marker.style.top   = '0px';
                 if (container) container.style.background = 'rgba(255,255,255,0.55)';
             });
 
-            if (timer)      timer.textContent = 'Stop when markers hit green!';
+            if (timer)      timer.textContent = 'Hold to lower — release when in green!';
             if (scoreLabel) scoreLabel.textContent = '';
 
-            // Animation loop
+            const TICK = 30;
+            lakeActive; // (just a reference guard — no-op)
             seaInterval = setInterval(() => {
+                if (!seaHolding) return; // paused — lines frozen
+
+                let anyHitBottom = false;
+
                 seaBars.forEach((b, i) => {
-                    b.pos += b.dir * b.speed;
-                    // Bounce + re-randomize speed
-                    if (b.pos <= 0) {
-                        b.pos = 0; b.dir = 1;
-                        b.speed = b.fish.speedMin + Math.random() * (b.fish.speedMax - b.fish.speedMin);
+                    b.lineY += b.fish.speed;
+                    const marker = document.getElementById('sea-marker-' + i);
+                    if (marker) marker.style.top = b.lineY + 'px';
+
+                    // Hit bottom?
+                    if (b.lineY >= SEA_BAR_H - SEA_LINE_H) {
+                        b.lineY = SEA_BAR_H - SEA_LINE_H;
+                        anyHitBottom = true;
                     }
-                    if (b.pos >= SEA_BAR_H - SEA_TARGET_H) {
-                        b.pos = SEA_BAR_H - SEA_TARGET_H; b.dir = -1;
-                        b.speed = b.fish.speedMin + Math.random() * (b.fish.speedMax - b.fish.speedMin);
-                    }
-                    const target = document.getElementById('sea-target-' + i);
-                    if (target) target.style.top = b.pos + 'px';
                 });
-            }, 30);
+
+                if (anyHitBottom) {
+                    // Any line hit bottom = total fail
+                    seaHolding = false;
+                    clearInterval(seaInterval);
+                    seaInterval = null;
+                    seaActive   = false;
+                    scoreSeaFishing(true); // true = forced fail
+                }
+            }, TICK);
         }
 
-        function stopSeaFishing() {
+        function releaseSeaButton() {
             if (!seaActive) return;
+            seaHolding = false;
             clearInterval(seaInterval);
             seaInterval = null;
             seaActive   = false;
+            scoreSeaFishing(false);
+        }
 
+        function scoreSeaFishing(forceFail) {
             const timer      = document.getElementById('fishing-timer-sea');
             const scoreLabel = document.getElementById('sea-score-label');
             const fishLv     = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
@@ -674,34 +686,35 @@
             const caughtItems = [];
 
             seaBars.forEach((b, i) => {
-                const zoneTop    = b.pos;
-                const zoneBottom = b.pos + SEA_TARGET_H;
-                const hit = SEA_MARKER_Y >= zoneTop && SEA_MARKER_Y <= zoneBottom;
-
                 const result    = document.getElementById('sea-result-' + i);
                 const container = document.getElementById('sea-bar-' + i);
 
-                if (hit) {
+                const lineBottom = b.lineY + SEA_LINE_H;
+                const inZone = !forceFail && b.lineY >= b.zoneTop && lineBottom <= b.zoneTop + SEA_TARGET_H;
+
+                if (inZone) {
                     hits++;
-                    if (result)    result.textContent = '✅';
-                    if (container) container.style.background = 'rgba(74,222,128,0.3)';
                     caughtItems.push(b.fish.item);
+                    if (result)    result.textContent = '✅';
+                    if (container) container.style.background = 'rgba(74,222,128,0.25)';
                 } else {
-                    if (result)    result.textContent = '❌';
-                    if (container) container.style.background = 'rgba(239,68,68,0.15)';
+                    if (result)    result.textContent = forceFail ? '💀' : '❌';
+                    if (container) container.style.background = forceFail
+                        ? 'rgba(239,68,68,0.25)'
+                        : 'rgba(239,68,68,0.1)';
                 }
             });
 
-            // Award catches
-            if (hits > 0) {
+            if (forceFail) {
+                if (timer)      timer.textContent = '💀 Lines hit the bottom!';
+                if (scoreLabel) scoreLabel.textContent = '';
+            } else if (hits > 0) {
                 caughtItems.forEach(itemId => addItem(itemId, 1));
-                addSkillXP('fishing', hits * 8);
-                const names = caughtItems.map(id => ITEM_DATA[id] ? ITEM_DATA[id].name : id).join(', ');
-                if (timer)      timer.textContent = '🎣 Caught ' + hits + '/4! ' + (hits === 4 ? '🔥 Perfect!' : '');
+                addSkillXP('fishing', hits * 10);
+                const names = [...new Set(caughtItems.map(id => ITEM_DATA[id]?.name || id))].join(', ');
+                if (timer)      timer.textContent = '🎣 Caught ' + hits + '/4!' + (hits === 4 ? ' 🔥 Perfect!' : '');
                 if (scoreLabel) scoreLabel.textContent = names;
-
-                // Bonuses
-                if (Math.random() < 0.05 * hits) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
+                if (Math.random() < 0.04 * hits) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
                 if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
                     addItem('frog_blue', 1);
                     notify('🔵🐸 A Blue Frog leapt from the sea!', 'achievement');
@@ -718,11 +731,13 @@
                 [0,1,2,3].forEach(i => {
                     const result    = document.getElementById('sea-result-' + i);
                     const container = document.getElementById('sea-bar-' + i);
-                    const target    = document.getElementById('sea-target-' + i);
+                    const marker    = document.getElementById('sea-marker-' + i);
                     const label     = document.getElementById('sea-label-' + i);
+                    const target    = document.getElementById('sea-target-' + i);
                     if (result)    result.textContent = '';
                     if (label)     label.textContent  = '';
                     if (container) container.style.background = 'rgba(255,255,255,0.55)';
+                    if (marker)    marker.style.top = '0px';
                     if (target)    target.style.top = ((SEA_BAR_H - SEA_TARGET_H) / 2) + 'px';
                 });
             }, 2000);
