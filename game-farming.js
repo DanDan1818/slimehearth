@@ -1133,3 +1133,167 @@
         }
         
 
+
+
+        // ===== COOP MINIGAME =====
+        // Each chicken has a moving mouth (bouncing yellow zone) on a bar.
+        // Drop any seed onto a chicken's mouth → 70% egg, 29% nothing, 1% rock.
+        // Cards at top let you buy more chickens & coop space with coins.
+
+        const COOP_BAR_W   = 160;  // px width of each bar (inside .coop-bar-outer)
+        const COOP_MOUTH_W = 40;   // px width of mouth zone
+        const COOP_SPEED   = 2.2;  // px per tick
+        const COOP_TICK    = 30;
+
+        let coopIntervals  = [];   // one interval per chicken slot
+        let coopMouthPos   = [];   // current mouth left px per slot
+        let coopMouthDir   = [];   // 1 or -1 per slot
+        let coopBusy       = [];   // true while a feed animation is playing
+
+        const SEED_ITEMS   = ['carrot_seeds','tomato_seeds','potato_seeds','corn_seeds','onion_seeds','pumpkin_seeds'];
+
+        function initCoop() {
+            if (!gs.coop) gs.coop = { chickens: 1, maxChickens: 2 };
+            renderCoopSlots();
+            startCoopAnimations();
+
+            const buyChickenBtn = document.getElementById('coop-buy-chicken');
+            const buySpaceBtn   = document.getElementById('coop-buy-space');
+
+            if (buyChickenBtn) buyChickenBtn.onclick = () => {
+                if (!gs.coop) gs.coop = { chickens: 1, maxChickens: 2 };
+                if (gs.coop.chickens >= gs.coop.maxChickens) {
+                    coopMsg('🏠 No space! Buy more coop space first.'); return;
+                }
+                if (gs.coins < 50) { coopMsg('❌ Need 50 coins!'); return; }
+                gs.coins -= 50;
+                gs.coop.chickens++;
+                save(); updateUI();
+                renderCoopSlots();
+                startCoopAnimations();
+                coopMsg('🐔 New chicken moved in!');
+            };
+
+            if (buySpaceBtn) buySpaceBtn.onclick = () => {
+                if (!gs.coop) gs.coop = { chickens: 1, maxChickens: 2 };
+                if (gs.coop.maxChickens >= 6) { coopMsg('🏠 Coop is max size!'); return; }
+                if (gs.coins < 80) { coopMsg('❌ Need 80 coins!'); return; }
+                gs.coins -= 80;
+                gs.coop.maxChickens++;
+                save(); updateUI();
+                coopMsg('🏠 Coop expanded! Space: ' + gs.coop.maxChickens);
+            };
+        }
+
+        function stopCoopAnimations() {
+            coopIntervals.forEach(id => clearInterval(id));
+            coopIntervals = [];
+        }
+
+        function startCoopAnimations() {
+            stopCoopAnimations();
+            if (!gs.coop) return;
+            const count = gs.coop.chickens;
+            coopMouthPos = [];
+            coopMouthDir = [];
+            coopBusy     = [];
+            for (let i = 0; i < count; i++) {
+                coopMouthPos[i] = Math.random() * (COOP_BAR_W - COOP_MOUTH_W);
+                coopMouthDir[i] = Math.random() < 0.5 ? 1 : -1;
+                coopBusy[i]     = false;
+                const idx = i;
+                coopIntervals[i] = setInterval(() => tickCoopMouth(idx), COOP_TICK);
+            }
+        }
+
+        function tickCoopMouth(i) {
+            if (coopBusy[i]) return;
+            coopMouthPos[i] += coopMouthDir[i] * COOP_SPEED;
+            if (coopMouthPos[i] <= 0) { coopMouthPos[i] = 0; coopMouthDir[i] = 1; }
+            if (coopMouthPos[i] >= COOP_BAR_W - COOP_MOUTH_W) {
+                coopMouthPos[i] = COOP_BAR_W - COOP_MOUTH_W; coopMouthDir[i] = -1;
+            }
+            const mouth = document.getElementById('coop-mouth-' + i);
+            if (mouth) mouth.style.left = coopMouthPos[i] + 'px';
+        }
+
+        function feedChicken(slotIndex) {
+            // Called from game-basket enddrag via window.feedChicken
+            if (coopBusy[slotIndex]) return;
+            coopBusy[slotIndex] = true;
+
+            const mouth  = document.getElementById('coop-mouth-' + slotIndex);
+            const result = document.getElementById('coop-result-' + slotIndex);
+            const label  = document.getElementById('coop-label-' + slotIndex);
+
+            // "Eating" flash
+            if (mouth) { mouth.textContent = '😋'; mouth.style.background = 'linear-gradient(90deg,#bbf7d0,#4ade80)'; }
+            if (label) label.textContent = '';
+
+            setTimeout(() => {
+                // Roll outcome
+                const r = Math.random();
+                let outcome, icon, msg;
+                if (r < 0.70) {
+                    outcome = 'egg';  icon = '🥚'; msg = '🥚 Got an Egg!';
+                } else if (r < 0.99) {
+                    outcome = null;   icon = '💨'; msg = '😒 Nothing...';
+                } else {
+                    outcome = 'rock'; icon = '🪨'; msg = '🪨 Just a Rock...';
+                }
+
+                if (outcome) addItem(outcome, 1);
+                if (result) {
+                    result.textContent = icon;
+                    setTimeout(() => { if (result) result.textContent = ''; }, 1200);
+                }
+                coopMsg(msg);
+                addSkillXP('farming', outcome === 'egg' ? 5 : 1);
+                save();
+
+                // Reset mouth
+                if (mouth) {
+                    mouth.textContent = '👄';
+                    mouth.style.background = 'linear-gradient(90deg,#fde68a,#f59e0b)';
+                }
+                if (label) label.textContent = 'drop seed';
+                coopBusy[slotIndex] = false;
+            }, 600);
+        }
+
+        function renderCoopSlots() {
+            const container = document.getElementById('coop-slots');
+            if (!container || !gs.coop) return;
+            container.innerHTML = '';
+            for (let i = 0; i < gs.coop.chickens; i++) {
+                const row = document.createElement('div');
+                row.className = 'coop-slot-row';
+                row.innerHTML = `
+                    <div class="coop-chicken-icon">🐔</div>
+                    <div class="coop-bar-outer" id="coop-bar-${i}">
+                        <div class="coop-bar-inner">
+                            <div class="coop-mouth" id="coop-mouth-${i}" style="left:0px;">👄</div>
+                        </div>
+                        <span class="coop-slot-label" id="coop-label-${i}">drop seed</span>
+                    </div>
+                    <div class="coop-result-icon" id="coop-result-${i}"></div>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function coopMsg(text) {
+            const el = document.getElementById('coop-msg');
+            if (el) { el.textContent = text; setTimeout(() => { if (el) el.textContent = ''; }, 2000); }
+        }
+
+        function isBodyOverCoopMouth(body, slotIndex) {
+            const mouthEl = document.getElementById('coop-mouth-' + slotIndex);
+            if (!mouthEl) return false;
+            return isBodyOverElement(body, mouthEl, 20);
+        }
+
+        window.coopOnEnter   = () => { initCoop(); };
+        window.coopOnLeave   = () => { stopCoopAnimations(); };
+        window.feedChicken   = feedChicken;
+        window.coopSlotCount = () => (gs.coop ? gs.coop.chickens : 0);

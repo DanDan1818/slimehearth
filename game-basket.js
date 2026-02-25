@@ -1650,12 +1650,10 @@
                 if (jcRoom && jcRoom.classList.contains('active')) {
                     const isBar = ['copper_bar','iron_bar','silver_bar','gold_bar'].includes(itemId);
                     const isGem = ['gem','emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
-                    console.log('[JC enddrag]', itemId, 'isBar:', isBar, 'isGem:', isGem);
                     if (isBar) {
                         for (const sn of [1, 2]) {
                             const slotEl = document.getElementById('jc-slot' + sn);
                             const over = slotEl && isBodyOverElement(body, slotEl);
-                            console.log('[JC enddrag] slot', sn, 'over:', over);
                             if (over) {
                                 if (window.lockItemInJCSlot) window.lockItemInJCSlot(body, sn);
                                 return;
@@ -1664,9 +1662,29 @@
                     } else if (isGem) {
                         const slotEl = document.getElementById('jc-slot3');
                         const over = slotEl && isBodyOverElement(body, slotEl);
-                        console.log('[JC enddrag] slot 3 over:', over);
                         if (over) {
                             if (window.lockItemInJCSlot) window.lockItemInJCSlot(body, 3);
+                            return;
+                        }
+                    }
+                }
+
+                // ── COOP: seeds → chicken mouth slot ──
+                const coopRoom = document.getElementById('farming-coop-room');
+                const isSeed = data.isPlantable;
+                if (coopRoom && coopRoom.classList.contains('active') && isSeed) {
+                    const count = window.coopSlotCount ? window.coopSlotCount() : 0;
+                    for (let i = 0; i < count; i++) {
+                        const mouthEl = document.getElementById('coop-mouth-' + i);
+                        if (mouthEl && isBodyOverElement(body, mouthEl, 28)) {
+                            // Consume seed from inventory, destroy body
+                            const itemKey = body.itemKey;
+                            if (gs.inventory && itemKey) delete gs.inventory[itemKey];
+                            Matter.World.remove(basketEngine.world, body);
+                            const bIdx = basketBodies.indexOf(body);
+                            if (bIdx > -1) basketBodies.splice(bIdx, 1);
+                            updateInventoryCounter();
+                            if (window.feedChicken) window.feedChicken(i);
                             return;
                         }
                     }

@@ -374,8 +374,14 @@
                 stopOrchardGame();
                 switchRoom('farming-menu-room');
             };
-            document.getElementById('goto-coop').onclick = () => switchRoom('farming-coop-room');
-            document.getElementById('leave-coop').onclick = () => switchRoom('farming-menu-room');
+            document.getElementById('goto-coop').onclick = () => {
+                switchRoom('farming-coop-room');
+                if (window.coopOnEnter) window.coopOnEnter();
+            };
+            document.getElementById('leave-coop').onclick = () => {
+                if (window.coopOnLeave) window.coopOnLeave();
+                switchRoom('farming-menu-room');
+            };
             document.getElementById('goto-barn').onclick = () => switchRoom('farming-barn-room');
             document.getElementById('leave-barn').onclick = () => switchRoom('farming-menu-room');
             document.getElementById('orchard-tap-btn').onclick = orchardTap;

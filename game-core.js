@@ -23,21 +23,8 @@
                 './slimehearth-assets/images/fish7.png',
                 './slimehearth-assets/images/fish8.png',
                 './slimehearth-assets/images/gem1.png',
-                './slimehearth-assets/images/gem6.png',
                 './slimehearth-assets/images/geode1.png',
-                './slimehearth-assets/images/veg1.png',
-                './slimehearth-assets/images/veg2.png',
-                './slimehearth-assets/images/veg3.png',
-                './slimehearth-assets/images/veg4.png',
-                './slimehearth-assets/images/veg5.png',
-                './slimehearth-assets/images/veg6.png',
-                './slimehearth-assets/images/metal1.png',
-                './slimehearth-assets/images/metal2.png',
-                './slimehearth-assets/images/metal3.png',
-                './slimehearth-assets/images/metal4.png',
-                './slimehearth-assets/images/trash2.png',
-                './slimehearth-assets/images/trash3.png',
-                './slimehearth-assets/images/trash4.png',
+                './slimehearth-assets/images/carrot1.png',
                 './slimehearth-assets/images/seeds1.png',
                 './slimehearth-assets/images/food1.png',
                 './slimehearth-assets/images/basket1.png',
@@ -108,7 +95,8 @@
             },
             maxInventory: 6, // Inventory capacity (upgradeable)
             bagUpgrades: 0, // Number of bag upgrades purchased
-            frogs: {} // Collected frogs: { 'frog_blue': true, ... }
+            frogs: {}, // Collected frogs: { 'frog_blue': true, ... }
+            coop: { chickens: 1, maxChickens: 2 } // Coop state
         };
         
         // ===== CONSTANTS =====
@@ -144,6 +132,7 @@
             'rare_geode':    '#d97706',
             'rainbow_geode': '#ec4899',
             'rock': '#666666',
+            'egg':  '#fef9c3',
             'gem': '#9333ea',
             'emerald':  '#10b981',
             'ruby':     '#ef4444',
@@ -192,19 +181,14 @@
             'ruby':     './slimehearth-assets/images/gem4.png',
             'sapphire': './slimehearth-assets/images/gem5.png',
             'amethyst': './slimehearth-assets/images/gem1.png',
-            'topaz':    './slimehearth-assets/images/gem6.png',
+            'topaz':    './slimehearth-assets/images/gem1.png',
             'diamond':  './slimehearth-assets/images/gem3.png',
             'small_geode':   './slimehearth-assets/images/geode1.png',
             'medium_geode':  './slimehearth-assets/images/geode2.png',
             'large_geode':   './slimehearth-assets/images/geode3.png',
             'rare_geode':    './slimehearth-assets/images/geode4.png',
             'rainbow_geode': './slimehearth-assets/images/geode5.png',
-            'carrot':  './slimehearth-assets/images/veg1.png',
-            'potato':  './slimehearth-assets/images/veg2.png',
-            'onion':   './slimehearth-assets/images/veg3.png',
-            'pumpkin': './slimehearth-assets/images/veg4.png',
-            'corn':    './slimehearth-assets/images/veg5.png',
-            'tomato':  './slimehearth-assets/images/veg6.png',
+            'carrot': './slimehearth-assets/images/carrot1.png',
             'carrot_seeds':  './slimehearth-assets/images/seeds1.png',
             'tomato_seeds':  './slimehearth-assets/images/seeds1.png',
             'potato_seeds':  './slimehearth-assets/images/seeds1.png',
@@ -221,18 +205,12 @@
             'silver_ore':  './slimehearth-assets/images/ore4.png',
             'gold_ore':    './slimehearth-assets/images/ore2.png',
             'lily_pad': './slimehearth-assets/images/trash1.png',
-            'burnt_food': './slimehearth-assets/images/trash2.png',
-            'seaweed':    './slimehearth-assets/images/trash3.png',
-            'old_boot':   './slimehearth-assets/images/trash4.png',
-            'copper_bar': './slimehearth-assets/images/metal1.png',
-            'iron_bar':   './slimehearth-assets/images/metal2.png',
-            'silver_bar': './slimehearth-assets/images/metal3.png',
-            'gold_bar':   './slimehearth-assets/images/metal4.png',
             'frog_blue':   './slimehearth-assets/images/frog1.png',
             'frog_yellow': './slimehearth-assets/images/frog2.png',
             'frog_red':    './slimehearth-assets/images/frog3.png',
             'frog_green':  './slimehearth-assets/images/frog4.png',
-            'frog_purple': './slimehearth-assets/images/frog5.png'
+            'frog_purple': './slimehearth-assets/images/frog5.png',
+            'egg':         './slimehearth-assets/images/egg1.png'
         };
         
         const ITEM_DATA = {
@@ -335,7 +313,7 @@
             'carrot': {
                 name: 'Carrot',
                 emoji: '🥕',
-                image: 'veg1.png',
+                image: 'carrot1.png',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'A crunchy orange vegetable.',
@@ -355,7 +333,7 @@
                 isPlantable: true, harvestItem: 'carrot', harvestCount: 3
             },
             'tomato': {
-                name: 'Tomato', emoji: '🍅', image: 'veg6.png',
+                name: 'Tomato', emoji: '🍅',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A juicy red tomato.',
                 foodValue: 12, sellValue: 5, cookable: true, feedable: true
@@ -369,7 +347,7 @@
                 isPlantable: true, harvestItem: 'tomato', harvestCount: 2
             },
             'potato': {
-                name: 'Potato', emoji: '🥔', image: 'veg2.png',
+                name: 'Potato', emoji: '🥔',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A hearty starchy potato.',
                 foodValue: 8, sellValue: 4, cookable: true, feedable: true
@@ -383,7 +361,7 @@
                 isPlantable: true, harvestItem: 'potato', harvestCount: 4
             },
             'corn': {
-                name: 'Corn', emoji: '🌽', image: 'veg5.png',
+                name: 'Corn', emoji: '🌽',
                 rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Sweet golden corn.',
                 foodValue: 15, sellValue: 8, cookable: true, feedable: true
@@ -397,7 +375,7 @@
                 isPlantable: true, harvestItem: 'corn', harvestCount: 2
             },
             'onion': {
-                name: 'Onion', emoji: '🧅', image: 'veg3.png',
+                name: 'Onion', emoji: '🧅',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'Brings tears of joy.',
                 foodValue: 10, sellValue: 6, cookable: true, feedable: true
@@ -411,7 +389,7 @@
                 isPlantable: true, harvestItem: 'onion', harvestCount: 3
             },
             'pumpkin': {
-                name: 'Pumpkin', emoji: '🎃', image: 'veg4.png',
+                name: 'Pumpkin', emoji: '🎃',
                 rarity: 'Rare', rarityColor: '#2563eb',
                 description: 'A prize-winning pumpkin.',
                 foodValue: 25, sellValue: 20, cookable: true, feedable: true
@@ -487,7 +465,6 @@
             },
             'burnt_food': {
                 name: 'Burnt Food',
-                emoji: '🔥', image: 'trash2.png',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'Completely charred and inedible.',
@@ -634,6 +611,18 @@
                 feedable: false,
                 crackable: false
             },
+            'egg': {
+                name: 'Egg',
+                emoji: '🥚',
+                image: 'egg1.png',
+                rarity: 'Common',
+                rarityColor: '#111111',
+                description: 'A fresh egg from the coop. Can be cooked or fed to your slime.',
+                foodValue: 8,
+                sellValue: 4,
+                cookable: true,
+                feedable: true
+            },
             'gem': {
                 name: 'Emerald', emoji: '💚', image: 'gem2.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
@@ -665,7 +654,7 @@
                 foodValue: 0, sellValue: 160, cookable: false, feedable: false
             },
             'topaz': {
-                name: 'Topaz', emoji: '🧡', image: 'gem6.png',
+                name: 'Topaz', emoji: '🧡', image: 'gem1.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A warm golden topaz.',
                 foodValue: 0, sellValue: 200, cookable: false, feedable: false
@@ -701,7 +690,7 @@
                 foodValue: 0, sellValue: 480, cookable: false, feedable: false
             },
             'polished_topaz': {
-                name: 'Polished Topaz', emoji: '🧡', image: 'gem6.png',
+                name: 'Polished Topaz', emoji: '🧡', image: 'gem1.png',
                 rarity: 'Legendary', rarityColor: '#f59e0b',
                 description: 'A warm golden topaz, perfectly faceted.',
                 foodValue: 0, sellValue: 600, cookable: false, feedable: false
@@ -749,25 +738,25 @@
                 foodValue: 0, sellValue: 300, cookable: false, feedable: false
             },
             'copper_bar': {
-                name: 'Copper Bar', emoji: '🟫', image: 'metal1.png',
+                name: 'Copper Bar', emoji: '🟫',
                 rarity: 'Common', rarityColor: '#b45309',
                 description: 'A smelted copper bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 40, cookable: false, feedable: false
             },
             'iron_bar': {
-                name: 'Iron Bar', emoji: '⬜', image: 'metal2.png',
+                name: 'Iron Bar', emoji: '⬜',
                 rarity: 'Uncommon', rarityColor: '#6b7280',
                 description: 'A smelted iron bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 80, cookable: false, feedable: false
             },
             'silver_bar': {
-                name: 'Silver Bar', emoji: '🔲', image: 'metal3.png',
+                name: 'Silver Bar', emoji: '🔲',
                 rarity: 'Rare', rarityColor: '#9ca3af',
                 description: 'A smelted silver bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 200, cookable: false, feedable: false
             },
             'gold_bar': {
-                name: 'Gold Bar', emoji: '🟨', image: 'metal4.png',
+                name: 'Gold Bar', emoji: '🟨',
                 rarity: 'Legendary', rarityColor: '#d97706',
                 description: 'A smelted gold bar, forged in the Furnace.',
                 foodValue: 0, sellValue: 600, cookable: false, feedable: false
@@ -800,7 +789,7 @@
             },
             'old_boot': {
                 name: 'Old Boot',
-                emoji: '👢', image: 'trash4.png',
+                emoji: '👢',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'Someone lost this long ago.',
@@ -811,7 +800,7 @@
             },
             'seaweed': {
                 name: 'Seaweed',
-                emoji: '🌿', image: 'trash3.png',
+                emoji: '🌿',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'Slimy river weed.',
