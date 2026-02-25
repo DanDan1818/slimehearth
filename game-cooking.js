@@ -790,11 +790,11 @@
             
             // Base gem chance per geode type
             const GEODE_GEM_CHANCE = {
-                'small_geode':   0.10,
-                'medium_geode':  0.20,
-                'large_geode':   0.30,
-                'rare_geode':    0.45,
-                'rainbow_geode': 0.65,
+                'small_geode':   0.20,
+                'medium_geode':  0.40,
+                'large_geode':   0.60,
+                'rare_geode':    0.75,
+                'rainbow_geode': 0.90,
             };
             
             // Gem tables per geode tier: [itemId, weight]

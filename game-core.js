@@ -133,6 +133,11 @@
             'rainbow_geode': '#ec4899',
             'rock': '#666666',
             'egg':  '#fef9c3',
+            'porkchops':   '#f87171',
+            'ham':         '#fb923c',
+            'sausages':    '#a78bfa',
+            'bacon':       '#dc2626',
+            'rainbow_milk':'rainbow',
             'gem': '#9333ea',
             'emerald':  '#10b981',
             'ruby':     '#ef4444',
@@ -622,6 +627,61 @@
                 sellValue: 4,
                 cookable: true,
                 feedable: true
+            },
+            'porkchops': {
+                name: 'Porkchops',
+                emoji: '🥩',
+                rarity: 'Common',
+                rarityColor: '#111111',
+                description: 'Hearty pork chops from Porkchops the pig.',
+                foodValue: 18,
+                sellValue: 8,
+                cookable: true,
+                feedable: true
+            },
+            'ham': {
+                name: 'Ham',
+                emoji: '🍖',
+                rarity: 'Uncommon',
+                rarityColor: '#2d8a2d',
+                description: 'A thick cut of ham. Porkchops outdid himself.',
+                foodValue: 30,
+                sellValue: 18,
+                cookable: true,
+                feedable: true
+            },
+            'sausages': {
+                name: 'Sausages',
+                emoji: '🌭',
+                rarity: 'Rare',
+                rarityColor: '#2563eb',
+                description: 'Plump sausages. Rare even for Porkchops.',
+                foodValue: 45,
+                sellValue: 35,
+                cookable: true,
+                feedable: true
+            },
+            'bacon': {
+                name: 'Bacon',
+                emoji: '🥓',
+                rarity: 'Legendary',
+                rarityColor: '#ea580c',
+                description: 'Legendary crispy bacon. Almost too good to eat.',
+                foodValue: 70,
+                sellValue: 80,
+                cookable: true,
+                feedable: true
+            },
+            'rainbow_milk': {
+                name: 'Rainbow Milk',
+                emoji: '🌈',
+                rarity: 'Rainbow',
+                rarityColor: 'rainbow',
+                description: 'Magical rainbow milk from Porkchops. Grants +1 level to ALL skills!',
+                foodValue: 50,
+                sellValue: 500,
+                cookable: false,
+                feedable: false
             },
             'gem': {
                 name: 'Emerald', emoji: '💚', image: 'gem2.png',

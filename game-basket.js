@@ -1312,7 +1312,20 @@
                                     levelUpBurst();
                                     const levelupSound = document.getElementById('slime-levelup-sound');
                                     if (levelupSound) { levelupSound.currentTime = 0; levelupSound.play().catch(() => {}); }
-                                    addItem('small_geode', 1);
+                                    // Geode reward using same curve
+                                    const lvl2 = gs.level;
+                                    const w2 = [
+                                        Math.exp(-0.5*Math.pow((lvl2-5)/12,2)),
+                                        Math.exp(-0.5*Math.pow((lvl2-25)/18,2)),
+                                        Math.exp(-0.5*Math.pow((lvl2-50)/20,2)),
+                                        Math.exp(-0.5*Math.pow((lvl2-75)/18,2)),
+                                        Math.exp(-0.5*Math.pow((lvl2-95)/12,2)),
+                                    ];
+                                    const geos2 = ['small_geode','medium_geode','large_geode','rare_geode','rainbow_geode'];
+                                    const tot2  = w2.reduce((a,b)=>a+b,0);
+                                    let p2 = Math.random()*tot2, ch2 = geos2[0];
+                                    for (let g=0;g<geos2.length;g++){p2-=w2[g];if(p2<=0){ch2=geos2[g];break;}}
+                                    addItem(ch2, 1);
                                 }
                                 
                                 // Check if all 5 frogs collected → unlock Frog Hat
@@ -1371,8 +1384,32 @@
                                 gs.slimeXPNeeded = Math.floor(gs.slimeXPNeeded * 1.2);
                                 notify('🎉 Slime Level Up! Level ' + gs.level, 'levelup');
                                 levelUpBurst();
-                                addItem('small_geode', 1);
-                                notify('💎 Found a Small Geode!');
+
+                                // Geode reward — smooth curve across levels 1-100
+                                // Each geode peaks at a different level with a bell-curve weight
+                                const lvl = gs.level;
+                                function geodeBell(peak, width) {
+                                    return Math.exp(-0.5 * Math.pow((lvl - peak) / width, 2));
+                                }
+                                const weights = [
+                                    geodeBell(5,  12),   // small_geode   — peaks lvl 5,  fades by ~30
+                                    geodeBell(25, 18),   // medium_geode  — peaks lvl 25, fades by ~60
+                                    geodeBell(50, 20),   // large_geode   — peaks lvl 50, fades by ~85
+                                    geodeBell(75, 18),   // rare_geode    — peaks lvl 75
+                                    geodeBell(95, 12),   // rainbow_geode — peaks lvl 95
+                                ];
+                                const geodes = ['small_geode','medium_geode','large_geode','rare_geode','rainbow_geode'];
+                                const total  = weights.reduce((a, b) => a + b, 0);
+                                let pick = Math.random() * total;
+                                let chosen = geodes[0];
+                                for (let g = 0; g < geodes.length; g++) {
+                                    pick -= weights[g];
+                                    if (pick <= 0) { chosen = geodes[g]; break; }
+                                }
+                                addItem(chosen, 1);
+                                const geodeName = ITEM_DATA[chosen] ? ITEM_DATA[chosen].name : chosen;
+                                notify('💎 Found a ' + geodeName + '!');
+
                                 didLevelUp = true;
                             }
                             
@@ -1468,6 +1505,126 @@
                         updateFurnaceUI();
                         save();
                         updateInventoryCounter();
+                    }
+                }
+            });
+
+            // ── Porkchops (Barn) feed mechanic ──
+            // Trash items dropped near the pig circle → random pork loot
+            const BARN_TRASH = new Set(['rock','lily_pad','old_boot','seaweed']);
+            const BARN_LOOT = [
+                { id: 'rainbow_milk', weight: 0.001,  emoji: '🌈', label: 'Rainbow Milk',  rarity: 'rainbow'    },
+                { id: 'bacon',        weight: 0.05,   emoji: '🥓', label: 'Bacon',          rarity: 'legendary'  },
+                { id: 'sausages',     weight: 0.10,   emoji: '🌭', label: 'Sausages',       rarity: 'rare'       },
+                { id: 'ham',          weight: 0.25,   emoji: '🍖', label: 'Ham',             rarity: 'uncommon'   },
+                { id: 'porkchops',    weight: 0.599,  emoji: '🥩', label: 'Porkchops',      rarity: 'common'     },
+            ];
+            let barnDropLog = []; // recent drops, max 5
+            let barnCooldown = false;
+
+            function barnRollLoot() {
+                const r = Math.random();
+                let cum = 0;
+                for (const entry of BARN_LOOT) {
+                    cum += entry.weight;
+                    if (r < cum) return entry;
+                }
+                return BARN_LOOT[BARN_LOOT.length - 1];
+            }
+
+            function barnPushDrop(entry) {
+                barnDropLog.unshift(entry);
+                if (barnDropLog.length > 5) barnDropLog.length = 5;
+                for (let i = 0; i < 5; i++) {
+                    const el = document.getElementById('barn-drop-' + i);
+                    if (!el) continue;
+                    if (barnDropLog[i]) {
+                        const rarityColors = { rainbow:'#d946ef', legendary:'#ea580c', rare:'#2563eb', uncommon:'#2d8a2d', common:'rgba(255,255,255,0.8)' };
+                        el.textContent = barnDropLog[i].emoji + ' ' + barnDropLog[i].label;
+                        el.style.color = rarityColors[barnDropLog[i].rarity] || '#fff';
+                        el.classList.add('visible');
+                    } else {
+                        el.textContent = '';
+                        el.classList.remove('visible');
+                    }
+                }
+            }
+
+            Events.on(basketEngine, 'beforeUpdate', () => {
+                const barnRoom = document.getElementById('farming-barn-room');
+                if (!barnRoom || !barnRoom.classList.contains('active')) return;
+                if (barnCooldown) return;
+
+                const targetEl = document.getElementById('barn-pig-target');
+                const basketCanvas = document.getElementById('basket-canvas');
+                if (!targetEl || !basketCanvas) return;
+
+                const targetRect = targetEl.getBoundingClientRect();
+                const canvasRect  = basketCanvas.getBoundingClientRect();
+                const scaleX = basketCanvas.width  / canvasRect.width;
+                const scaleY = basketCanvas.height / canvasRect.height;
+                const targetX = ((targetRect.left + targetRect.width  / 2) - canvasRect.left) * scaleX;
+                const targetY = ((targetRect.top  + targetRect.height / 2) - canvasRect.top)  * scaleY;
+
+                for (let i = basketBodies.length - 1; i >= 0; i--) {
+                    const b = basketBodies[i];
+                    if (!b || !b.itemId) continue;
+                    if (!BARN_TRASH.has(b.itemId)) continue;
+
+                    const dist = Math.sqrt((b.position.x - targetX) ** 2 + (b.position.y - targetY) ** 2);
+                    if (dist < 60) {
+                        // Consume trash
+                        World.remove(basketEngine.world, b);
+                        basketBodies.splice(i, 1);
+                        delete gs.inventory[b.itemKey];
+                        updateInventoryCounter();
+
+                        // Roll loot
+                        const drop = barnRollLoot();
+                        addItem(drop.id, 1);
+                        barnPushDrop(drop);
+
+                        // Pig reaction
+                        const reaction = document.getElementById('barn-pig-reaction');
+                        if (reaction) {
+                            reaction.textContent = drop.rarity === 'rainbow' ? '🌈' : drop.rarity === 'legendary' ? '🤩' : drop.rarity === 'rare' ? '😎' : '😋';
+                            reaction.style.opacity = '1';
+                            setTimeout(() => { if (reaction) reaction.style.opacity = '0'; }, 900);
+                        }
+
+                        // Rainbow Milk special: +1 level to ALL skills
+                        if (drop.id === 'rainbow_milk') {
+                            const skills = ['fishing','farming','cooking','mining','smelting','jewelcrafting'];
+                            skills.forEach(sk => {
+                                if (!gs.skills) gs.skills = {};
+                                if (!gs.skills[sk]) gs.skills[sk] = { level: 1, xp: 0, xpNeeded: 10 };
+                                gs.skills[sk].level++;
+                                gs.skills[sk].xp = 0;
+                                gs.skills[sk].xpNeeded = Math.floor(gs.skills[sk].xpNeeded * 1.2);
+                            });
+                            notify('🌈 Rainbow Milk! ALL skills leveled up!', 'achievement');
+                            const msgEl = document.getElementById('barn-msg');
+                            if (msgEl) { msgEl.textContent = '🌈 Rainbow Milk! +1 ALL Skills!'; msgEl.style.color = '#f0abfc'; }
+                        } else {
+                            const rarityLabels = { legendary:'✨ Legendary!', rare:'💙 Rare!', uncommon:'🟢 Uncommon', common:'😋 Nom nom' };
+                            const msgEl = document.getElementById('barn-msg');
+                            if (msgEl) { msgEl.textContent = drop.emoji + ' ' + drop.label; msgEl.style.color = '#fff'; }
+                            notify(drop.emoji + ' Porkchops gave you ' + drop.label + '!');
+                        }
+
+                        addSkillXP('farming', 3);
+                        save();
+                        updateUI();
+
+                        // Brief cooldown to prevent multi-consume
+                        barnCooldown = true;
+                        setTimeout(() => {
+                            barnCooldown = false;
+                            const msgEl = document.getElementById('barn-msg');
+                            if (msgEl) msgEl.textContent = '';
+                        }, 800);
+
+                        break;
                     }
                 }
             });

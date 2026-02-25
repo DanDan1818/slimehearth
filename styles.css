@@ -1127,6 +1127,20 @@
             box-shadow: 0 0 14px rgba(250,204,21,0.9), inset 0 -2px 4px rgba(0,0,0,0.1);
         }
 
+        /* ── Barn / Porkchops ── */
+        .barn-drop-row {
+            font-family: 'Righteous', sans-serif;
+            font-size: 11px;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+            min-height: 16px;
+            text-align: right;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .barn-drop-row.visible { opacity: 1; }
+
         /* ── Sea fishing (4 vertical bars) ── */
         .sea-bar-wrap {
             display: flex;

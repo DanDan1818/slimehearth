@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.844</title>
+    <title>SlimeHearth v0.849</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=0.844">
+    <link rel="stylesheet" href="styles.css?v=0.849">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.844</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.849</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -331,9 +331,9 @@
                 <button id="goto-cave">⛏️ Cave Entrance</button>
                 <button id="goto-depth1" style="border-color:#4a9eff;">🪨 Depth 1 <span style="font-size:10px;opacity:0.8;">(Lvl 10)</span></button>
                 <button id="goto-depth2" style="border-color:#9b59b6;">💜 Depth 2 <span style="font-size:10px;opacity:0.8;">(Lvl 20)</span></button>
-                <button id="goto-depth3" style="border-color:#e74c3c;">🔴 Depth 3 <span style="font-size:10px;opacity:0.8;">(Lvl 40)</span></button>
-                <button id="goto-depth4" style="border-color:#e67e22;">🟠 Depth 4 <span style="font-size:10px;opacity:0.8;">(Lvl 65)</span></button>
-                <button id="goto-depth5" style="border-color:#f1c40f;">⭐ Depth 5 <span style="font-size:10px;opacity:0.8;">(Lvl 80)</span></button>
+                <button id="goto-depth3" style="border-color:#e74c3c;">🔴 Depth 3 <span style="font-size:10px;opacity:0.8;">(Lvl 30)</span></button>
+                <button id="goto-depth4" style="border-color:#e67e22;">🟠 Depth 4 <span style="font-size:10px;opacity:0.8;">(Lvl 40)</span></button>
+                <button id="goto-depth5" style="border-color:#f1c40f;">⭐ Depth 5 <span style="font-size:10px;opacity:0.8;">(Lvl 50)</span></button>
                 <button id="back-to-area-mining" class="back-btn">←</button>
             </div>
             
@@ -987,8 +987,41 @@
 
             <!-- Farming - Barn (Coming Soon) -->
             <div class="room" id="farming-barn-room">
-                <h2>🐄 Barn</h2>
-                <p style="color:rgba(255,255,255,0.7);font-family:'Righteous',sans-serif;font-size:14px;">Coming soon...</p>
+                <h2 style="font-size:22px;margin-bottom:4px;">🐷 Barn</h2>
+
+                <div style="display:flex;align-items:center;justify-content:center;gap:14px;width:100%;margin-top:4px;">
+
+                    <!-- Left: recent drops log -->
+                    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;min-width:90px;">
+                        <div style="font-size:9px;font-family:'Righteous',sans-serif;color:rgba(255,255,255,0.5);margin-bottom:2px;">DROPS</div>
+                        <div id="barn-drop-0" class="barn-drop-row"></div>
+                        <div id="barn-drop-1" class="barn-drop-row"></div>
+                        <div id="barn-drop-2" class="barn-drop-row"></div>
+                        <div id="barn-drop-3" class="barn-drop-row"></div>
+                        <div id="barn-drop-4" class="barn-drop-row"></div>
+                    </div>
+
+                    <!-- Center/Right: Porkchops the Pig circle -->
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                        <div id="barn-pig-target" style="
+                            width:150px;height:150px;border-radius:50%;
+                            background:radial-gradient(circle at 38% 32%, #ffb3d1 0%, #ff69b4 45%, #e91e8c 100%);
+                            border:4px solid rgba(255,255,255,0.3);
+                            box-shadow:0 0 28px rgba(255,105,180,0.6), inset 0 0 20px rgba(255,255,255,0.15);
+                            display:flex;flex-direction:column;align-items:center;justify-content:center;
+                            position:relative;cursor:default;flex-shrink:0;
+                        ">
+                            <div style="font-size:52px;line-height:1;">🐷</div>
+                            <div style="font-size:10px;color:rgba(255,255,255,0.9);margin-top:4px;font-family:'Righteous',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,0.5);">Porkchops</div>
+                            <!-- Reaction emoji overlay -->
+                            <div id="barn-pig-reaction" style="position:absolute;top:-8px;right:-8px;font-size:22px;opacity:0;transition:opacity 0.2s;pointer-events:none;"></div>
+                        </div>
+                        <div id="barn-msg" style="min-height:18px;font-family:'Righteous',sans-serif;font-size:11px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;max-width:160px;"></div>
+                    </div>
+                </div>
+
+                <div style="font-size:9px;color:rgba(255,255,255,0.45);font-family:'Righteous',sans-serif;text-align:center;margin-top:8px;">Drop trash items onto Porkchops</div>
+
                 <button id="leave-barn" class="back-btn">←</button>
             </div>
 
@@ -1628,7 +1661,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.844</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.849</div>
     <div id="mouse-coords">0, 0</div>
     <button onclick="if(window.skillFireworks) window.skillFireworks('fishing')" style="position:fixed;bottom:130px;right:5px;z-index:99999;font-size:9px;padding:3px 5px;background:#1d4ed8;color:#fff;border:none;border-radius:3px;">TEST FW</button>
     <script>
@@ -1721,13 +1754,13 @@
         }
     };
     </script>
-    <script src="game-core.js?v=0.844"></script>
-    <script src="game-basket.js?v=0.844"></script>
-    <script src="game-fishing.js?v=0.844"></script>
-    <script src="game-farming.js?v=0.844"></script>
-    <script src="game-cooking.js?v=0.823"></script>
-    <script src="game-mining.js?v=0.844"></script>
-    <script src="game-jewelcrafting.js?v=0.844"></script>
+    <script src="game-core.js?v=0.849"></script>
+    <script src="game-basket.js?v=0.849"></script>
+    <script src="game-fishing.js?v=0.849"></script>
+    <script src="game-farming.js?v=0.849"></script>
+    <script src="game-cooking.js?v=0.849"></script>
+    <script src="game-mining.js?v=0.849"></script>
+    <script src="game-jewelcrafting.js?v=0.849"></script>
     <script src="game-ui.js?v=0.823"></script>
 
 </body>
