@@ -377,35 +377,38 @@
         
         
 
-        // ===== LAKE FISHING: Hold-in-Zone Minigame =====
-        // A pill bounces back and forth. The green zone also moves (fish-dependent speed).
-        // Player HOLDS the cast button to accumulate "hold time" — but only while the
-        // pill is inside the green zone. Fill the hold bar to catch!
+        // ===== LAKE FISHING: Hold-to-Reel Minigame =====
+        // The GREEN ZONE moves on its own (fish-dependent speed & bounce).
+        // The PILL is player-controlled:
+        //   - Holding button → pill moves toward center (reeling in)
+        //   - Releasing button → pill drifts toward nearest edge (fish pulling away)
+        // Accumulate hold time while pill is inside the green zone to catch.
 
         const LAKE_BAR_W    = 280;
         const LAKE_TARGET_W = 70;
         const LAKE_PILL_W   = 36;
+        const LAKE_CENTER   = (LAKE_BAR_W - LAKE_PILL_W) / 2; // ~122px
 
-        // Fish personalities: pill speed, zone speed, required hold ms
+        // Fish: zoneSpeed = how fast green zone bounces, driftSpeed = how fast pill escapes,
+        //       reelSpeed = how fast holding pulls pill to center, holdMs = required hold time
         const LAKE_FISH = [
-            { name: 'Perch',    pillSpeed: 2.5, zoneSpeed: 1.5, holdMs: 800,  mood: '😴 Lazy Perch...',     item: 'fish1' },
-            { name: 'Bass',     pillSpeed: 3.5, zoneSpeed: 2.5, holdMs: 1200, mood: '🐟 Steady Bass',       item: 'fish2' },
-            { name: 'Trout',    pillSpeed: 5,   zoneSpeed: 4,   holdMs: 1500, mood: '💨 Darting Trout!',    item: 'fish3' },
-            { name: 'Pike',     pillSpeed: 7,   zoneSpeed: 6,   holdMs: 2000, mood: '⚡ Wild Pike!!',       item: 'fish4' },
-            { name: 'Sturgeon', pillSpeed: 1.5, zoneSpeed: 1,   holdMs: 2500, mood: '🦕 Ancient Sturgeon',  item: 'fish8' },
+            { name: 'Perch',    zoneSpeed: 1.5, driftSpeed: 0.8, reelSpeed: 2.5, holdMs: 1000, mood: '😴 Lazy Perch...',    item: 'fish1' },
+            { name: 'Bass',     zoneSpeed: 2.5, driftSpeed: 1.2, reelSpeed: 2.2, holdMs: 1400, mood: '🐟 Steady Bass',      item: 'fish2' },
+            { name: 'Trout',    zoneSpeed: 4,   driftSpeed: 2.0, reelSpeed: 2.0, holdMs: 1800, mood: '💨 Darting Trout!',   item: 'fish3' },
+            { name: 'Pike',     zoneSpeed: 6,   driftSpeed: 3.0, reelSpeed: 1.8, holdMs: 2200, mood: '⚡ Wild Pike!!',      item: 'fish4' },
+            { name: 'Sturgeon', zoneSpeed: 1.0, driftSpeed: 0.5, reelSpeed: 1.5, holdMs: 3000, mood: '🦕 Ancient Sturgeon', item: 'fish8' },
         ];
 
-        let lakeActive     = false;
-        let lakePillPos    = 100;    // left px of pill
-        let lakePillDir    = 1;
-        let lakeZonePos    = 80;     // left px of green zone
-        let lakeZoneDir    = -1;
-        let lakeHolding    = false;  // true while cast button is held
-        let lakeHoldMs     = 0;      // accumulated hold-in-zone ms
-        let lakeInterval   = null;
+        let lakeActive   = false;
+        let lakePillPos  = LAKE_CENTER;  // pill left px
+        let lakeZonePos  = 80;           // green zone left px
+        let lakeZoneDir  = 1;
+        let lakeHolding  = false;
+        let lakeHoldMs   = 0;
+        let lakeInterval = null;
 
         function startLakeFishing() {
-            if (lakeActive) return; // ignore — hold logic handled by mousedown/up
+            if (lakeActive) return;
 
             const timer   = document.getElementById('fishing-timer-lake');
             const mood    = document.getElementById('lake-fish-mood');
@@ -414,22 +417,20 @@
             const fishLv  = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
             const weights = [40, 30, 15, 8, 7];
             const lvShift = Math.min(Math.floor((fishLv - 1) / 5), 4);
-            const picked  = pickWeighted(weights, lvShift);
-            const fish    = LAKE_FISH[picked];
+            const fish    = LAKE_FISH[pickWeighted(weights, lvShift)];
 
-            lakeActive  = { fish };
-            lakePillPos = Math.random() * (LAKE_BAR_W - LAKE_PILL_W);
-            lakePillDir = Math.random() < 0.5 ? 1 : -1;
-            lakeZonePos = Math.random() * (LAKE_BAR_W - LAKE_TARGET_W);
-            lakeZoneDir = Math.random() < 0.5 ? 1 : -1;
-            lakeHoldMs  = 0;
-            lakeHolding = true; // holding starts immediately on press
+            // Pill starts at a random edge so player has to reel it in
+            lakePillPos  = Math.random() < 0.5 ? 0 : LAKE_BAR_W - LAKE_PILL_W;
+            lakeZonePos  = Math.random() * (LAKE_BAR_W - LAKE_TARGET_W);
+            lakeZoneDir  = Math.random() < 0.5 ? 1 : -1;
+            lakeHoldMs   = 0;
+            lakeHolding  = true; // button is held from the moment they press
+            lakeActive   = { fish };
 
-            if (timer)    timer.textContent = 'Hold inside the green zone!';
-            if (mood)     mood.textContent  = fish.mood;
-            if (holdBar)  holdBar.style.width = '0%';
+            if (timer)   timer.textContent = 'Hold to reel in — keep pill in green!';
+            if (mood)    mood.textContent  = fish.mood;
+            if (holdBar) holdBar.style.width = '0%';
 
-            // Burst specks
             document.querySelectorAll('.lspeck').forEach(s => {
                 s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
                 s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
@@ -439,35 +440,46 @@
             lakeInterval = setInterval(() => {
                 const pill   = document.getElementById('fishing-pill-lake');
                 const target = document.getElementById('fishing-target-lake');
+                if (!pill || !target) return;
 
-                // Move pill
-                lakePillPos += lakePillDir * fish.pillSpeed;
-                if (lakePillPos <= 0) { lakePillPos = 0; lakePillDir = 1; }
-                if (lakePillPos >= LAKE_BAR_W - LAKE_PILL_W) { lakePillPos = LAKE_BAR_W - LAKE_PILL_W; lakePillDir = -1; }
+                // --- Move pill ---
+                if (lakeHolding) {
+                    // Pull toward center
+                    const diff = LAKE_CENTER - lakePillPos;
+                    lakePillPos += Math.sign(diff) * Math.min(fish.reelSpeed, Math.abs(diff));
+                } else {
+                    // Drift toward nearest edge
+                    const toLeft  = lakePillPos;
+                    const toRight = LAKE_BAR_W - LAKE_PILL_W - lakePillPos;
+                    lakePillPos  += (toLeft <= toRight ? -1 : 1) * fish.driftSpeed;
+                }
+                lakePillPos = Math.max(0, Math.min(LAKE_BAR_W - LAKE_PILL_W, lakePillPos));
 
-                // Move zone
+                // --- Move green zone ---
                 lakeZonePos += lakeZoneDir * fish.zoneSpeed;
-                if (lakeZonePos <= 0) { lakeZonePos = 0; lakeZoneDir = 1; }
-                if (lakeZonePos >= LAKE_BAR_W - LAKE_TARGET_W) { lakeZonePos = LAKE_BAR_W - LAKE_TARGET_W; lakeZoneDir = -1; }
+                if (lakeZonePos <= 0) {
+                    lakeZonePos = 0; lakeZoneDir = 1;
+                    lakeZonePos += (Math.random() * 0.5 + 0.8) * fish.zoneSpeed; // slight randomness on bounce
+                }
+                if (lakeZonePos >= LAKE_BAR_W - LAKE_TARGET_W) {
+                    lakeZonePos = LAKE_BAR_W - LAKE_TARGET_W; lakeZoneDir = -1;
+                    lakeZonePos -= (Math.random() * 0.5 + 0.8) * fish.zoneSpeed;
+                }
+
+                pill.style.left   = lakePillPos + 'px';
+                target.style.left = lakeZonePos + 'px';
 
                 // Check overlap: pill center inside zone
                 const pillCenter = lakePillPos + LAKE_PILL_W / 2;
                 const inZone = pillCenter >= lakeZonePos && pillCenter <= lakeZonePos + LAKE_TARGET_W;
+                pill.classList.toggle('in-zone', inZone);
 
-                if (pill)   pill.style.left   = lakePillPos + 'px';
-                if (target) target.style.left = lakeZonePos + 'px';
-
-                // Toggle pill glow
-                if (pill) pill.classList.toggle('in-zone', inZone);
-
-                // Accumulate hold time only while button held AND pill in zone
+                // Accumulate hold time only while holding AND in zone
                 if (lakeHolding && inZone) {
                     lakeHoldMs += TICK;
                     const pct = Math.min(100, (lakeHoldMs / fish.holdMs) * 100);
                     if (holdBar) holdBar.style.width = pct + '%';
-
                     if (lakeHoldMs >= fish.holdMs) {
-                        // SUCCESS — held long enough!
                         clearInterval(lakeInterval);
                         lakeInterval = null;
                         lakeActive   = false;
@@ -478,26 +490,24 @@
             }, TICK);
         }
 
-        function releaseLakeButton() {
-            // Called on mouseup / touchend — stops accumulating but doesn't cancel session
-            lakeHolding = false;
-            // If session is still active, player can press again to resume
-        }
-
         function holdLakeButton() {
-            // Resume holding mid-session
             if (lakeActive) lakeHolding = true;
         }
 
+        function releaseLakeButton() {
+            lakeHolding = false;
+        }
+
         function cancelLakeFishing() {
-            // Called when leaving room or pressing cast while no session running
             clearInterval(lakeInterval);
             lakeInterval = null;
             lakeActive   = false;
             lakeHolding  = false;
             lakeHoldMs   = 0;
             const holdBar = document.getElementById('lake-hold-bar');
+            const pill    = document.getElementById('fishing-pill-lake');
             if (holdBar) holdBar.style.width = '0%';
+            if (pill)    pill.classList.remove('in-zone');
         }
 
         function endLakeCatch(fish, success) {
@@ -509,7 +519,6 @@
             if (success) {
                 if (holdBar) holdBar.style.width = '100%';
                 if (pill)    pill.classList.add('in-zone');
-
                 document.querySelectorAll('.lspeck').forEach(s => {
                     s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
                     s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
@@ -524,10 +533,10 @@
                     caughtItem = 'seaweed'; catchMsg = '🌿 Pulled up Seaweed...';
                     addSkillXP('fishing', 1);
                 } else {
+                    const r = Math.random();
                     const epicCut  = Math.min(0.05 + lvBonus * 0.6, 0.22);
                     const rareCut  = Math.min(0.14 + lvBonus,       0.40);
                     const uncomCut = Math.min(0.32 + lvBonus * 0.8, 0.55);
-                    const r = Math.random();
                     caughtItem = r < epicCut ? 'fish8' : r < rareCut ? 'fish7' : r < uncomCut ? 'fish6' : fish.item;
                     catchMsg = '🎣 Caught ' + ITEM_DATA[caughtItem].name + '!';
                     addSkillXP('fishing', 12);
@@ -538,10 +547,11 @@
                 addItem(caughtItem, 1);
                 if (Math.random() < 0.05) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
                 if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
-                    addItem('frog_blue', 1); notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
+                    addItem('frog_blue', 1);
+                    notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
                 }
             } else {
-                if (timer) timer.textContent = '⌛ Fish got away!';
+                if (timer) timer.textContent = '❌ Fish got away!';
                 if (mood)  mood.textContent  = '';
             }
 
