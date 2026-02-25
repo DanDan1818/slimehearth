@@ -1669,15 +1669,15 @@
                     }
                 }
 
-                // ── COOP: seeds → chicken mouth slot ──
+                // ── COOP: seeds → chicken circle ──
                 const coopRoom = document.getElementById('farming-coop-room');
                 const isSeed = data.isPlantable;
                 if (coopRoom && coopRoom.classList.contains('active') && isSeed) {
-                    const count = window.coopSlotCount ? window.coopSlotCount() : 0;
-                    for (let i = 0; i < count; i++) {
-                        const mouthEl = document.getElementById('coop-mouth-' + i);
-                        if (mouthEl && isBodyOverElement(body, mouthEl, 28)) {
-                            // Consume seed from inventory, destroy body
+                    const chickens = window.coopChickens ? window.coopChickens() : [];
+                    for (let i = 0; i < chickens.length; i++) {
+                        const circEl = document.getElementById('coop-circle-' + i);
+                        if (circEl && isBodyOverElement(body, circEl, 24)) {
+                            // Consume seed
                             const itemKey = body.itemKey;
                             if (gs.inventory && itemKey) delete gs.inventory[itemKey];
                             Matter.World.remove(basketEngine.world, body);

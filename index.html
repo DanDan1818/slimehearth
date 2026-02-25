@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.843</title>
+    <title>SlimeHearth v0.844</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=0.843">
+    <link rel="stylesheet" href="styles.css?v=0.844">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.843</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.844</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -953,28 +953,34 @@
 
             <!-- Farming - Coop -->
             <div class="room" id="farming-coop-room">
-                <h2 style="font-size:22px;margin-bottom:6px;">🐔 Coop</h2>
+                <h2 style="font-size:22px;margin-bottom:8px;">🐔 Coop</h2>
 
                 <!-- Shop Cards -->
                 <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px;">
                     <div class="coop-card">
                         <div style="font-size:22px;">🐔</div>
                         <div style="font-size:9px;font-family:'Righteous',sans-serif;color:#fff;margin-top:2px;">Buy Chicken</div>
-                        <div style="font-size:8px;color:#fde68a;margin-top:1px;">50 🪙</div>
+                        <div style="font-size:8px;color:#fde68a;margin-top:1px;">1,000 🪙</div>
                         <button id="coop-buy-chicken" class="coop-buy-btn">Buy</button>
                     </div>
                     <div class="coop-card">
                         <div style="font-size:22px;">🏠</div>
                         <div style="font-size:9px;font-family:'Righteous',sans-serif;color:#fff;margin-top:2px;">Coop Space</div>
-                        <div style="font-size:8px;color:#fde68a;margin-top:1px;">80 🪙</div>
+                        <div style="font-size:8px;color:#fde68a;margin-top:1px;">2,000 🪙</div>
                         <button id="coop-buy-space" class="coop-buy-btn">Buy</button>
+                    </div>
+                    <div class="coop-card" style="min-width:54px;">
+                        <div style="font-size:10px;font-family:'Righteous',sans-serif;color:rgba(255,255,255,0.6);">Chickens</div>
+                        <div id="coop-count-display" style="font-size:18px;font-family:'Righteous',sans-serif;color:#fde68a;">1/2</div>
                     </div>
                 </div>
 
-                <!-- Chicken slots -->
-                <div id="coop-slots" style="display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;"></div>
+                <!-- Coop Pen — large square with bouncing white circles -->
+                <div id="coop-pen" style="position:relative;width:220px;height:220px;background:rgba(139,90,43,0.35);border:3px solid rgba(139,90,43,0.8);border-radius:16px;overflow:hidden;margin:0 auto;">
+                    <!-- circles injected by JS -->
+                </div>
 
-                <div id="coop-msg" style="min-height:20px;font-family:'Righteous',sans-serif;font-size:12px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;margin-top:4px;"></div>
+                <div id="coop-msg" style="min-height:20px;font-family:'Righteous',sans-serif;font-size:12px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);text-align:center;margin-top:6px;"></div>
 
                 <button id="leave-coop" class="back-btn">←</button>
             </div>
@@ -1622,7 +1628,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.843</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.844</div>
     <div id="mouse-coords">0, 0</div>
     <button onclick="if(window.skillFireworks) window.skillFireworks('fishing')" style="position:fixed;bottom:130px;right:5px;z-index:99999;font-size:9px;padding:3px 5px;background:#1d4ed8;color:#fff;border:none;border-radius:3px;">TEST FW</button>
     <script>
@@ -1715,13 +1721,13 @@
         }
     };
     </script>
-    <script src="game-core.js?v=0.843"></script>
-    <script src="game-basket.js?v=0.843"></script>
-    <script src="game-fishing.js?v=0.843"></script>
-    <script src="game-farming.js?v=0.843"></script>
+    <script src="game-core.js?v=0.844"></script>
+    <script src="game-basket.js?v=0.844"></script>
+    <script src="game-fishing.js?v=0.844"></script>
+    <script src="game-farming.js?v=0.844"></script>
     <script src="game-cooking.js?v=0.823"></script>
-    <script src="game-mining.js?v=0.843"></script>
-    <script src="game-jewelcrafting.js?v=0.843"></script>
+    <script src="game-mining.js?v=0.844"></script>
+    <script src="game-jewelcrafting.js?v=0.844"></script>
     <script src="game-ui.js?v=0.823"></script>
 
 </body>

@@ -1105,66 +1105,26 @@
         }
         .coop-buy-btn:active { filter: brightness(0.85); }
 
-        .coop-slot-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 260px;
-        }
-        .coop-chicken-icon {
-            font-size: 26px;
-            width: 32px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        /* Bar container — overflow visible so mouth can poke out */
-        .coop-bar-outer {
-            position: relative;
-            flex: 1;
-            height: 28px;
-            background: rgba(255,255,255,0.55);
-            border: 1px solid #000;
-            border-radius: 14px;
-            overflow: visible;
-        }
-        .coop-bar-inner {
+        /* Each chicken = a white circle bouncing inside the pen */
+        .coop-chicken-circle {
             position: absolute;
-            inset: 0;
-            border-radius: 14px;
-            overflow: hidden;
-        }
-        /* Moving mouth = the green zone */
-        .coop-mouth {
-            position: absolute;
-            top: 0;
-            width: 40px;
-            height: 100%;
-            background: linear-gradient(90deg, #fde68a, #f59e0b);
-            border-radius: 14px;
-            opacity: 0.9;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffffff, #e0e0e0);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25), inset 0 -2px 4px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            line-height: 1;
+            font-size: 22px;
+            cursor: pointer;
+            transition: box-shadow 0.15s;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .coop-slot-label {
-            font-size: 8px;
-            font-family: 'Righteous', sans-serif;
-            color: rgba(255,255,255,0.6);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        .coop-result-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-            flex-shrink: 0;
-            min-height: 24px;
+        .coop-chicken-circle:active,
+        .coop-chicken-circle.fed {
+            box-shadow: 0 0 14px rgba(250,204,21,0.9), inset 0 -2px 4px rgba(0,0,0,0.1);
         }
 
         /* ── Sea fishing (4 vertical bars) ── */
