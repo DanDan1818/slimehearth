@@ -378,34 +378,66 @@
         
 
         // ===== LAKE FISHING: Hold-to-Reel Minigame =====
-        // The GREEN ZONE moves on its own (fish-dependent speed & bounce).
-        // The PILL is player-controlled:
-        //   - Holding button → pill moves toward center (reeling in)
-        //   - Releasing button → pill drifts toward nearest edge (fish pulling away)
-        // Accumulate hold time while pill is inside the green zone to catch.
+        // GREEN ZONE moves organically — velocity, momentum, random nudges, occasional darts.
+        // PILL is player-controlled: hold = reel to center, release = drift to edge.
+        // Easier: wider zone (90px), faster reel, shorter hold times.
 
         const LAKE_BAR_W    = 280;
-        const LAKE_TARGET_W = 70;
+        const LAKE_TARGET_W = 90;
         const LAKE_PILL_W   = 36;
-        const LAKE_CENTER   = (LAKE_BAR_W - LAKE_PILL_W) / 2; // ~122px
+        const LAKE_CENTER   = (LAKE_BAR_W - LAKE_PILL_W) / 2;
 
-        // Fish: zoneSpeed = how fast green zone bounces, driftSpeed = how fast pill escapes,
-        //       reelSpeed = how fast holding pulls pill to center, holdMs = required hold time
         const LAKE_FISH = [
-            { name: 'Perch',    zoneSpeed: 1.5, driftSpeed: 0.8, reelSpeed: 2.5, holdMs: 1000, mood: '😴 Lazy Perch...',    item: 'fish1' },
-            { name: 'Bass',     zoneSpeed: 2.5, driftSpeed: 1.2, reelSpeed: 2.2, holdMs: 1400, mood: '🐟 Steady Bass',      item: 'fish2' },
-            { name: 'Trout',    zoneSpeed: 4,   driftSpeed: 2.0, reelSpeed: 2.0, holdMs: 1800, mood: '💨 Darting Trout!',   item: 'fish3' },
-            { name: 'Pike',     zoneSpeed: 6,   driftSpeed: 3.0, reelSpeed: 1.8, holdMs: 2200, mood: '⚡ Wild Pike!!',      item: 'fish4' },
-            { name: 'Sturgeon', zoneSpeed: 1.0, driftSpeed: 0.5, reelSpeed: 1.5, holdMs: 3000, mood: '🦕 Ancient Sturgeon', item: 'fish8' },
+            { name: 'Perch',    baseSpeed: 1.2, driftSpeed: 0.6, reelSpeed: 3.0, holdMs: 700,  mood: '😴 Lazy Perch...',    item: 'fish1' },
+            { name: 'Bass',     baseSpeed: 2.0, driftSpeed: 1.0, reelSpeed: 2.8, holdMs: 1000, mood: '🐟 Steady Bass',      item: 'fish2' },
+            { name: 'Trout',    baseSpeed: 3.2, driftSpeed: 1.6, reelSpeed: 2.5, holdMs: 1400, mood: '💨 Darting Trout!',   item: 'fish3' },
+            { name: 'Pike',     baseSpeed: 5.0, driftSpeed: 2.5, reelSpeed: 2.2, holdMs: 1800, mood: '⚡ Wild Pike!!',      item: 'fish4' },
+            { name: 'Sturgeon', baseSpeed: 0.8, driftSpeed: 0.4, reelSpeed: 2.0, holdMs: 2400, mood: '🦕 Ancient Sturgeon', item: 'fish8' },
         ];
 
         let lakeActive   = false;
-        let lakePillPos  = LAKE_CENTER;  // pill left px
-        let lakeZonePos  = 80;           // green zone left px
-        let lakeZoneDir  = 1;
+        let lakePillPos  = LAKE_CENTER;
+        let lakeZonePos  = 80;
+        let lakeZoneVel  = 0;
+        let lakeZoneAcc  = 0;
+        let lakeNudgeT   = 0;
+        let lakeDartT    = 0;
         let lakeHolding  = false;
         let lakeHoldMs   = 0;
         let lakeInterval = null;
+
+        function lakeOrganicTick(fish) {
+            const maxPos = LAKE_BAR_W - LAKE_TARGET_W;
+
+            lakeNudgeT--;
+            if (lakeNudgeT <= 0) {
+                lakeZoneAcc = (Math.random() - 0.5) * fish.baseSpeed * 0.8;
+                lakeNudgeT  = 20 + Math.floor(Math.random() * 30);
+            }
+
+            lakeDartT--;
+            if (lakeDartT <= 0) {
+                lakeZoneVel += (lakeZoneVel >= 0 ? 1 : -1) * fish.baseSpeed * 2.5;
+                lakeDartT = 60 + Math.floor(Math.random() * 80);
+            }
+
+            lakeZoneVel += lakeZoneAcc;
+            const maxV = fish.baseSpeed * 2.8;
+            lakeZoneVel = Math.max(-maxV, Math.min(maxV, lakeZoneVel));
+            lakeZoneVel *= 0.96;
+            lakeZonePos += lakeZoneVel;
+
+            if (lakeZonePos <= 0) {
+                lakeZonePos = 0;
+                lakeZoneVel = Math.abs(lakeZoneVel) * (0.6 + Math.random() * 0.3);
+                lakeNudgeT  = 5;
+            }
+            if (lakeZonePos >= maxPos) {
+                lakeZonePos = maxPos;
+                lakeZoneVel = -Math.abs(lakeZoneVel) * (0.6 + Math.random() * 0.3);
+                lakeNudgeT  = 5;
+            }
+        }
 
         function startLakeFishing() {
             if (lakeActive) return;
@@ -419,12 +451,14 @@
             const lvShift = Math.min(Math.floor((fishLv - 1) / 5), 4);
             const fish    = LAKE_FISH[pickWeighted(weights, lvShift)];
 
-            // Pill starts at a random edge so player has to reel it in
             lakePillPos  = Math.random() < 0.5 ? 0 : LAKE_BAR_W - LAKE_PILL_W;
-            lakeZonePos  = Math.random() * (LAKE_BAR_W - LAKE_TARGET_W);
-            lakeZoneDir  = Math.random() < 0.5 ? 1 : -1;
+            lakeZonePos  = 40 + Math.random() * (LAKE_BAR_W - LAKE_TARGET_W - 80);
+            lakeZoneVel  = (Math.random() < 0.5 ? 1 : -1) * fish.baseSpeed;
+            lakeZoneAcc  = 0;
+            lakeNudgeT   = 15;
+            lakeDartT    = 60;
             lakeHoldMs   = 0;
-            lakeHolding  = true; // button is held from the moment they press
+            lakeHolding  = true;
             lakeActive   = { fish };
 
             if (timer)   timer.textContent = 'Hold to reel in — keep pill in green!';
@@ -442,39 +476,25 @@
                 const target = document.getElementById('fishing-target-lake');
                 if (!pill || !target) return;
 
-                // --- Move pill ---
                 if (lakeHolding) {
-                    // Pull toward center
                     const diff = LAKE_CENTER - lakePillPos;
                     lakePillPos += Math.sign(diff) * Math.min(fish.reelSpeed, Math.abs(diff));
                 } else {
-                    // Drift toward nearest edge
                     const toLeft  = lakePillPos;
                     const toRight = LAKE_BAR_W - LAKE_PILL_W - lakePillPos;
                     lakePillPos  += (toLeft <= toRight ? -1 : 1) * fish.driftSpeed;
                 }
                 lakePillPos = Math.max(0, Math.min(LAKE_BAR_W - LAKE_PILL_W, lakePillPos));
 
-                // --- Move green zone ---
-                lakeZonePos += lakeZoneDir * fish.zoneSpeed;
-                if (lakeZonePos <= 0) {
-                    lakeZonePos = 0; lakeZoneDir = 1;
-                    lakeZonePos += (Math.random() * 0.5 + 0.8) * fish.zoneSpeed; // slight randomness on bounce
-                }
-                if (lakeZonePos >= LAKE_BAR_W - LAKE_TARGET_W) {
-                    lakeZonePos = LAKE_BAR_W - LAKE_TARGET_W; lakeZoneDir = -1;
-                    lakeZonePos -= (Math.random() * 0.5 + 0.8) * fish.zoneSpeed;
-                }
+                lakeOrganicTick(fish);
 
                 pill.style.left   = lakePillPos + 'px';
                 target.style.left = lakeZonePos + 'px';
 
-                // Check overlap: pill center inside zone
                 const pillCenter = lakePillPos + LAKE_PILL_W / 2;
                 const inZone = pillCenter >= lakeZonePos && pillCenter <= lakeZonePos + LAKE_TARGET_W;
                 pill.classList.toggle('in-zone', inZone);
 
-                // Accumulate hold time only while holding AND in zone
                 if (lakeHolding && inZone) {
                     lakeHoldMs += TICK;
                     const pct = Math.min(100, (lakeHoldMs / fish.holdMs) * 100);
@@ -490,13 +510,8 @@
             }, TICK);
         }
 
-        function holdLakeButton() {
-            if (lakeActive) lakeHolding = true;
-        }
-
-        function releaseLakeButton() {
-            lakeHolding = false;
-        }
+        function holdLakeButton() { if (lakeActive) lakeHolding = true; }
+        function releaseLakeButton() { lakeHolding = false; }
 
         function cancelLakeFishing() {
             clearInterval(lakeInterval);
@@ -523,12 +538,10 @@
                     s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
                     s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
                 });
-
                 const fishLv  = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
                 const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30);
                 const trashChance = Math.max(0.15 - lvBonus, 0.02);
                 let caughtItem, catchMsg;
-
                 if (Math.random() < trashChance) {
                     caughtItem = 'seaweed'; catchMsg = '🌿 Pulled up Seaweed...';
                     addSkillXP('fishing', 1);
@@ -541,7 +554,6 @@
                     catchMsg = '🎣 Caught ' + ITEM_DATA[caughtItem].name + '!';
                     addSkillXP('fishing', 12);
                 }
-
                 if (timer) timer.textContent = catchMsg;
                 if (mood)  mood.textContent  = '';
                 addItem(caughtItem, 1);
@@ -554,7 +566,6 @@
                 if (timer) timer.textContent = '❌ Fish got away!';
                 if (mood)  mood.textContent  = '';
             }
-
             setTimeout(() => {
                 if (timer)   timer.textContent = '';
                 if (holdBar) holdBar.style.width = '0%';
@@ -563,44 +574,70 @@
         }
 
         function pickWeighted(weights, shift) {
-            // Shift weight toward higher indices based on level
             const shifted = weights.map((w, i) => Math.max(1, w - shift * i * 3 + shift * (weights.length - 1 - i) * 2));
             const total = shifted.reduce((a, b) => a + b, 0);
             let r = Math.random() * total;
-            for (let i = 0; i < shifted.length; i++) {
-                r -= shifted[i];
-                if (r <= 0) return i;
-            }
+            for (let i = 0; i < shifted.length; i++) { r -= shifted[i]; if (r <= 0) return i; }
             return shifted.length - 1;
         }
 
         // ===== SEA FISHING: Press & Hold to Lower Lines =====
-        // 4 vertical bars, each with a fixed green zone placed randomly.
-        // ONE shared red line falls across all 4 bars simultaneously.
-        // Hold = line falls, release = line stops and score checked.
-        // Line hits bottom = fail, nothing caught.
+        // 4 vertical bars. GREEN ZONES move organically per-bar (velocity + nudges + darts).
+        // ONE shared red line falls on hold, stops on release. Hit bottom = fail.
 
         const SEA_BAR_H    = 140;
         const SEA_LINE_H   = 4;
         const SEA_TARGET_H = 36;
-        const SEA_FALL_SPEED = 1.5; // px per tick — same for all bars
+        const SEA_FALL_SPEED = 1.5;
 
         const SEA_FISH_POOL = [
-            { emoji: '🦐', name: 'Shrimp',    item: 'fish6' },
-            { emoji: '🦞', name: 'Lobster',   item: 'fish5' },
-            { emoji: '🐟', name: 'Sardine',   item: 'fish1' },
-            { emoji: '🐠', name: 'Mackerel',  item: 'fish2' },
-            { emoji: '🦀', name: 'Crab',      item: 'fish7' },
-            { emoji: '🐡', name: 'Tuna',      item: 'fish3' },
-            { emoji: '🎣', name: 'Swordfish', item: 'fish4' },
-            { emoji: '🦈', name: 'Shark',     item: 'fish8' },
+            { emoji: '🦐', name: 'Shrimp',    item: 'fish6', swimSpeed: 0.5 },
+            { emoji: '🦞', name: 'Lobster',   item: 'fish5', swimSpeed: 0.7 },
+            { emoji: '🐟', name: 'Sardine',   item: 'fish1', swimSpeed: 1.0 },
+            { emoji: '🐠', name: 'Mackerel',  item: 'fish2', swimSpeed: 1.4 },
+            { emoji: '🦀', name: 'Crab',      item: 'fish7', swimSpeed: 0.9 },
+            { emoji: '🐡', name: 'Tuna',      item: 'fish3', swimSpeed: 1.8 },
+            { emoji: '🎣', name: 'Swordfish', item: 'fish4', swimSpeed: 2.4 },
+            { emoji: '🦈', name: 'Shark',     item: 'fish8', swimSpeed: 3.0 },
         ];
 
         let seaActive   = false;
         let seaHolding  = false;
         let seaInterval = null;
-        let seaLineY    = 0;   // shared line position across all bars
-        let seaBars     = [];  // { fish, zoneTop }
+        let seaLineY    = 0;
+        let seaBars     = []; // { fish, zonePos, zoneVel, nudgeT, dartT }
+
+        function seaOrganicTick(b) {
+            const maxPos = SEA_BAR_H - SEA_TARGET_H;
+            const spd    = b.fish.swimSpeed;
+
+            b.nudgeT--;
+            if (b.nudgeT <= 0) {
+                b.zoneVel += (Math.random() - 0.5) * spd * 1.2;
+                b.nudgeT   = 15 + Math.floor(Math.random() * 35);
+            }
+            b.dartT--;
+            if (b.dartT <= 0) {
+                b.zoneVel += (b.zoneVel >= 0 ? 1 : -1) * spd * 3;
+                b.dartT    = 50 + Math.floor(Math.random() * 70);
+            }
+
+            const maxV = spd * 3;
+            b.zoneVel = Math.max(-maxV, Math.min(maxV, b.zoneVel));
+            b.zoneVel *= 0.95;
+            b.zonePos += b.zoneVel;
+
+            if (b.zonePos <= 0) {
+                b.zonePos = 0;
+                b.zoneVel = Math.abs(b.zoneVel) * (0.5 + Math.random() * 0.4);
+                b.nudgeT  = 5;
+            }
+            if (b.zonePos >= maxPos) {
+                b.zonePos = maxPos;
+                b.zoneVel = -Math.abs(b.zoneVel) * (0.5 + Math.random() * 0.4);
+                b.nudgeT  = 5;
+            }
+        }
 
         function startSeaFishing() {
             if (seaActive) return;
@@ -609,20 +646,24 @@
             const scoreLabel = document.getElementById('sea-score-label');
             const fishLv     = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
 
-            // Each bar gets a random fish (for the drop table) and a random green zone position
             const maxIdx = Math.min(Math.floor(fishLv / 2) + 2, SEA_FISH_POOL.length - 1);
             seaBars = [0, 1, 2, 3].map(() => {
                 const pool = SEA_FISH_POOL.slice(0, maxIdx + 1);
                 const fish = pool[Math.floor(Math.random() * pool.length)];
-                const zoneTop = 30 + Math.random() * (SEA_BAR_H - SEA_TARGET_H - 40);
-                return { fish, zoneTop };
+                const zonePos = 20 + Math.random() * (SEA_BAR_H - SEA_TARGET_H - 30);
+                return {
+                    fish,
+                    zonePos,
+                    zoneVel: (Math.random() < 0.5 ? 1 : -1) * fish.swimSpeed,
+                    nudgeT:  10 + Math.floor(Math.random() * 20),
+                    dartT:   40 + Math.floor(Math.random() * 60),
+                };
             });
 
             seaLineY   = 0;
             seaActive  = true;
             seaHolding = true;
 
-            // Reset visuals
             seaBars.forEach((b, i) => {
                 const label     = document.getElementById('sea-label-' + i);
                 const result    = document.getElementById('sea-result-' + i);
@@ -631,7 +672,7 @@
                 const container = document.getElementById('sea-bar-' + i);
                 if (label)     label.textContent  = b.fish.emoji;
                 if (result)    result.textContent = '';
-                if (target)  { target.style.top = b.zoneTop + 'px'; target.style.height = SEA_TARGET_H + 'px'; }
+                if (target)  { target.style.top = b.zonePos + 'px'; target.style.height = SEA_TARGET_H + 'px'; }
                 if (marker)    marker.style.top  = '0px';
                 if (container) container.style.background = 'rgba(255,255,255,0.55)';
             });
@@ -645,13 +686,14 @@
 
                 seaLineY += SEA_FALL_SPEED;
 
-                // Update all 4 markers to same position
-                [0,1,2,3].forEach(i => {
+                seaBars.forEach((b, i) => {
+                    seaOrganicTick(b);
+                    const target = document.getElementById('sea-target-' + i);
+                    if (target) target.style.top = b.zonePos + 'px';
                     const marker = document.getElementById('sea-marker-' + i);
-                    if (marker) marker.style.top = seaLineY + 'px';
+                    if (marker)  marker.style.top = seaLineY + 'px';
                 });
 
-                // Hit bottom = forced fail
                 if (seaLineY >= SEA_BAR_H - SEA_LINE_H) {
                     seaLineY   = SEA_BAR_H - SEA_LINE_H;
                     seaHolding = false;
@@ -675,7 +717,6 @@
         function scoreSeaFishing(forceFail) {
             const timer      = document.getElementById('fishing-timer-sea');
             const scoreLabel = document.getElementById('sea-score-label');
-
             let hits = 0;
             const caughtItems = [];
 
@@ -683,8 +724,7 @@
                 const result    = document.getElementById('sea-result-' + i);
                 const container = document.getElementById('sea-bar-' + i);
                 const lineBottom = seaLineY + SEA_LINE_H;
-                const inZone = !forceFail && seaLineY >= b.zoneTop && lineBottom <= b.zoneTop + SEA_TARGET_H;
-
+                const inZone = !forceFail && seaLineY >= b.zonePos && lineBottom <= b.zonePos + SEA_TARGET_H;
                 if (inZone) {
                     hits++;
                     caughtItems.push(b.fish.item);
@@ -692,9 +732,7 @@
                     if (container) container.style.background = 'rgba(74,222,128,0.25)';
                 } else {
                     if (result)    result.textContent = forceFail ? '💀' : '❌';
-                    if (container) container.style.background = forceFail
-                        ? 'rgba(239,68,68,0.25)'
-                        : 'rgba(239,68,68,0.1)';
+                    if (container) container.style.background = forceFail ? 'rgba(239,68,68,0.25)' : 'rgba(239,68,68,0.1)';
                 }
             });
 
