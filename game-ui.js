@@ -388,6 +388,71 @@
             notify('Hat removed!');
         }
         
+        function displayFishCollection() {
+            const display = document.getElementById('fish-collection-grid');
+            if (!display) return;
+
+            if (!gs.fishSeen) gs.fishSeen = {};
+
+            const FISH_LIST = [
+                { id: 'fish1', name: 'Common Fish',   rarity: 'Common',   rarityColor: '#888888', location: 'Pond'  },
+                { id: 'fish2', name: 'Blue Fish',     rarity: 'Uncommon', rarityColor: '#2d8a2d', location: 'Pond'  },
+                { id: 'fish3', name: 'Tropical Fish', rarity: 'Rare',     rarityColor: '#2563eb', location: 'Lake'  },
+                { id: 'fish4', name: 'Golden Fish',   rarity: 'Epic',     rarityColor: '#7c3aed', location: 'Lake'  },
+                { id: 'fish5', name: 'Lobster',       rarity: 'Common',   rarityColor: '#888888', location: 'River' },
+                { id: 'fish6', name: 'Shrimp',        rarity: 'Uncommon', rarityColor: '#2d8a2d', location: 'River' },
+                { id: 'fish7', name: 'Crab',          rarity: 'Rare',     rarityColor: '#2563eb', location: 'River' },
+                { id: 'fish8', name: 'Shark',         rarity: 'Epic',     rarityColor: '#7c3aed', location: 'Sea'   },
+            ];
+
+            display.innerHTML = '';
+
+            const seenCount = FISH_LIST.filter(f => gs.fishSeen[f.id]).length;
+
+            // Update the section header with count
+            const header = document.getElementById('fish-collection-header');
+            if (header) header.textContent = `🎣 Fish Collected (${seenCount}/${FISH_LIST.length})`;
+
+            FISH_LIST.forEach(fish => {
+                const seen = gs.fishSeen[fish.id] || false;
+                const imgSrc = ITEM_IMAGES[fish.id] || '';
+
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background: ${seen ? fish.rarityColor + '18' : '#1a1a1a'};
+                    border: 2px solid ${seen ? fish.rarityColor : '#333'};
+                    border-radius: 10px;
+                    padding: 6px 4px;
+                    text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
+                    min-height: 80px;
+                    opacity: ${seen ? '1' : '0.45'};
+                `;
+
+                card.innerHTML = `
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:4px 0;">
+                        ${seen
+                            ? `<img src="${imgSrc}" style="width:44px;height:44px;object-fit:contain;" />`
+                            : `<div style="font-size:28px;line-height:1;">❓</div>`
+                        }
+                    </div>
+                    <div style="width:100%;background:${seen ? fish.rarityColor : '#444'};color:#fff;padding:2px 4px;border-radius:5px;font-family:'Righteous',sans-serif;font-size:8px;line-height:1.3;margin-top:2px;">
+                        ${seen ? fish.name : '???'}
+                    </div>
+                    ${seen && gs.fishBest && gs.fishBest[fish.id]
+                        ? `<div style="font-family:'Righteous',sans-serif;font-size:7px;color:rgba(255,255,255,0.85);margin-top:2px;background:rgba(0,0,0,0.3);border-radius:3px;padding:1px 3px;">🏆 ${gs.fishBest[fish.id]} kg</div>`
+                        : `<div style="font-family:'Righteous',sans-serif;font-size:7px;color:${seen ? 'rgba(255,255,255,0.55)' : 'transparent'};margin-top:2px;">${fish.location}</div>`
+                    }
+                `;
+
+                display.appendChild(card);
+            });
+        }
+        window.displayFishCollection = displayFishCollection;
+
         function displayFrogs() {
             const display = document.getElementById('frogs-grid');
             if (!display) return;

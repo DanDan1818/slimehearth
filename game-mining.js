@@ -625,6 +625,7 @@
                 switchRoom('trophies-room');
                 displayTrophies();
                 displayFrogs();
+                if (window.displayFishCollection) window.displayFishCollection();
             };
             document.getElementById('leave-wardrobe').onclick = () => switchRoom('room-room');
             document.getElementById('leave-trophies').onclick = () => switchRoom('room-room');

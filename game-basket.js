@@ -22,24 +22,26 @@
             return n.toLocaleString();
         }
         
-        function showItemTooltip(itemId) {
+        function showItemTooltip(itemId, itemKey) {
             // Remove existing tooltip
             const existing = document.getElementById('item-tooltip');
             if (existing) existing.remove();
             
-            console.log('Tooltip for itemId:', itemId);
-            console.log('ITEM_DATA has this?', !!ITEM_DATA[itemId]);
-            
-            if (!itemId) return;
-            
-            // Check if data exists
-            if (!ITEM_DATA[itemId]) {
-                console.error('No ITEM_DATA for:', itemId);
-                return;
-            }
+            if (!itemId || !ITEM_DATA[itemId]) return;
             
             const data = ITEM_DATA[itemId];
             
+            // Fish size info
+            let fishSizeHtml = '';
+            let displaySellValue = data.sellValue;
+            if (/^fish\d+$/.test(itemId) && itemKey && gs.fishSizes && gs.fishSizes[itemKey]) {
+                const kg = gs.fishSizes[itemKey];
+                const mult = fishSizeMult(kg, itemId);
+                const sLabel = fishSizeLabel(kg);
+                displaySellValue = Math.round(data.sellValue * mult);
+                fishSizeHtml = `<div style="font-size:10px;color:#fff;font-weight:bold;margin-top:3px;text-shadow:0 1px 2px rgba(0,0,0,0.6);">⚖️ ${kg} kg · ${sLabel}</div>`;
+            }
+
             const rarityBorderColor = data.rarityColor === 'rainbow' ? '#d946ef' : (data.rarityColor === '#111111' ? '#666666' : data.rarityColor);
             const headerBg = data.rarityColor === 'rainbow'
                 ? 'linear-gradient(90deg,#f87171,#fb923c,#facc15,#4ade80,#60a5fa,#c084fc)'
@@ -50,11 +52,12 @@
             tooltip.innerHTML = `
                 <div style="background:${headerBg};margin:-8px -10px 6px -10px;padding:5px 10px;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:space-between;gap:6px;">
                     <span style="font-family:'Righteous',sans-serif;font-size:13px;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${data.name}</span>
-                    <span style="font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.7);">💰 ${data.sellValue}</span>
+                    <span style="font-size:11px;font-weight:bold;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.7);">💰 ${displaySellValue}</span>
                 </div>
                 <div style="font-size:11px;color:#fff;line-height:1.4;margin-bottom:${data.feedable || data.crackable ? '5px' : '0'};text-shadow:0 1px 2px rgba(0,0,0,0.6);">
                     ${data.description}
                 </div>
+                ${fishSizeHtml}
                 ${data.feedable ? `<div style="font-size:11px;color:#fff;font-weight:bold;text-shadow:0 1px 2px rgba(0,0,0,0.6);">❤️ +${data.foodValue} Food</div>` : ''}
                 ${data.crackable ? `<div style="font-size:11px;color:#fff;font-weight:bold;margin-top:2px;text-shadow:0 1px 2px rgba(0,0,0,0.6);">🔨 Crackable</div>` : ''}
             `;
@@ -710,6 +713,86 @@
             setTimeout(() => container.remove(), 2000);
         }
         
+        // ── Fish Size System ──
+        // Each species has a min/max kg range. Size rolls on a bell curve.
+        // Size multiplier on sell: 0.5x (tiny) to 2.5x (massive).
+        const FISH_SIZE_RANGES = {
+            'fish1': { min: 0.1, max: 1.2, label: 'Common Fish'   },
+            'fish2': { min: 0.2, max: 1.8, label: 'Blue Fish'     },
+            'fish3': { min: 0.4, max: 2.5, label: 'Tropical Fish' },
+            'fish4': { min: 0.8, max: 4.0, label: 'Golden Fish'   },
+            'fish5': { min: 0.3, max: 2.0, label: 'Lobster'       },
+            'fish6': { min: 0.05,max: 0.6, label: 'Shrimp'        },
+            'fish7': { min: 0.2, max: 1.6, label: 'Crab'          },
+            'fish8': { min: 2.0, max: 18.0,label: 'Shark'         },
+        };
+
+        function rollFishSize(fishId) {
+            const range = FISH_SIZE_RANGES[fishId];
+            if (!range) return null;
+            // Bell curve: average of 3 randoms gives natural bell
+            const r = (Math.random() + Math.random() + Math.random()) / 3;
+            const kg = range.min + r * (range.max - range.min);
+            return Math.round(kg * 100) / 100; // 2 decimal places
+        }
+
+        function fishSizeLabel(kg) {
+            if (kg === null || kg === undefined) return '';
+            if (kg < 0.15) return '🐟 Tiny';
+            if (kg < 0.5)  return '🐟 Small';
+            if (kg < 1.2)  return '🐠 Average';
+            if (kg < 2.5)  return '🐡 Large';
+            if (kg < 5.0)  return '🦈 Huge';
+            return '🦈 MASSIVE';
+        }
+
+        function fishSizeMult(kg, fishId) {
+            if (kg === null || kg === undefined) return 1;
+            const range = FISH_SIZE_RANGES[fishId];
+            if (!range) return 1;
+            // Normalize 0→1 across the range, map to 0.5x→2.5x
+            const norm = (kg - range.min) / (range.max - range.min);
+            return Math.round((0.5 + norm * 2.0) * 100) / 100;
+        }
+
+        function addFish(fishId) {
+            // Add fish to inventory, roll size, store it, track record
+            const currentCount = Object.keys(gs.inventory).length;
+            if (currentCount >= gs.maxInventory) { notifyInventoryFull(); return null; }
+
+            const key = fishId + '_' + gs.itemCounter++;
+            gs.inventory[key] = fishId;
+
+            if (!gs.fishSeen)  gs.fishSeen  = {};
+            if (!gs.fishSizes) gs.fishSizes  = {};
+            if (!gs.fishBest)  gs.fishBest   = {};
+
+            gs.fishSeen[fishId] = true;
+
+            const kg = rollFishSize(fishId);
+            if (kg !== null) {
+                gs.fishSizes[key] = kg;
+                if (!gs.fishBest[fishId] || kg > gs.fishBest[fishId]) {
+                    gs.fishBest[fishId] = kg;
+                    const sLabel = fishSizeLabel(kg);
+                    notify(`🏆 New record! ${sLabel} ${ITEM_DATA[fishId].name} — ${kg} kg!`, 'achievement');
+                } else {
+                    const sLabel = fishSizeLabel(kg);
+                    const mult   = fishSizeMult(kg, fishId);
+                    notify(`🎣 Caught ${ITEM_DATA[fishId].name} · ${kg} kg (${sLabel}) · 💰 ×${mult}`);
+                }
+            }
+
+            save();
+            updateInventoryCounter();
+
+            const container = document.getElementById('basket-container');
+            if (container && container.classList.contains('active') && basketEngine) {
+                spawnSingleItem(key);
+            }
+            return key;
+        }
+
         function addItem(itemId, quantity = 1) {
             const currentCount = Object.keys(gs.inventory).length;
             const spaceLeft = gs.maxInventory - currentCount;
@@ -722,8 +805,15 @@
             const toAdd = Math.min(quantity, spaceLeft);
             for (let i = 0; i < toAdd; i++) {
                 const key = itemId + '_' + gs.itemCounter++;
-                gs.inventory[key] = itemId; // Store the itemId string, not 1!
+                gs.inventory[key] = itemId;
             }
+
+            // Mark fish as seen for Fish Collection
+            if (/^fish\d+$/.test(itemId)) {
+                if (!gs.fishSeen) gs.fishSeen = {};
+                gs.fishSeen[itemId] = true;
+            }
+
             save();
             
             // Get proper item name from ITEM_DATA
@@ -1749,7 +1839,7 @@
                 console.log('Start drag event fired!', body);
                 if (body && body.itemId) {
                     console.log('Showing tooltip for:', body.itemId);
-                    showItemTooltip(body.itemId);
+                    showItemTooltip(body.itemId, body.itemKey);
                     // Green sell box kept hidden (for testing purposes only)
                 }
             });
@@ -1885,7 +1975,7 @@
                 // Show/hide tooltip based on hover
                 if (hoveredBody && hoveredBody !== lastHoveredBody) {
                     if (hoveredBody.itemId) {
-                        showItemTooltip(hoveredBody.itemId);
+                        showItemTooltip(hoveredBody.itemId, hoveredBody.itemKey);
                     }
                 } else if (!hoveredBody && lastHoveredBody) {
                     hideItemTooltip();
@@ -1947,18 +2037,28 @@
                         }
                         
                         const sellPrice = itemData ? itemData.sellValue : 1;
+
+                        // Fish size sell multiplier
+                        let fishMult = 1;
+                        let fishSizeStr = '';
+                        if (itemData && /^fish\d+$/.test(body.itemId) && gs.fishSizes && gs.fishSizes[body.itemKey]) {
+                            const kg = gs.fishSizes[body.itemKey];
+                            fishMult = fishSizeMult(kg, body.itemId);
+                            fishSizeStr = ` (${kg}kg)`;
+                        }
+                        const sizedPrice = Math.round(sellPrice * fishMult);
                         
                         // Ring bonus: +1% chance per ring level to sell at 2x price
                         const ringLevel = (gs.jewelcraft && gs.jewelcraft.ring) ? gs.jewelcraft.ring : 1;
-                        const ringBonus = (ringLevel - 1) * 0.01; // level 1 = 0%, level 2 = 1%, etc.
+                        const ringBonus = (ringLevel - 1) * 0.01;
                         const doubled   = Math.random() < ringBonus;
-                        const finalSell = doubled ? sellPrice * 2 : sellPrice;
+                        const finalSell = doubled ? sizedPrice * 2 : sizedPrice;
                         
                         gs.coins = Math.min(gs.coins + finalSell, 999999);
                         if (doubled) {
-                            notify('💍 DOUBLE SALE! Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + finalSell + ' coins! 💰');
+                            notify('💍 DOUBLE SALE! Sold ' + (itemData ? itemData.name : body.itemId) + fishSizeStr + ' for ' + finalSell + ' coins! 💰');
                         } else {
-                            notify('Sold ' + (itemData ? itemData.name : body.itemId) + ' for ' + finalSell + ' coins! 💰');
+                            notify('Sold ' + (itemData ? itemData.name : body.itemId) + fishSizeStr + ' for ' + finalSell + ' coins! 💰');
                         }
                         const sellSound = document.getElementById('coin-sell-sound');
                         if (sellSound) { sellSound.currentTime = 0; sellSound.play().catch(() => {}); }
@@ -1967,6 +2067,7 @@
                         World.remove(basketEngine.world, body);
                         basketBodies.splice(i, 1);
                         delete gs.inventory[body.itemKey];
+                        if (gs.fishSizes && gs.fishSizes[body.itemKey]) delete gs.fishSizes[body.itemKey];
                         
                         save();
                         updateUI();

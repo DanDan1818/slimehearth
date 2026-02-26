@@ -95,7 +95,10 @@
             maxInventory: 6, // Inventory capacity (upgradeable)
             bagUpgrades: 0, // Number of bag upgrades purchased
             frogs: {}, // Collected frogs: { 'frog_blue': true, ... }
-            coop: { chickens: 1, maxChickens: 2 } // Coop state
+            coop: { chickens: 1, maxChickens: 2 }, // Coop state
+            fishSeen:  {}, // Fish ever caught: { 'fish1': true, ... }
+            fishSizes: {}, // Size per inventory slot: { 'fish1_3': 1.24, ... }
+            fishBest:  {}  // Personal record kg per species: { 'fish1': 1.24, ... }
         };
         
         // ===== CONSTANTS =====

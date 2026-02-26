@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#8b6340">
     <link rel="manifest" href="manifest.json">
-    <title>SlimeHearth v0.852</title>
+    <title>SlimeHearth v0.854</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-    <link rel="stylesheet" href="styles.css?v=0.852">
+    <link rel="stylesheet" href="styles.css?v=0.854">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&family=Nunito:wght@700&family=Baloo+2:wght@700&family=Quicksand:wght@700&family=Righteous&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -29,7 +29,7 @@
          style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/titlescreen-background.png');background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#84fab0;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;"
          onclick="" ontouchend="event.preventDefault();">
         <p class="pulse-text" style="font-family:'Righteous',sans-serif;font-size:24px;color:#fff;margin-top:280px;text-shadow:0 2px 8px rgba(0,0,0,0.8),0 1px 3px rgba(0,0,0,0.9),0 0 20px rgba(0,0,0,0.4);pointer-events:none;">Tap anywhere to start</p>
-        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.852</div>
+        <div style="position:absolute;bottom:20px;color:rgba(255,255,255,0.7);font-size:14px;pointer-events:none;">v0.854</div>
     </div>
         <!-- Hatch Screen Overlay (Simple) -->
     <div id="hatch-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('./slimehearth-assets/images/hatching-background.png');background-size:cover;background-position:center;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;">
@@ -1366,6 +1366,11 @@
                 <div id="frogs-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:320px;margin:0 auto;padding:5px;">
                     <!-- Frogs will be displayed here -->
                 </div>
+
+                <h3 id="fish-collection-header" style="margin-top:14px;margin-bottom:8px;font-size:14px;">🎣 Fish Collected</h3>
+                <div id="fish-collection-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:320px;margin:0 auto;padding:5px;">
+                    <!-- Fish will be displayed here -->
+                </div>
                 
                 <button id="leave-trophies" class="back-btn">←</button>
             </div>
@@ -1655,7 +1660,7 @@
     </div>
     
     <div id="room-transition" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:99998;pointer-events:none;opacity:0;"></div>
-    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.852</div>
+    <div id="game-version" style="position:fixed;bottom:104px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;font-size:11px;z-index:9999;border-radius:4px;font-family:monospace;opacity:0.8;">v0.854</div>
     <div id="mouse-coords">0, 0</div>
     <button onclick="if(window.skillFireworks) window.skillFireworks('fishing')" style="position:fixed;bottom:130px;right:5px;z-index:99999;font-size:9px;padding:3px 5px;background:#1d4ed8;color:#fff;border:none;border-radius:3px;">TEST FW</button>
     <script>
@@ -1748,14 +1753,14 @@
         }
     };
     </script>
-    <script src="game-core.js?v=0.852"></script>
-    <script src="game-basket.js?v=0.852"></script>
-    <script src="game-fishing.js?v=0.852"></script>
-    <script src="game-farming.js?v=0.852"></script>
-    <script src="game-cooking.js?v=0.852"></script>
-    <script src="game-mining.js?v=0.852"></script>
-    <script src="game-jewelcrafting.js?v=0.852"></script>
-    <script src="game-ui.js?v=0.852"></script>
+    <script src="game-core.js?v=0.854"></script>
+    <script src="game-basket.js?v=0.854"></script>
+    <script src="game-fishing.js?v=0.854"></script>
+    <script src="game-farming.js?v=0.854"></script>
+    <script src="game-cooking.js?v=0.854"></script>
+    <script src="game-mining.js?v=0.854"></script>
+    <script src="game-jewelcrafting.js?v=0.854"></script>
+    <script src="game-ui.js?v=0.854"></script>
 
 </body>
 </html>

@@ -267,7 +267,7 @@
                 }
 
                 timer.textContent = catchMsg;
-                addItem(caughtItem, 1);
+                if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
 
                 
                 // 5% chance to find a Basket
@@ -338,7 +338,7 @@
                 }
 
                 result.textContent = catchMsg;
-                addItem(caughtItem, 1);
+                if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
 
                 
                 // 5% chance to find a Basket
@@ -544,7 +544,7 @@
                 }
                 if (timer) timer.textContent = catchMsg;
                 if (mood)  mood.textContent  = '';
-                addItem(caughtItem, 1);
+                if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
                 if (Math.random() < 0.05) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
                 if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
                     addItem('frog_blue', 1);
@@ -728,7 +728,7 @@
                 if (timer)      timer.textContent = '💀 Too slow!';
                 if (scoreLabel) scoreLabel.textContent = '';
             } else if (hits > 0) {
-                caughtItems.forEach(itemId => addItem(itemId, 1));
+                caughtItems.forEach(itemId => { if (/^fish\d+$/.test(itemId)) addFish(itemId); else addItem(itemId, 1); });
                 addSkillXP('fishing', hits * 10);
                 const names = [...new Set(caughtItems.map(id => ITEM_DATA[id]?.name || id))].join(', ');
                 if (timer)      timer.textContent = '🎣 Caught ' + hits + '/4!' + (hits === 4 ? ' 🔥 Perfect!' : '');
