@@ -388,50 +388,6 @@
             notify('Hat removed!');
         }
         
-        // ===== KEYS =====
-        function displayKeys() {
-            const display = document.getElementById('keys-grid');
-            if (!display) return;
-            
-            display.innerHTML = '';
-            
-            if (Object.keys(KEYS_DATA).length === 0) {
-                display.innerHTML = '<p style="color:#999;text-align:center;padding:40px;grid-column:1/-1;">No keys yet... More areas coming soon!</p>';
-                return;
-            }
-            
-            for (const keyId in KEYS_DATA) {
-                const key = KEYS_DATA[keyId];
-                const owned = gs.keys[keyId] || false;
-                
-                const keyCard = document.createElement('div');
-                keyCard.style.cssText = `
-                    background: ${owned ? '#fef3c7' : '#f3f4f6'};
-                    border: 2px solid ${owned ? '#fbbf24' : '#d1d5db'};
-                    border-radius: 8px;
-                    padding: 6px;
-                    text-align: center;
-                    opacity: ${owned ? '1' : '0.5'};
-                    min-height: 70px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: space-between;
-                `;
-                
-                keyCard.innerHTML = `
-                    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:32px;">
-                        ${key.icon}
-                    </div>
-                    <div style="width:100%;background:${owned ? '#fbbf24' : '#9ca3af'};color:#fff;padding:3px 6px;border-radius:4px;font-weight:bold;font-size:9px;margin-top:6px;">
-                        ${owned ? '✓ OBTAINED' : '🔒 LOCKED'}
-                    </div>
-                `;
-                
-                display.appendChild(keyCard);
-            }
-        }
-        
         function displayFrogs() {
             const display = document.getElementById('frogs-grid');
             if (!display) return;

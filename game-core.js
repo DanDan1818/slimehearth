@@ -78,7 +78,6 @@
             prospectingLevel: 1, // Prospecting skill (levels up by cracking geodes)
             hats: {}, // Format: { 'top_hat': true, 'party_hat': true }
             equippedHat: null, // Currently equipped hat (null = no hat)
-            keys: {}, // Format: { 'bronze_key': true, 'silver_key': true }
             frogs: {}, // Format: { 'frog_blue': true, ... } - collected frogs
             skills: { // Skill levels and XP
                 fishing: { level: 1, xp: 0, xpNeeded: 10 },
@@ -1015,12 +1014,6 @@
         };
         
         const KEYS_DATA = {
-            'water_key': {
-                name: '💧 Water Key',
-                description: 'Opens the Water Door - Found while fishing',
-                icon: '💧',
-                unlockType: 'fishing' // 10% chance from fishing
-            }
         };
         
         const FROGS_DATA = {

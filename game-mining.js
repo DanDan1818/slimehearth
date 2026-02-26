@@ -624,7 +624,6 @@
             document.getElementById('goto-trophies').onclick = () => {
                 switchRoom('trophies-room');
                 displayTrophies();
-                displayKeys();
                 displayFrogs();
             };
             document.getElementById('leave-wardrobe').onclick = () => switchRoom('room-room');

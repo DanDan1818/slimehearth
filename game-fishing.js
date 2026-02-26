@@ -268,13 +268,7 @@
 
                 timer.textContent = catchMsg;
                 addItem(caughtItem, 1);
-                
-                // 10% chance to find Water Key (only if not already obtained)
-                if (!gs.keys.water_key && Math.random() < 0.10) {
-                    gs.keys.water_key = true;
-                    save();
-                    notify('💧 Found a Water Key!', 'achievement');
-                }
+
                 
                 // 5% chance to find a Basket
                 if (Math.random() < 0.05) {
@@ -345,13 +339,7 @@
 
                 result.textContent = catchMsg;
                 addItem(caughtItem, 1);
-                
-                // 10% chance to find Water Key (only if not already obtained)
-                if (!gs.keys.water_key && Math.random() < 0.10) {
-                    gs.keys.water_key = true;
-                    save();
-                    notify('💧 Found a Water Key!', 'achievement');
-                }
+
                 
                 // 5% chance to find a Basket
                 if (Math.random() < 0.05) {
