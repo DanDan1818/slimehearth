@@ -803,9 +803,11 @@
             }
             
             const toAdd = Math.min(quantity, spaceLeft);
+            const addedKeys = [];
             for (let i = 0; i < toAdd; i++) {
                 const key = itemId + '_' + gs.itemCounter++;
                 gs.inventory[key] = itemId;
+                addedKeys.push(key);
             }
 
             // Mark fish as seen for Fish Collection
@@ -827,14 +829,10 @@
             
             updateInventoryCounter();
             
-            // Only spawn new items in basket if basket is open
+            // Only spawn new items if basket is open
             const container = document.getElementById('basket-container');
             if (container && container.classList.contains('active') && basketEngine) {
-                // Spawn only the newly added items
-                for (let i = 0; i < toAdd; i++) {
-                    const key = itemId + '_' + (gs.itemCounter - toAdd + i);
-                    spawnSingleItem(key);
-                }
+                addedKeys.forEach(key => spawnSingleItem(key));
             }
         }
         
