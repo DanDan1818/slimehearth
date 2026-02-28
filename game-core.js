@@ -24,7 +24,12 @@
                 './slimehearth-assets/images/fish8.png',
                 './slimehearth-assets/images/gem1.png',
                 './slimehearth-assets/images/geode1.png',
-                './slimehearth-assets/images/carrot1.png',
+                './slimehearth-assets/images/veg1.png',
+                './slimehearth-assets/images/veg2.png',
+                './slimehearth-assets/images/veg3.png',
+                './slimehearth-assets/images/veg4.png',
+                './slimehearth-assets/images/veg5.png',
+                './slimehearth-assets/images/veg6.png',
                 './slimehearth-assets/images/seeds1.png',
                 './slimehearth-assets/images/food1.png',
                 './slimehearth-assets/images/basket1.png',
@@ -195,7 +200,12 @@
             'large_geode':   './slimehearth-assets/images/geode3.png',
             'rare_geode':    './slimehearth-assets/images/geode4.png',
             'rainbow_geode': './slimehearth-assets/images/geode5.png',
-            'carrot': './slimehearth-assets/images/carrot1.png',
+            'carrot':  './slimehearth-assets/images/veg1.png',
+            'potato':  './slimehearth-assets/images/veg2.png',
+            'onion':   './slimehearth-assets/images/veg3.png',
+            'pumpkin': './slimehearth-assets/images/veg4.png',
+            'corn':    './slimehearth-assets/images/veg5.png',
+            'tomato':  './slimehearth-assets/images/veg6.png',
             'carrot_seeds':  './slimehearth-assets/images/seeds1.png',
             'tomato_seeds':  './slimehearth-assets/images/seeds1.png',
             'potato_seeds':  './slimehearth-assets/images/seeds1.png',
@@ -324,7 +334,7 @@
             'carrot': {
                 name: 'Carrot',
                 emoji: '🥕',
-                image: 'carrot1.png',
+                image: 'veg1.png',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'A crunchy orange vegetable.',
@@ -344,7 +354,7 @@
                 isPlantable: true, harvestItem: 'carrot', harvestCount: 3
             },
             'tomato': {
-                name: 'Tomato', emoji: '🍅',
+                name: 'Tomato', emoji: '🍅', image: 'veg6.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A juicy red tomato.',
                 foodValue: 12, sellValue: 5, cookable: true, feedable: true
@@ -358,7 +368,7 @@
                 isPlantable: true, harvestItem: 'tomato', harvestCount: 2
             },
             'potato': {
-                name: 'Potato', emoji: '🥔',
+                name: 'Potato', emoji: '🥔', image: 'veg2.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'A hearty starchy potato.',
                 foodValue: 8, sellValue: 4, cookable: true, feedable: true
@@ -372,7 +382,7 @@
                 isPlantable: true, harvestItem: 'potato', harvestCount: 4
             },
             'corn': {
-                name: 'Corn', emoji: '🌽',
+                name: 'Corn', emoji: '🌽', image: 'veg5.png',
                 rarity: 'Uncommon', rarityColor: '#2d8a2d',
                 description: 'Sweet golden corn.',
                 foodValue: 15, sellValue: 8, cookable: true, feedable: true
@@ -386,7 +396,7 @@
                 isPlantable: true, harvestItem: 'corn', harvestCount: 2
             },
             'onion': {
-                name: 'Onion', emoji: '🧅',
+                name: 'Onion', emoji: '🧅', image: 'veg3.png',
                 rarity: 'Common', rarityColor: '#111111',
                 description: 'Brings tears of joy.',
                 foodValue: 10, sellValue: 6, cookable: true, feedable: true
@@ -400,7 +410,7 @@
                 isPlantable: true, harvestItem: 'onion', harvestCount: 3
             },
             'pumpkin': {
-                name: 'Pumpkin', emoji: '🎃',
+                name: 'Pumpkin', emoji: '🎃', image: 'veg4.png',
                 rarity: 'Rare', rarityColor: '#2563eb',
                 description: 'A prize-winning pumpkin.',
                 foodValue: 25, sellValue: 20, cookable: true, feedable: true
