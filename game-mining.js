@@ -484,6 +484,11 @@
                 notify('⛏️ +5 of each Ore!');
             };
 
+            if (dbg('give-bars')) dbg('give-bars').onclick = () => {
+                ['copper_bar','iron_bar','silver_bar','gold_bar'].forEach(id => addItem(id, 1));
+                notify('🔩 +1 of each Metal Bar!');
+            };
+
             if (dbg('give-gems')) dbg('give-gems').onclick = () => {
                 ['emerald','ruby','sapphire','amethyst','topaz','diamond'].forEach(id => addItem(id, 1));
                 notify('💎 +1 of each Gem!');
