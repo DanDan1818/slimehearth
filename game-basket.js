@@ -788,7 +788,7 @@
 
             const container = document.getElementById('basket-container');
             if (container && container.classList.contains('active') && basketEngine) {
-                spawnSingleItem(key);
+                setTimeout(() => spawnSingleItem(key), 0);
             }
             return key;
         }
@@ -830,9 +830,10 @@
             updateInventoryCounter();
             
             // Only spawn new items if basket is open
+            // Use setTimeout to defer out of any active Matter.js event callbacks
             const container = document.getElementById('basket-container');
             if (container && container.classList.contains('active') && basketEngine) {
-                addedKeys.forEach(key => spawnSingleItem(key));
+                setTimeout(() => addedKeys.forEach(key => spawnSingleItem(key)), 0);
             }
         }
         
