@@ -93,9 +93,11 @@
         function openBasket() {
             notify('🧺 Opening Basket!', 'achievement');
             
-            // Basket now drops 3 Gems
-            addItem('gem', 3);
-            notify('Found: 3 Gems! 💎');
+            // Basket drops a random gem
+            const gems = ['emerald','ruby','sapphire','amethyst','topaz','diamond'];
+            const gem = gems[Math.floor(Math.random() * gems.length)];
+            addItem(gem, 1);
+            notify('Found: ' + (ITEM_DATA[gem]?.name || 'Gem') + '! 💎');
         }
         
         function notifyInventoryFull() {
@@ -1895,7 +1897,7 @@
                 const jcRoom = document.getElementById('jewelcrafting-room');
                 if (jcRoom && jcRoom.classList.contains('active')) {
                     const isBar = ['copper_bar','iron_bar','silver_bar','gold_bar'].includes(itemId);
-                    const isGem = ['gem','emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
+                    const isGem = ['emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
                     if (isBar) {
                         for (const sn of [1, 2]) {
                             const slotEl = document.getElementById('jc-slot' + sn);
@@ -2158,7 +2160,7 @@
             basketBodies.push(box);
             
             // Play special spawn sounds for gem/basket
-            if (itemId === 'gem') {
+            if (['emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId)) {
                 const gemSound = document.getElementById('gem-drop-sound');
                 if (gemSound) { gemSound.currentTime = 0; gemSound.play().catch(() => {}); }
             } else if (itemId === 'basket') {

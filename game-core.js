@@ -23,7 +23,20 @@
                 './slimehearth-assets/images/fish7.png',
                 './slimehearth-assets/images/fish8.png',
                 './slimehearth-assets/images/gem1.png',
+                './slimehearth-assets/images/gem2.png',
+                './slimehearth-assets/images/gem3.png',
+                './slimehearth-assets/images/gem4.png',
+                './slimehearth-assets/images/gem5.png',
+                './slimehearth-assets/images/gem6.png',
                 './slimehearth-assets/images/geode1.png',
+                './slimehearth-assets/images/geode2.png',
+                './slimehearth-assets/images/geode3.png',
+                './slimehearth-assets/images/geode4.png',
+                './slimehearth-assets/images/geode5.png',
+                './slimehearth-assets/images/trash1.png',
+                './slimehearth-assets/images/trash2.png',
+                './slimehearth-assets/images/trash3.png',
+                './slimehearth-assets/images/trash4.png',
                 './slimehearth-assets/images/veg1.png',
                 './slimehearth-assets/images/veg2.png',
                 './slimehearth-assets/images/veg3.png',
@@ -145,19 +158,12 @@
             'sausages':    '#a78bfa',
             'bacon':       '#dc2626',
             'rainbow_milk':'rainbow',
-            'gem': '#9333ea',
             'emerald':  '#10b981',
             'ruby':     '#ef4444',
             'sapphire': '#3b82f6',
             'amethyst': '#a855f7',
             'topaz':    '#f59e0b',
             'diamond':  '#e0f2fe',
-            'polished_emerald':  '#34d399',
-            'polished_ruby':     '#f87171',
-            'polished_sapphire': '#60a5fa',
-            'polished_amethyst': '#c084fc',
-            'polished_topaz':    '#fbbf24',
-            'polished_diamond':  '#bfdbfe',
             'ore':         '#cd7f32',
             'copper_ore':  '#cd7f32',
             'coal':        '#374151',
@@ -188,12 +194,11 @@
             'fish6': './slimehearth-assets/images/fish6.png',
             'fish7': './slimehearth-assets/images/fish7.png',
             'fish8': './slimehearth-assets/images/fish8.png',
-            'gem': './slimehearth-assets/images/gem2.png',
             'emerald':  './slimehearth-assets/images/gem2.png',
             'ruby':     './slimehearth-assets/images/gem4.png',
             'sapphire': './slimehearth-assets/images/gem5.png',
             'amethyst': './slimehearth-assets/images/gem1.png',
-            'topaz':    './slimehearth-assets/images/gem1.png',
+            'topaz':    './slimehearth-assets/images/gem6.png',
             'diamond':  './slimehearth-assets/images/gem3.png',
             'small_geode':   './slimehearth-assets/images/geode1.png',
             'medium_geode':  './slimehearth-assets/images/geode2.png',
@@ -226,6 +231,9 @@
             'silver_bar': './slimehearth-assets/images/metal3.png',
             'gold_bar':   './slimehearth-assets/images/metal4.png',
             'lily_pad': './slimehearth-assets/images/trash1.png',
+            'burnt_food': './slimehearth-assets/images/trash2.png',
+            'seaweed': './slimehearth-assets/images/trash3.png',
+            'old_boot': './slimehearth-assets/images/trash4.png',
             'frog_blue':   './slimehearth-assets/images/frog1.png',
             'frog_yellow': './slimehearth-assets/images/frog2.png',
             'frog_red':    './slimehearth-assets/images/frog3.png',
@@ -699,12 +707,6 @@
                 cookable: false,
                 feedable: false
             },
-            'gem': {
-                name: 'Emerald', emoji: '💚', image: 'gem2.png',
-                rarity: 'Legendary', rarityColor: '#ea580c',
-                description: 'A sparkling green emerald.',
-                foodValue: 0, sellValue: 100, cookable: false, feedable: false
-            },
             'emerald': {
                 name: 'Emerald', emoji: '💚', image: 'gem2.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
@@ -730,7 +732,7 @@
                 foodValue: 0, sellValue: 160, cookable: false, feedable: false
             },
             'topaz': {
-                name: 'Topaz', emoji: '🧡', image: 'gem1.png',
+                name: 'Topaz', emoji: '🧡', image: 'gem6.png',
                 rarity: 'Legendary', rarityColor: '#ea580c',
                 description: 'A warm golden topaz.',
                 foodValue: 0, sellValue: 200, cookable: false, feedable: false
@@ -740,42 +742,6 @@
                 rarity: 'Rainbow', rarityColor: 'rainbow',
                 description: 'An impossibly perfect diamond. Worth a fortune.',
                 foodValue: 0, sellValue: 1000, cookable: false, feedable: false
-            },
-            'polished_emerald': {
-                name: 'Polished Emerald', emoji: '💚', image: 'gem2.png',
-                rarity: 'Legendary', rarityColor: '#10b981',
-                description: 'A masterfully faceted emerald. Catches the light beautifully.',
-                foodValue: 0, sellValue: 300, cookable: false, feedable: false
-            },
-            'polished_ruby': {
-                name: 'Polished Ruby', emoji: '❤️‍🔥', image: 'gem4.png',
-                rarity: 'Legendary', rarityColor: '#ef4444',
-                description: 'A perfectly cut ruby, deep red and flawless.',
-                foodValue: 0, sellValue: 360, cookable: false, feedable: false
-            },
-            'polished_sapphire': {
-                name: 'Polished Sapphire', emoji: '💙', image: 'gem5.png',
-                rarity: 'Legendary', rarityColor: '#3b82f6',
-                description: 'A brilliant sapphire, cut with expert precision.',
-                foodValue: 0, sellValue: 420, cookable: false, feedable: false
-            },
-            'polished_amethyst': {
-                name: 'Polished Amethyst', emoji: '💜', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#a855f7',
-                description: 'A radiant amethyst, glowing with inner light.',
-                foodValue: 0, sellValue: 480, cookable: false, feedable: false
-            },
-            'polished_topaz': {
-                name: 'Polished Topaz', emoji: '🧡', image: 'gem1.png',
-                rarity: 'Legendary', rarityColor: '#f59e0b',
-                description: 'A warm golden topaz, perfectly faceted.',
-                foodValue: 0, sellValue: 600, cookable: false, feedable: false
-            },
-            'polished_diamond': {
-                name: 'Polished Diamond', emoji: '💎', image: 'gem3.png',
-                rarity: 'Rainbow', rarityColor: 'rainbow',
-                description: 'A flawless diamond with 58 perfect facets. Priceless.',
-                foodValue: 0, sellValue: 3000, cookable: false, feedable: false
             },
             'ore': {
                 name: 'Copper Ore', emoji: '🟤', image: 'ore1.png',
@@ -866,6 +832,7 @@
             'old_boot': {
                 name: 'Old Boot',
                 emoji: '👢',
+                image: 'trash4.png',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'Someone lost this long ago.',
@@ -877,6 +844,7 @@
             'seaweed': {
                 name: 'Seaweed',
                 emoji: '🌿',
+                image: 'trash3.png',
                 rarity: 'Common',
                 rarityColor: '#111111',
                 description: 'Slimy river weed.',

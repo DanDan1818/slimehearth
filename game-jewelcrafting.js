@@ -6,7 +6,7 @@ const BAR_CHANCE = {
     copper_bar: 10, iron_bar: 15, silver_bar: 20, gold_bar: 25
 };
 const GEM_CHANCE = {
-    gem: 5, emerald: 5, topaz: 10, amethyst: 15,
+    emerald: 5, topaz: 10, amethyst: 15,
     sapphire: 20, ruby: 25, diamond: 30
 };
 // Skill bar: level 1→1%, level 100→20%, capped at 20%
@@ -23,7 +23,6 @@ const BAR_COLOR = {
     gold_bar:   'linear-gradient(180deg,#fde68a 0%,#fbbf24 60%,#d97706 100%)',
 };
 const GEM_COLOR = {
-    gem:      'linear-gradient(180deg,#6ee7b7 0%,#10b981 60%,#065f46 100%)',
     emerald:  'linear-gradient(180deg,#6ee7b7 0%,#10b981 60%,#065f46 100%)',
     ruby:     'linear-gradient(180deg,#fca5a5 0%,#ef4444 60%,#991b1b 100%)',
     sapphire: 'linear-gradient(180deg,#93c5fd 0%,#3b82f6 60%,#1e3a8a 100%)',
@@ -34,8 +33,8 @@ const GEM_COLOR = {
 
 const BAR_ICONS = { copper_bar:'🟫', iron_bar:'⬜', silver_bar:'🔲', gold_bar:'🟨' };
 const BAR_NAMES = { copper_bar:'Copper', iron_bar:'Iron', silver_bar:'Silver', gold_bar:'Gold' };
-const GEM_ICONS = { gem:'💚', emerald:'💚', ruby:'❤️', sapphire:'💙', amethyst:'💜', topaz:'🧡', diamond:'💎' };
-const GEM_NAMES = { gem:'Emerald', emerald:'Emerald', ruby:'Ruby', sapphire:'Sapphire', amethyst:'Amethyst', topaz:'Topaz', diamond:'Diamond' };
+const GEM_ICONS = { emerald:'💚', ruby:'❤️', sapphire:'💙', amethyst:'💜', topaz:'🧡', diamond:'💎' };
+const GEM_NAMES = { emerald:'Emerald', ruby:'Ruby', sapphire:'Sapphire', amethyst:'Amethyst', topaz:'Topaz', diamond:'Diamond' };
 const METAL_BARS = Object.keys(BAR_CHANCE);
 const GEMS       = Object.keys(GEM_CHANCE);
 
