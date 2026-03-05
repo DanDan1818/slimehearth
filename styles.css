@@ -999,6 +999,8 @@
             height: 100%;
             background: linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7);
             border-radius: 11px;
+            border: 1px solid #000;
+            box-sizing: border-box;
         }
         
         #fishing-target-river {
@@ -1007,6 +1009,8 @@
             height: 100%;
             background: linear-gradient(90deg,#4ade80,#16a34a);
             border-radius: 11px;
+            border: 1px solid #000;
+            box-sizing: border-box;
             opacity: 0.85;
         }
         
@@ -1037,24 +1041,27 @@
             height: 100%;
             background: linear-gradient(90deg,#4ade80,#16a34a);
             border-radius: 13px;
+            border: 1px solid #000;
+            box-sizing: border-box;
             opacity: 0.85;
         }
 
         #fishing-pill-lake {
             position: absolute;
-            top: 3px;
+            top: 0;
             width: 36px;
-            height: 20px;
+            height: 100%;
             background: linear-gradient(135deg, #f0f9ff, #bae6fd, #38bdf8);
-            border: 2px solid #0284c7;
-            border-radius: 10px;
+            border: 1px solid #000;
+            border-radius: 13px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+            box-sizing: border-box;
             z-index: 2;
         }
 
         #fishing-pill-lake.in-zone {
             background: linear-gradient(135deg, #f0fdf4, #bbf7d0, #4ade80);
-            border-color: #16a34a;
+            border-color: #000;
             box-shadow: 0 0 6px rgba(74,222,128,0.8), inset 0 1px 0 rgba(255,255,255,0.7);
         }
 
@@ -1167,26 +1174,40 @@
             position: absolute;
             left: 0;
             width: 100%;
-            height: 44px;
+            height: 36px;
             background: linear-gradient(180deg, #4ade80, #16a34a);
             border-radius: 14px;
+            border: 1px solid #000;
+            box-sizing: border-box;
             opacity: 0.88;
         }
         .sea-marker {
             position: absolute;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            top: 0;  /* starts at top, falls on hold */
+            left: 2px;
+            right: 2px;
+            width: calc(100% - 4px);
+            height: 3px;
+            top: 0;
             background: #ef4444;
             box-shadow: 0 0 6px rgba(239,68,68,1), 0 0 2px #fff;
             z-index: 2;
             border-radius: 2px;
+            border: 1px solid #000;
+            animation: seaMarkerIdle 2s ease-in-out infinite;
+        }
+        @keyframes seaMarkerIdle {
+            0%   { transform: translateY(0px); }
+            50%  { transform: translateY(6px); }
+            100% { transform: translateY(0px); }
         }
         .sea-result-icon {
             font-size: 18px;
             min-height: 22px;
             text-align: center;
+        }
+        /* When sea fishing is active, JS controls marker position — disable idle float */
+        .sea-active .sea-marker {
+            animation: none;
         }
         #cast-sea:active {
             transform: scale(0.95);

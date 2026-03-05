@@ -234,6 +234,17 @@
                     s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
                     s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
                 });
+                // Splash + bobber sound like Pond
+                const riverSplash = document.getElementById('river-splash');
+                if (riverSplash) {
+                    riverSplash.style.display = 'block';
+                    riverSplash.style.animation = 'none';
+                    void riverSplash.offsetWidth;
+                    riverSplash.style.animation = 'splash 0.6s ease-out';
+                    const bobberSound = document.getElementById('bobber-sound');
+                    if (bobberSound) { bobberSound.currentTime = 0; bobberSound.volume = 0.5; bobberSound.play().catch(() => {}); }
+                    setTimeout(() => { riverSplash.style.display = 'none'; }, 600);
+                }
                 // Fishing level scales loot
                 const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
                 const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30);
@@ -652,6 +663,9 @@
             seaActive  = true;
             seaHolding = true;
 
+            const seaGame = document.getElementById('fishing-game-sea');
+            if (seaGame) seaGame.classList.add('sea-active');
+
             seaBars.forEach((b, i) => {
                 const label     = document.getElementById('sea-label-' + i);
                 const result    = document.getElementById('sea-result-' + i);
@@ -670,16 +684,21 @@
 
             const TICK = 30;
             seaInterval = setInterval(() => {
+                // Zones always move organically
+                seaBars.forEach((b, i) => {
+                    seaOrganicTick(b);
+                    const target = document.getElementById('sea-target-' + i);
+                    if (target) target.style.top = b.zonePos + 'px';
+                });
+
+                // Marker only falls while holding
                 if (!seaHolding) return;
 
                 seaLineY += SEA_FALL_SPEED;
 
                 seaBars.forEach((b, i) => {
-                    seaOrganicTick(b);
-                    const target = document.getElementById('sea-target-' + i);
-                    if (target) target.style.top = b.zonePos + 'px';
                     const marker = document.getElementById('sea-marker-' + i);
-                    if (marker)  marker.style.top = seaLineY + 'px';
+                    if (marker) marker.style.top = seaLineY + 'px';
                 });
 
                 if (seaLineY >= SEA_BAR_H - SEA_LINE_H) {
@@ -688,6 +707,8 @@
                     clearInterval(seaInterval);
                     seaInterval = null;
                     seaActive   = false;
+                    const seaGame = document.getElementById('fishing-game-sea');
+                    if (seaGame) seaGame.classList.remove('sea-active');
                     scoreSeaFishing(true);
                 }
             }, TICK);
@@ -699,6 +720,8 @@
             clearInterval(seaInterval);
             seaInterval = null;
             seaActive   = false;
+            const seaGame = document.getElementById('fishing-game-sea');
+            if (seaGame) seaGame.classList.remove('sea-active');
             scoreSeaFishing(false);
         }
 
