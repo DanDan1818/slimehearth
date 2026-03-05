@@ -93,11 +93,9 @@
         function openBasket() {
             notify('🧺 Opening Basket!', 'achievement');
             
-            // Basket drops a random gem
-            const gems = ['emerald','ruby','sapphire','amethyst','topaz','diamond'];
-            const gem = gems[Math.floor(Math.random() * gems.length)];
-            addItem(gem, 1);
-            notify('Found: ' + (ITEM_DATA[gem]?.name || 'Gem') + '! 💎');
+            // Basket now drops 3 Gems
+            addItem('gem', 3);
+            notify('Found: 3 Gems! 💎');
         }
         
         function notifyInventoryFull() {
@@ -1573,14 +1571,14 @@
 
                         // Cap at max — no overflow/reset
                         if (gs.furnace.fed < gs.furnace.needed) {
-                            gs.furnace.fed = Math.min(gs.furnace.needed, gs.furnace.fed + 1);
+                            gs.furnace.fed = Math.min(gs.furnace.needed, gs.furnace.fed + 5);
                             if (gs.furnace.fed >= gs.furnace.needed) {
                                 notify('🔥 Furnace fully fueled!', 'achievement');
                             } else {
-                                notify('+1 🔥 Fuel!');
+                                notify('+5 🔥 Fuel! (' + gs.furnace.fed + '/' + gs.furnace.needed + ')');
                             }
                         } else {
-                            notify('🔥 Fuel tank full!');
+                            notify('🔥 Fuel tank full! (10/10)');
                         }
 
                         // +1 Smelting XP per coal
@@ -1897,7 +1895,7 @@
                 const jcRoom = document.getElementById('jewelcrafting-room');
                 if (jcRoom && jcRoom.classList.contains('active')) {
                     const isBar = ['copper_bar','iron_bar','silver_bar','gold_bar'].includes(itemId);
-                    const isGem = ['emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
+                    const isGem = ['gem','emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId);
                     if (isBar) {
                         for (const sn of [1, 2]) {
                             const slotEl = document.getElementById('jc-slot' + sn);
@@ -2160,7 +2158,7 @@
             basketBodies.push(box);
             
             // Play special spawn sounds for gem/basket
-            if (['emerald','ruby','sapphire','amethyst','topaz','diamond'].includes(itemId)) {
+            if (itemId === 'gem') {
                 const gemSound = document.getElementById('gem-drop-sound');
                 if (gemSound) { gemSound.currentTime = 0; gemSound.play().catch(() => {}); }
             } else if (itemId === 'basket') {
