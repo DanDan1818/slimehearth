@@ -41,11 +41,11 @@
 
         const MINE_DEPTHS = {
             'cave':   { reqLevel: 0,  rockChance: 0.025, rockXP: 1,  label: 'Cave Entrance',  geodeItem: null,           geodeChance: 0      },
-            'depth1': { reqLevel: 10, rockChance: 0.035, rockXP: 2,  label: 'Depth 1',  geodeItem: 'small_geode',  geodeChance: 0.01   },
-            'depth2': { reqLevel: 20, rockChance: 0.045, rockXP: 3,  label: 'Depth 2',  geodeItem: 'medium_geode', geodeChance: 0.005  },
-            'depth3': { reqLevel: 30, rockChance: 0.06,  rockXP: 5,  label: 'Depth 3',  geodeItem: 'large_geode',  geodeChance: 0.004  },
-            'depth4': { reqLevel: 40, rockChance: 0.075, rockXP: 8,  label: 'Depth 4',  geodeItem: 'rare_geode',   geodeChance: 0.003  },
-            'depth5': { reqLevel: 50, rockChance: 0.09,  rockXP: 12, label: 'Depth 5',  geodeItem: 'rainbow_geode',geodeChance: 0.00213},
+            'depth1': { reqLevel: 10, rockChance: 0.035, rockXP: 2,  label: 'Depth 1',  geodeItem: 'small_geode',  geodeChance: 0.03   },
+            'depth2': { reqLevel: 20, rockChance: 0.045, rockXP: 3,  label: 'Depth 2',  geodeItem: 'medium_geode', geodeChance: 0.02   },
+            'depth3': { reqLevel: 30, rockChance: 0.06,  rockXP: 5,  label: 'Depth 3',  geodeItem: 'large_geode',  geodeChance: 0.015  },
+            'depth4': { reqLevel: 40, rockChance: 0.075, rockXP: 8,  label: 'Depth 4',  geodeItem: 'rare_geode',   geodeChance: 0.01   },
+            'depth5': { reqLevel: 50, rockChance: 0.09,  rockXP: 12, label: 'Depth 5',  geodeItem: 'rainbow_geode',geodeChance: 0.005  },
         };
         
         function getAutomineIDs(depth) {
