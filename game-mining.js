@@ -290,34 +290,43 @@
             });
             
             // River: hold to start, release to stop
-            // Clone button to strip any duplicate listeners added by other init blocks
-            const riverBtnOld = document.getElementById('cast-river');
-            const riverBtn = riverBtnOld.cloneNode(true);
-            riverBtnOld.parentNode.replaceChild(riverBtn, riverBtnOld);
+            const riverBtn = document.getElementById('cast-river');
 
+            // Suppress long-press context menu (right-click on mobile)
+            riverBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            // Desktop
             riverBtn.addEventListener('mousedown', (e) => {
+                riverBtn.style.transform = 'scale(0.9)';
                 startRiverFishing();
-                document.addEventListener('mouseup', stopRiverBar, { once: true });
+                document.addEventListener('mouseup', () => {
+                    riverBtn.style.transform = 'scale(1)';
+                    stopRiverBar();
+                }, { once: true });
             });
 
+            // Mobile — passive:false so preventDefault() works
             riverBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
+                riverBtn.style.transform = 'scale(0.9)';
                 startRiverFishing();
             }, { passive: false });
 
-            // Prevent thumb drift from triggering touchcancel/reset
+            // Eat thumb drift — do NOT call stopRiverBar here
             riverBtn.addEventListener('touchmove', (e) => {
                 e.preventDefault();
             }, { passive: false });
 
             riverBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
+                riverBtn.style.transform = 'scale(1)';
                 stopRiverBar();
             }, { passive: false });
 
             riverBtn.addEventListener('touchcancel', (e) => {
                 e.preventDefault();
-                // Intentionally suppressed — touchmove guard prevents spurious cancels
+                riverBtn.style.transform = 'scale(1)';
+                // Suppressed — touchmove guard prevents spurious cancels
             }, { passive: false });
 
             // Lake: hold to accumulate time in green zone, release to pause, hold again to resume
