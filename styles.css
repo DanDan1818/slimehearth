@@ -1115,6 +1115,75 @@
             50%      { top: -7px; }
         }
 
+        /* ===== POND WATER BAR — waves, fish, bubbles ===== */
+        #pond-water-bg::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -100%;
+            width: 200%; height: 12px;
+            background: radial-gradient(ellipse 80px 6px at 20% 50%, rgba(255,255,255,0.4) 0%, transparent 70%),
+                        radial-gradient(ellipse 55px 5px at 60% 50%, rgba(255,255,255,0.28) 0%, transparent 70%),
+                        radial-gradient(ellipse 65px 5px at 88% 50%, rgba(255,255,255,0.32) 0%, transparent 70%);
+            animation: riverWave1 2.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        #pond-water-bg::after {
+            content: '';
+            position: absolute;
+            bottom: 1px; left: -100%;
+            width: 200%; height: 9px;
+            background: radial-gradient(ellipse 70px 5px at 35% 50%, rgba(255,255,255,0.18) 0%, transparent 70%),
+                        radial-gradient(ellipse 90px 5px at 75% 50%, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: riverWave2 3.6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* Fish shadows — dark blobs drifting across */
+        .pond-fish {
+            position: absolute;
+            background: rgba(0,0,0,0.13);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: pondFishSwim linear infinite;
+        }
+        .pf1 { width: 28px; height: 9px;  top: 4px;  animation-duration: 6.5s;  animation-delay: 0s;    }
+        .pf2 { width: 20px; height: 7px;  top: 10px; animation-duration: 9.2s;  animation-delay: -3.1s; }
+        .pf3 { width: 34px; height: 10px; top: 6px;  animation-duration: 7.8s;  animation-delay: -5.4s; }
+        @keyframes pondFishSwim {
+            0%   { left: -40px;  opacity: 0;    transform: scaleX(1); }
+            8%   {               opacity: 0.7; }
+            92%  {               opacity: 0.7; }
+            100% { left: 210px;  opacity: 0;    transform: scaleX(1); }
+        }
+
+        /* Bubbles inside pond bar */
+        .pond-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.75);
+            pointer-events: none;
+            animation: pondBubbleRise linear infinite;
+        }
+        .pb1 { width: 3px; height: 3px; left: 15%;  animation-duration: 2.3s; animation-delay: 0s;    bottom: -4px; }
+        .pb2 { width: 4px; height: 4px; left: 40%;  animation-duration: 3.0s; animation-delay: 0.8s;  bottom: -4px; }
+        .pb3 { width: 3px; height: 3px; left: 65%;  animation-duration: 2.6s; animation-delay: 1.5s;  bottom: -4px; }
+        .pb4 { width: 2px; height: 2px; left: 82%;  animation-duration: 2.1s; animation-delay: 0.4s;  bottom: -4px; }
+        @keyframes pondBubbleRise {
+            0%   { bottom: -4px; opacity: 0; }
+            20%  { opacity: 0.8; }
+            80%  { opacity: 0.5; }
+            100% { bottom: 26px; opacity: 0; }
+        }
+
+        /* Bobber sink — plunges down and fades on bite */
+        @keyframes bobberSink {
+            0%   { transform: translateY(0px);  opacity: 1; }
+            30%  { transform: translateY(6px);  opacity: 0.9; }
+            70%  { transform: translateY(18px); opacity: 0.4; }
+            100% { transform: translateY(26px); opacity: 0; }
+        }
+
         /* ===== POND BOBBER (rides on progress bar, same as river) ===== */
         #fishing-bar-pond-bobber {
             position: absolute;

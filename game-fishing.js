@@ -79,6 +79,13 @@
                             void barContainer.offsetWidth;
                             barContainer.style.animation = 'pondBite 0.6s cubic-bezier(0.2,1.4,0.4,1) forwards, pondWave 1.2s ease-in-out 0.6s infinite';
                         }
+                        // Bobber sinks and vanishes in sync with the bite jump
+                        const pondBobberSink = document.getElementById('fishing-bar-pond-bobber');
+                        if (pondBobberSink) {
+                            pondBobberSink.style.animation = 'none';
+                            void pondBobberSink.offsetWidth;
+                            pondBobberSink.style.animation = 'bobberSink 0.6s ease-in forwards';
+                        }
                         // Burst the outer specks
                         const specks = document.querySelectorAll('.pspeck');
                         specks.forEach((s, i) => {
@@ -160,7 +167,13 @@
                 if (resetLabel) resetLabel.textContent = '';
                 if (splash) splash.style.display = 'none';
                 const pondBobberReset = document.getElementById('fishing-bar-pond-bobber');
-                if (pondBobberReset) { pondBobberReset.style.visibility = 'hidden'; pondBobberReset.style.left = '0px'; }
+                if (pondBobberReset) {
+                    pondBobberReset.style.animation = 'none';
+                    pondBobberReset.style.opacity = '1';
+                    pondBobberReset.style.transform = '';
+                    pondBobberReset.style.visibility = 'hidden';
+                    pondBobberReset.style.left = '0px';
+                }
             }, 1500);
         }
         
