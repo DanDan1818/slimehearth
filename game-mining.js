@@ -167,11 +167,14 @@
             if (barEl) { barEl.style.transition = 'none'; barEl.style.width = '100%'; }
         }
         
-        // Wire up all start-automine buttons
+        // Wire up all start-automine buttons (tap only, no hold mechanic)
         ['cave','depth1','depth2','depth3','depth4','depth5'].forEach(d => {
             const ids = getAutomineIDs(d);
             const btn = document.getElementById(ids.btn);
-            if (btn) btn.onclick = () => startAutomine(d);
+            if (btn) {
+                btn.onclick = () => startAutomine(d);
+                btn.addEventListener('contextmenu', (e) => e.preventDefault());
+            }
         });
         
         function displayMiningMenu() {

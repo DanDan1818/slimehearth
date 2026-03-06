@@ -176,13 +176,17 @@
         
         // River: Timing minigame
         let riverFishingInterval = null;
+        let riverCleanupTimeout = null;
         let riverBarPos = 0;
         let riverTargetPos = 150;
         let riverActive = false;
         
         function startRiverFishing() {
             if (riverActive) return;
-            
+
+            // Cancel any stale hide-timeout from the previous cast
+            if (riverCleanupTimeout) { clearTimeout(riverCleanupTimeout); riverCleanupTimeout = null; }
+
             const bar       = document.getElementById('fishing-bar-river');
             const container = document.getElementById('fishing-bar-container-river');
             const target    = document.getElementById('fishing-target-river');
@@ -306,7 +310,8 @@
                 timer.textContent = '❌ Missed!';
             }
             
-            setTimeout(() => {
+            riverCleanupTimeout = setTimeout(() => {
+                riverCleanupTimeout = null;
                 riverBarPos = 0;
                 bar.style.left = '0px';
                 bar.style.visibility = 'hidden';
