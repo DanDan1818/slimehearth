@@ -2480,124 +2480,7 @@ function stopBasket() {
             // Legacy function - kept for compatibility
         }
         
-        // River: Timing minigame
-        let riverFishingInterval = null;
-        let riverBarPos = 0;
-        let riverTargetPos = 150;
-        let riverActive = false;
-        
-        function startRiverFishing() {
-            if (riverActive) return;
-            
-            const bar = document.getElementById('fishing-bar-river');
-            const target = document.getElementById('fishing-target-river');
-            const timer = document.getElementById('fishing-timer-river');
-            const castBtn = document.getElementById('cast-river');
-            
-            riverActive = true;
-            riverBarPos = 0;
-            riverTargetPos = Math.random() * 200 + 20;
-            
-            target.style.left = riverTargetPos + 'px';
-            timer.textContent = 'Release in green!';
-            
-            // Start bar movement immediately
-            riverFishingInterval = setInterval(() => {
-                riverBarPos += 5;
-                bar.style.left = riverBarPos + 'px';
-                
-                if (riverBarPos >= 270) {
-                    endRiverFishing(false);
-                }
-            }, 30);
-        }
-        
-        function stopRiverBar() {
-            if (!riverActive) return;
-            
-            const bar = document.getElementById('fishing-bar-river');
-            clearInterval(riverFishingInterval);
-            
-            const barLeft = parseInt(bar.style.left) || 0;
-            const targetLeft = riverTargetPos;
-            const targetRight = targetLeft + 50;
-            
-            const hit = barLeft >= targetLeft && barLeft <= targetRight;
-            endRiverFishing(hit);
-        }
-        
-        function endRiverFishing(success) {
-            riverActive = false;
-            clearInterval(riverFishingInterval);
-            
-            const bar = document.getElementById('fishing-bar-river');
-            const timer = document.getElementById('fishing-timer-river');
-            const castBtn = document.getElementById('cast-river');
-            
-            if (success) {
-                // Fishing level scales loot
-                const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
-                const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30);
-
-                // River drop table
-                const trashChance = Math.max(0.35 - lvBonus * 2, 0.05);
-                const rand = Math.random();
-                let caughtItem;
-                let catchMsg;
-
-                if (rand < trashChance) {
-                    caughtItem = 'seaweed';
-                    catchMsg = '🌿 Pulled up Seaweed...';
-                    addSkillXP('fishing', 1);
-                } else {
-                    const fishRand = Math.random();
-                    const epicCut  = Math.min(0.03 + lvBonus * 0.5, 0.18);
-                    const rareCut  = Math.min(0.10 + lvBonus,       0.35);
-                    const uncomCut = Math.min(0.28 + lvBonus * 0.8, 0.50);
-                    if (fishRand < epicCut) {
-                        caughtItem = 'fish8'; // Shark (Epic)
-                    } else if (fishRand < rareCut) {
-                        caughtItem = 'fish7'; // Crab (Rare)
-                    } else if (fishRand < uncomCut) {
-                        caughtItem = 'fish6'; // Shrimp (Uncommon)
-                    } else {
-                        caughtItem = 'fish5'; // Lobster (Common)
-                    }
-                    catchMsg = `🎣 Caught ${ITEM_DATA[caughtItem].name}!`;
-                    addSkillXP('fishing', 10);
-                }
-
-                timer.textContent = catchMsg;
-                addItem(caughtItem, 1);
-                
-                // 10% chance to find Water Key (only if not already obtained)
-                if (!gs.keys.water_key && Math.random() < 0.10) {
-                    gs.keys.water_key = true;
-                    save();
-                    notify('💧 Found a Water Key!', 'achievement');
-                }
-                
-                // 5% chance to find a Basket
-                if (Math.random() < 0.05) {
-                    addItem('basket', 1);
-                    notify('🧺 Found a Basket!');
-                }
-                
-                // 0.01% chance to find Blue Frog (if not already collected)
-                if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
-                    addItem('frog_blue', 1);
-                    notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
-                }
-            } else {
-                timer.textContent = '❌ Missed!';
-            }
-            
-            setTimeout(() => {
-                riverBarPos = 0;
-                bar.style.left = '0px';
-                timer.textContent = '';
-            }, 1500);
-        }
+        // River minigame logic lives in game-fishing.js
         
         function completeFishing(success) {
             clearInterval(fishingInterval);
@@ -4675,29 +4558,7 @@ function initKitchenGame() {
             stopFishing(); 
         });
         
-        // River: hold to start, release to stop
-        const riverBtn = document.getElementById('cast-river');
-        
-        riverBtn.addEventListener('mousedown', startRiverFishing);
-        riverBtn.addEventListener('mouseup', stopRiverBar);
-        // Named handler so it only gets added once even if this block re-runs
-        if (!window._riverDocMouseUp) {
-            window._riverDocMouseUp = () => { if (riverActive) stopRiverBar(); };
-            document.addEventListener('mouseup', window._riverDocMouseUp);
-        }
-        
-        riverBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            startRiverFishing();
-        });
-        riverBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            stopRiverBar();
-        });
-        riverBtn.addEventListener('touchcancel', (e) => {
-            e.preventDefault();
-            if (riverActive) stopRiverBar();
-        });
+        // River button listeners are handled once at init in game-mining.js
         
         
         document.getElementById('goto-adventure').onclick = () => {
