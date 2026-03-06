@@ -395,14 +395,50 @@
             if (!gs.fishSeen) gs.fishSeen = {};
 
             const FISH_LIST = [
-                { id: 'fish1', name: 'Common Fish',   rarity: 'Common',   rarityColor: '#888888', location: 'Pond'  },
-                { id: 'fish2', name: 'Blue Fish',     rarity: 'Uncommon', rarityColor: '#2d8a2d', location: 'Pond'  },
-                { id: 'fish3', name: 'Tropical Fish', rarity: 'Rare',     rarityColor: '#2563eb', location: 'Lake'  },
-                { id: 'fish4', name: 'Golden Fish',   rarity: 'Epic',     rarityColor: '#7c3aed', location: 'Lake'  },
-                { id: 'fish5', name: 'Lobster',       rarity: 'Common',   rarityColor: '#888888', location: 'River' },
-                { id: 'fish6', name: 'Shrimp',        rarity: 'Uncommon', rarityColor: '#2d8a2d', location: 'River' },
-                { id: 'fish7', name: 'Crab',          rarity: 'Rare',     rarityColor: '#2563eb', location: 'River' },
-                { id: 'fish8', name: 'Shark',         rarity: 'Epic',     rarityColor: '#7c3aed', location: 'Sea'   },
+                // Pond
+                { id: 'p1',  name: 'Minnow',         rarity: 'Common',    rarityColor: '#9ca3af', location: 'Pond'  },
+                { id: 'p2',  name: 'Mudfish',         rarity: 'Common',    rarityColor: '#9ca3af', location: 'Pond'  },
+                { id: 'p3',  name: 'Sunfish',         rarity: 'Common',    rarityColor: '#9ca3af', location: 'Pond'  },
+                { id: 'p4',  name: 'Tench',           rarity: 'Uncommon',  rarityColor: '#4ade80', location: 'Pond'  },
+                { id: 'p5',  name: 'Clownfish',       rarity: 'Uncommon',  rarityColor: '#4ade80', location: 'Pond'  },
+                { id: 'p6',  name: 'Rudd',            rarity: 'Uncommon',  rarityColor: '#4ade80', location: 'Pond'  },
+                { id: 'p7',  name: 'Pond Perch',      rarity: 'Rare',      rarityColor: '#60a5fa', location: 'Pond'  },
+                { id: 'p8',  name: 'Carp',            rarity: 'Rare',      rarityColor: '#60a5fa', location: 'Pond'  },
+                { id: 'p9',  name: 'Pond Catfish',    rarity: 'Epic',      rarityColor: '#a78bfa', location: 'Pond'  },
+                { id: 'p10', name: 'Golden Koi',      rarity: 'Legendary', rarityColor: '#f59e0b', location: 'Pond'  },
+                // River
+                { id: 'r1',  name: 'Dace',            rarity: 'Common',    rarityColor: '#9ca3af', location: 'River' },
+                { id: 'r2',  name: 'Chub',            rarity: 'Common',    rarityColor: '#9ca3af', location: 'River' },
+                { id: 'r3',  name: 'Gudgeon',         rarity: 'Common',    rarityColor: '#9ca3af', location: 'River' },
+                { id: 'r4',  name: 'Bream',           rarity: 'Uncommon',  rarityColor: '#60a5fa', location: 'River' },
+                { id: 'r5',  name: 'Barbel',          rarity: 'Uncommon',  rarityColor: '#60a5fa', location: 'River' },
+                { id: 'r6',  name: 'Grayling',        rarity: 'Uncommon',  rarityColor: '#60a5fa', location: 'River' },
+                { id: 'r7',  name: 'River Trout',     rarity: 'Rare',      rarityColor: '#818cf8', location: 'River' },
+                { id: 'r8',  name: 'Pike',            rarity: 'Rare',      rarityColor: '#818cf8', location: 'River' },
+                { id: 'r9',  name: 'River Eel',       rarity: 'Epic',      rarityColor: '#a78bfa', location: 'River' },
+                { id: 'r10', name: 'Phantom Salmon',  rarity: 'Legendary', rarityColor: '#c084fc', location: 'River' },
+                // Lake
+                { id: 'l1',  name: 'Smelt',           rarity: 'Common',    rarityColor: '#9ca3af', location: 'Lake'  },
+                { id: 'l2',  name: 'Whitefish',       rarity: 'Common',    rarityColor: '#9ca3af', location: 'Lake'  },
+                { id: 'l3',  name: 'Vendace',         rarity: 'Common',    rarityColor: '#9ca3af', location: 'Lake'  },
+                { id: 'l4',  name: 'Lake Perch',      rarity: 'Uncommon',  rarityColor: '#34d399', location: 'Lake'  },
+                { id: 'l5',  name: 'Lake Trout',      rarity: 'Uncommon',  rarityColor: '#34d399', location: 'Lake'  },
+                { id: 'l6',  name: 'Walleye',         rarity: 'Uncommon',  rarityColor: '#34d399', location: 'Lake'  },
+                { id: 'l7',  name: 'Burbot',          rarity: 'Rare',      rarityColor: '#a78bfa', location: 'Lake'  },
+                { id: 'l8',  name: 'Freshwater Drum', rarity: 'Rare',      rarityColor: '#a78bfa', location: 'Lake'  },
+                { id: 'l9',  name: 'Lake Sturgeon',   rarity: 'Epic',      rarityColor: '#7c3aed', location: 'Lake'  },
+                { id: 'l10', name: 'Sapphire Bass',   rarity: 'Legendary', rarityColor: '#3b82f6', location: 'Lake'  },
+                // Sea
+                { id: 's1',  name: 'Sardine',         rarity: 'Common',    rarityColor: '#9ca3af', location: 'Sea'   },
+                { id: 's2',  name: 'Mackerel',        rarity: 'Common',    rarityColor: '#9ca3af', location: 'Sea'   },
+                { id: 's3',  name: 'Shrimp',          rarity: 'Common',    rarityColor: '#9ca3af', location: 'Sea'   },
+                { id: 's4',  name: 'Lobster',         rarity: 'Uncommon',  rarityColor: '#f97316', location: 'Sea'   },
+                { id: 's5',  name: 'Crab',            rarity: 'Uncommon',  rarityColor: '#f97316', location: 'Sea'   },
+                { id: 's6',  name: 'Pufferfish',      rarity: 'Uncommon',  rarityColor: '#f97316', location: 'Sea'   },
+                { id: 's7',  name: 'Tuna',            rarity: 'Rare',      rarityColor: '#ef4444', location: 'Sea'   },
+                { id: 's8',  name: 'Swordfish',       rarity: 'Rare',      rarityColor: '#ef4444', location: 'Sea'   },
+                { id: 's9',  name: 'Giant Squid',     rarity: 'Epic',      rarityColor: '#dc2626', location: 'Sea'   },
+                { id: 's10', name: 'Shark',           rarity: 'Legendary', rarityColor: '#991b1b', location: 'Sea'   },
             ];
 
             display.innerHTML = '';

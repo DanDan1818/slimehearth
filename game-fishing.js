@@ -311,25 +311,23 @@
                     catchMsg = '🌿 Pulled up Seaweed...';
                     addSkillXP('fishing', 1);
                 } else {
+                    // River fish pool — 10 fish, level-scaled
                     const fishRand = Math.random();
-                    const epicCut  = Math.min(0.03 + lvBonus * 0.5, 0.18);
-                    const rareCut  = Math.min(0.10 + lvBonus,       0.35);
-                    const uncomCut = Math.min(0.28 + lvBonus * 0.8, 0.50);
-                    if (fishRand < epicCut) {
-                        caughtItem = 'fish8';
-                    } else if (fishRand < rareCut) {
-                        caughtItem = 'fish7';
-                    } else if (fishRand < uncomCut) {
-                        caughtItem = 'fish6';
-                    } else {
-                        caughtItem = 'fish5';
-                    }
+                    const legCut  = Math.min(0.01 + lvBonus * 0.3,  0.08);
+                    const epicCut = Math.min(0.03 + lvBonus * 0.5,  0.15);
+                    const rareCut = Math.min(0.08 + lvBonus * 0.8,  0.28);
+                    const uncCut  = Math.min(0.25 + lvBonus,        0.50);
+                    if      (fishRand < legCut)  caughtItem = 'r10'; // Phantom Salmon
+                    else if (fishRand < epicCut) caughtItem = 'r9';  // River Eel
+                    else if (fishRand < rareCut) caughtItem = Math.random() < 0.5 ? 'r8' : 'r7'; // Pike / River Trout
+                    else if (fishRand < uncCut)  caughtItem = ['r4','r5','r6'][Math.floor(Math.random()*3)];
+                    else                         caughtItem = ['r1','r2','r3'][Math.floor(Math.random()*3)];
                     catchMsg = `🎣 Caught ${ITEM_DATA[caughtItem].name}!`;
                     addSkillXP('fishing', 10);
                 }
 
                 timer.textContent = catchMsg;
-                if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
+                if (/^(fish\d+|[prls]\d+)$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
 
                 if (Math.random() < 0.05) {
                     addItem('basket', 1);
@@ -382,26 +380,23 @@
                     catchMsg = '👢 Fished up an Old Boot...';
                     addSkillXP('fishing', 1);
                 } else {
-                    // Fish pool — scaled rates
+                    // Pond fish pool — 10 fish, level-scaled
                     const fishRand = Math.random();
-                    const epicCut   = Math.min(0.03 + lvBonus * 0.5, 0.18);  // 3%→18%
-                    const rareCut   = Math.min(0.10 + lvBonus,       0.35);  // 10%→35%
-                    const uncomCut  = Math.min(0.28 + lvBonus * 0.8, 0.50);  // 28%→50%
-                    if (fishRand < epicCut) {
-                        caughtItem = 'fish4'; // Golden Fish (Epic)
-                    } else if (fishRand < rareCut) {
-                        caughtItem = 'fish3'; // Tropical (Rare)
-                    } else if (fishRand < uncomCut) {
-                        caughtItem = 'fish2'; // Blue Fish (Uncommon)
-                    } else {
-                        caughtItem = 'fish1'; // Common Fish
-                    }
+                    const legCut  = Math.min(0.01 + lvBonus * 0.3,  0.08);  // Legendary
+                    const epicCut = Math.min(0.03 + lvBonus * 0.5,  0.15);  // Epic
+                    const rareCut = Math.min(0.08 + lvBonus * 0.8,  0.28);  // Rare
+                    const uncCut  = Math.min(0.25 + lvBonus,        0.50);  // Uncommon
+                    if      (fishRand < legCut)  caughtItem = 'p10'; // Golden Koi
+                    else if (fishRand < epicCut) caughtItem = 'p9';  // Pond Catfish
+                    else if (fishRand < rareCut) caughtItem = Math.random() < 0.5 ? 'p8' : 'p7'; // Carp / Pond Perch
+                    else if (fishRand < uncCut)  caughtItem = ['p4','p5','p6'][Math.floor(Math.random()*3)]; // Uncommons
+                    else                         caughtItem = ['p1','p2','p3'][Math.floor(Math.random()*3)]; // Commons
                     catchMsg = `🎣 Caught a ${ITEM_DATA[caughtItem].name}!`;
                     addSkillXP('fishing', 10);
                 }
 
                 result.textContent = catchMsg;
-                if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
+                if (/^(fish\d+|[prls]\d+)$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
 
                 
                 // 5% chance to find a Basket
@@ -439,11 +434,16 @@
         const LAKE_CENTER   = (LAKE_BAR_W - LAKE_PILL_W) / 2;
 
         const LAKE_FISH = [
-            { name: 'Perch',    baseSpeed: 1.2, driftSpeed: 0.6, reelSpeed: 3.0, holdMs: 700,  mood: '😴 Lazy Perch...',    item: 'fish1' },
-            { name: 'Bass',     baseSpeed: 2.0, driftSpeed: 1.0, reelSpeed: 2.8, holdMs: 1000, mood: '🐟 Steady Bass',      item: 'fish2' },
-            { name: 'Trout',    baseSpeed: 3.2, driftSpeed: 1.6, reelSpeed: 2.5, holdMs: 1400, mood: '💨 Darting Trout!',   item: 'fish3' },
-            { name: 'Pike',     baseSpeed: 5.0, driftSpeed: 2.5, reelSpeed: 2.2, holdMs: 1800, mood: '⚡ Wild Pike!!',      item: 'fish4' },
-            { name: 'Sturgeon', baseSpeed: 0.8, driftSpeed: 0.4, reelSpeed: 2.0, holdMs: 2400, mood: '🦕 Ancient Sturgeon', item: 'fish8' },
+            { name: 'Smelt',          baseSpeed: 1.0, driftSpeed: 0.5, reelSpeed: 3.2, holdMs: 600,  mood: '😴 Tiny Smelt...',          item: 'l1'  },
+            { name: 'Whitefish',      baseSpeed: 1.4, driftSpeed: 0.7, reelSpeed: 3.0, holdMs: 800,  mood: '🐟 Steady Whitefish',        item: 'l2'  },
+            { name: 'Vendace',        baseSpeed: 1.8, driftSpeed: 0.9, reelSpeed: 2.9, holdMs: 900,  mood: '💧 Slippery Vendace',        item: 'l3'  },
+            { name: 'Lake Perch',     baseSpeed: 2.4, driftSpeed: 1.2, reelSpeed: 2.7, holdMs: 1100, mood: '🐟 Feisty Perch!',           item: 'l4'  },
+            { name: 'Lake Trout',     baseSpeed: 3.0, driftSpeed: 1.5, reelSpeed: 2.5, holdMs: 1400, mood: '💨 Darting Trout!',          item: 'l5'  },
+            { name: 'Walleye',        baseSpeed: 3.6, driftSpeed: 1.8, reelSpeed: 2.4, holdMs: 1600, mood: '👁️ Glowing Walleye...',      item: 'l6'  },
+            { name: 'Burbot',         baseSpeed: 1.2, driftSpeed: 0.6, reelSpeed: 2.2, holdMs: 2000, mood: '🌑 Lurking Burbot...',       item: 'l7'  },
+            { name: 'Freshwater Drum',baseSpeed: 4.2, driftSpeed: 2.1, reelSpeed: 2.0, holdMs: 2200, mood: '🥁 Rumbling Drum!!',         item: 'l8'  },
+            { name: 'Lake Sturgeon',  baseSpeed: 0.7, driftSpeed: 0.3, reelSpeed: 1.8, holdMs: 2600, mood: '🦕 Ancient Sturgeon...',     item: 'l9'  },
+            { name: 'Sapphire Bass',  baseSpeed: 6.0, driftSpeed: 3.0, reelSpeed: 1.5, holdMs: 3000, mood: '💎 SAPPHIRE BASS!!',         item: 'l10' },
         ];
 
         let lakeActive   = false;
@@ -597,17 +597,20 @@
                     caughtItem = 'seaweed'; catchMsg = '🌿 Pulled up Seaweed...';
                     addSkillXP('fishing', 1);
                 } else {
+                    // Lake: fish.item already set from LAKE_FISH pool above
+                    // Chance to upgrade to a rarer catch
                     const r = Math.random();
-                    const epicCut  = Math.min(0.05 + lvBonus * 0.6, 0.22);
-                    const rareCut  = Math.min(0.14 + lvBonus,       0.40);
-                    const uncomCut = Math.min(0.32 + lvBonus * 0.8, 0.55);
-                    caughtItem = r < epicCut ? 'fish8' : r < rareCut ? 'fish7' : r < uncomCut ? 'fish6' : fish.item;
+                    const legCut  = Math.min(0.01 + lvBonus * 0.4, 0.10);
+                    const epicCut = Math.min(0.04 + lvBonus * 0.6, 0.18);
+                    if      (r < legCut)  caughtItem = 'l10'; // Sapphire Bass override
+                    else if (r < epicCut) caughtItem = 'l9';  // Lake Sturgeon override
+                    else                  caughtItem = fish.item; // Normal pool fish
                     catchMsg = '🎣 Caught ' + ITEM_DATA[caughtItem].name + '!';
                     addSkillXP('fishing', 12);
                 }
                 if (timer) timer.textContent = catchMsg;
                 if (mood)  mood.textContent  = '';
-                if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
+                if (/^(fish\d+|[prls]\d+)$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
                 if (Math.random() < 0.05) { addItem('basket', 1); notify('🧺 Found a Basket!'); }
                 if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
                     addItem('frog_blue', 1);
@@ -642,14 +645,16 @@
         const SEA_FALL_SPEED = 1.5;
 
         const SEA_FISH_POOL = [
-            { emoji: '🦐', name: 'Shrimp',    item: 'fish6', swimSpeed: 0.5 },
-            { emoji: '🦞', name: 'Lobster',   item: 'fish5', swimSpeed: 0.7 },
-            { emoji: '🐟', name: 'Sardine',   item: 'fish1', swimSpeed: 1.0 },
-            { emoji: '🐠', name: 'Mackerel',  item: 'fish2', swimSpeed: 1.4 },
-            { emoji: '🦀', name: 'Crab',      item: 'fish7', swimSpeed: 0.9 },
-            { emoji: '🐡', name: 'Tuna',      item: 'fish3', swimSpeed: 1.8 },
-            { emoji: '🎣', name: 'Swordfish', item: 'fish4', swimSpeed: 2.4 },
-            { emoji: '🦈', name: 'Shark',     item: 'fish8', swimSpeed: 3.0 },
+            { emoji: '🐟', name: 'Sardine',     item: 's1',  swimSpeed: 0.8 },
+            { emoji: '🐟', name: 'Mackerel',    item: 's2',  swimSpeed: 1.0 },
+            { emoji: '🦐', name: 'Shrimp',      item: 's3',  swimSpeed: 0.6 },
+            { emoji: '🦞', name: 'Lobster',     item: 's4',  swimSpeed: 0.9 },
+            { emoji: '🦀', name: 'Crab',        item: 's5',  swimSpeed: 1.1 },
+            { emoji: '🐡', name: 'Pufferfish',  item: 's6',  swimSpeed: 1.5 },
+            { emoji: '🐟', name: 'Tuna',        item: 's7',  swimSpeed: 2.0 },
+            { emoji: '🐟', name: 'Swordfish',   item: 's8',  swimSpeed: 2.6 },
+            { emoji: '🦑', name: 'Giant Squid', item: 's9',  swimSpeed: 3.2 },
+            { emoji: '🦈', name: 'Shark',       item: 's10', swimSpeed: 3.8 },
         ];
 
         let seaActive   = false;
@@ -800,7 +805,7 @@
                 if (timer)      timer.textContent = '💀 Too slow!';
                 if (scoreLabel) scoreLabel.textContent = '';
             } else if (hits > 0) {
-                caughtItems.forEach(itemId => { if (/^fish\d+$/.test(itemId)) addFish(itemId); else addItem(itemId, 1); });
+                caughtItems.forEach(itemId => { if (/^(fish\d+|[prls]\d+)$/.test(itemId)) addFish(itemId); else addItem(itemId, 1); });
                 addSkillXP('fishing', hits * 10);
                 const names = [...new Set(caughtItems.map(id => ITEM_DATA[id]?.name || id))].join(', ');
                 if (timer)      timer.textContent = '🎣 Caught ' + hits + '/4!' + (hits === 4 ? ' 🔥 Perfect!' : '');
