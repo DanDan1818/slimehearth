@@ -4531,34 +4531,7 @@ function initKitchenGame() {
         
 
         
-        // Fishing buttons
-        // Pond: hold to fish
-        const pondBtn = document.getElementById('fish-pond-btn');
-        
-        // Desktop: mousedown starts, mouseup checks
-        pondBtn.addEventListener('mousedown', () => {
-            if (!pondCastActive && !pondHolding) {
-                startFishing('pond');
-            }
-        });
-        pondBtn.addEventListener('mouseup', stopFishing);
-        pondBtn.addEventListener('mouseleave', () => {
-            if (pondCastActive || pondHolding) stopFishing();
-        });
-        
-        // Mobile: touchstart starts, touchend checks
-        pondBtn.addEventListener('touchstart', (e) => { 
-            e.preventDefault(); 
-            if (!pondCastActive && !pondHolding) {
-                startFishing('pond');
-            }
-        });
-        pondBtn.addEventListener('touchend', (e) => { 
-            e.preventDefault(); 
-            stopFishing(); 
-        });
-        
-        // River button listeners are handled once at init in game-mining.js
+        // Pond + River button listeners are handled once at init in game-mining.js
         
         
         document.getElementById('goto-adventure').onclick = () => {
