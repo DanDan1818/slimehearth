@@ -406,7 +406,6 @@
         let lakeInterval = null;
 
         function lakeOrganicTick(fish) {
-            const minPos = Math.floor(LAKE_BAR_W * 0.20);
             const maxPos = LAKE_BAR_W - LAKE_TARGET_W;
 
             lakeNudgeT--;
@@ -427,8 +426,8 @@
             lakeZoneVel *= 0.96;
             lakeZonePos += lakeZoneVel;
 
-            if (lakeZonePos <= minPos) {
-                lakeZonePos = minPos;
+            if (lakeZonePos <= 0) {
+                lakeZonePos = 0;
                 lakeZoneVel = Math.abs(lakeZoneVel) * (0.6 + Math.random() * 0.3);
                 lakeNudgeT  = 5;
             }
@@ -451,11 +450,8 @@
             const lvShift = Math.min(Math.floor((fishLv - 1) / 5), 4);
             const fish    = LAKE_FISH[pickWeighted(weights, lvShift)];
 
-            lakePillPos  = 0; // always start at left
-            // Zone starts between 20% and 80% of bar (not hugging edges)
-            const minZone = Math.floor(LAKE_BAR_W * 0.20);
-            const maxZone = Math.floor(LAKE_BAR_W * 0.80) - LAKE_TARGET_W;
-            lakeZonePos  = minZone + Math.random() * (maxZone - minZone);
+            lakePillPos  = Math.random() < 0.5 ? 0 : LAKE_BAR_W - LAKE_PILL_W;
+            lakeZonePos  = 40 + Math.random() * (LAKE_BAR_W - LAKE_TARGET_W - 80);
             lakeZoneVel  = (Math.random() < 0.5 ? 1 : -1) * fish.baseSpeed;
             lakeZoneAcc  = 0;
             lakeNudgeT   = 15;
@@ -464,7 +460,7 @@
             lakeHolding  = true;
             lakeActive   = { fish };
 
-            if (timer)   timer.textContent = 'Reel in — keep your bobber in the green!';
+            if (timer)   timer.textContent = 'Hold to reel in — keep pill in green!';
             if (mood)    mood.textContent  = fish.mood;
             if (holdBar) holdBar.style.width = '0%';
 
@@ -489,11 +485,7 @@
                 }
                 lakePillPos = Math.max(0, Math.min(LAKE_BAR_W - LAKE_PILL_W, lakePillPos));
 
-                // Zone moves between 20% and 100% of the bar width
-                const zoneMin = Math.floor(LAKE_BAR_W * 0.20);
-                const zoneMax = LAKE_BAR_W - LAKE_TARGET_W;
                 lakeOrganicTick(fish);
-                lakeZonePos = Math.max(zoneMin, Math.min(zoneMax, lakeZonePos));
 
                 pill.style.left   = lakePillPos + 'px';
                 target.style.left = lakeZonePos + 'px';
@@ -502,8 +494,7 @@
                 const inZone = pillCenter >= lakeZonePos && pillCenter <= lakeZonePos + LAKE_TARGET_W;
                 pill.classList.toggle('in-zone', inZone);
 
-                // Progress accumulates whenever pill is inside the zone (no hold required)
-                if (inZone) {
+                if (lakeHolding && inZone) {
                     lakeHoldMs += TICK;
                     const pct = Math.min(100, (lakeHoldMs / fish.holdMs) * 100);
                     if (holdBar) holdBar.style.width = pct + '%';
@@ -671,9 +662,6 @@
             seaLineY   = 0;
             seaActive  = true;
             seaHolding = true;
-
-            const seaGame = document.getElementById('fishing-game-sea');
-            if (seaGame) seaGame.classList.add('sea-active');
 
             seaBars.forEach((b, i) => {
                 const label     = document.getElementById('sea-label-' + i);
