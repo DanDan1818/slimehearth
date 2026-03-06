@@ -4680,9 +4680,8 @@ function initKitchenGame() {
         
         riverBtn.addEventListener('mousedown', startRiverFishing);
         riverBtn.addEventListener('mouseup', stopRiverBar);
-        riverBtn.addEventListener('mouseleave', () => {
-            if (riverActive) stopRiverBar();
-        });
+        // Global safety — catches release even if cursor drifts off button
+        document.addEventListener('mouseup', () => { if (riverActive) stopRiverBar(); });
         
         riverBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
@@ -4691,6 +4690,10 @@ function initKitchenGame() {
         riverBtn.addEventListener('touchend', (e) => {
             e.preventDefault();
             stopRiverBar();
+        });
+        riverBtn.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            if (riverActive) stopRiverBar();
         });
         
         
