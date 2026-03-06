@@ -38,17 +38,19 @@
             // Gentle vertical sway on the whole container
             const barContainer = document.getElementById('fishing-progress-pond');
             if (barContainer) barContainer.style.animation = 'pondWave 1.8s ease-in-out infinite';
-            
-            // Random wait time 1-20 seconds
-            const totalTime = 1000 + Math.random() * 19000; // 1-20 seconds in ms
-            
-            // Random catch window (2 second duration) somewhere in the timeline
-            const catchWindowStart = Math.random() * (totalTime - 2000); // Ensure 2s window fits
+
+            // Bar is ALWAYS 20 seconds — only the bite timing changes
+            const totalTime = 20000;
+
+            // Fishing level affects how early/frequent bites happen
+            const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
+            // Higher level = bite can happen earlier (min as low as 5s at lv50+)
+            const earliestBite = Math.max(5000, 15000 - (fishLv - 1) * 200); // lv1=15s, lv50=5s
+            // Bite window starts randomly between earliestBite and 18s (always fits 2s window before 20s)
+            const catchWindowStart = earliestBite + Math.random() * Math.max(0, 18000 - earliestBite);
             pondCatchStart = catchWindowStart;
-            pondCatchEnd = catchWindowStart + 2000; // 2 second window
-            
-            console.log('Cast! Total time:', totalTime, 'Catch window:', pondCatchStart, '-', pondCatchEnd);
-            
+            pondCatchEnd = catchWindowStart + 2000; // 2 second bite window
+
             // Start timer
             pondTimerInterval = setInterval(() => {
                 pondElapsedTime += 50;
@@ -180,7 +182,7 @@
                 if (resetContainer) resetContainer.style.animation = 'none';
                 }
                 const resetLabel = document.getElementById('fishing-bar-label');
-                if (resetLabel) resetLabel.textContent = '';
+                if (resetLabel) resetLabel.textContent = 'Tap & Hold to Fish!';
                 if (splash) splash.style.display = 'none';
                 const pondBobberReset = document.getElementById('fishing-bar-pond-bobber');
                 if (pondBobberReset) {

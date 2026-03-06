@@ -268,29 +268,41 @@
             // Fishing buttons
             // Pond: hold to fish
             const pondBtn = document.getElementById('fish-pond-btn');
-            
-            // Desktop: mousedown starts, mouseup checks
+
+            // Suppress long-press context menu
+            pondBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            // Desktop
             pondBtn.addEventListener('mousedown', () => {
-                if (!pondCastActive && !pondHolding) {
-                    startFishing('pond');
-                }
+                pondBtn.style.transform = 'scale(0.9)';
+                if (!pondCastActive && !pondHolding) startFishing('pond');
+                document.addEventListener('mouseup', () => {
+                    pondBtn.style.transform = 'scale(1)';
+                    stopFishing();
+                }, { once: true });
             });
-            pondBtn.addEventListener('mouseup', stopFishing);
-            pondBtn.addEventListener('mouseleave', () => {
-                if (pondCastActive || pondHolding) stopFishing();
-            });
-            
-            // Mobile: touchstart starts, touchend checks
-            pondBtn.addEventListener('touchstart', (e) => { 
-                e.preventDefault(); 
-                if (!pondCastActive && !pondHolding) {
-                    startFishing('pond');
-                }
-            });
-            pondBtn.addEventListener('touchend', (e) => { 
-                e.preventDefault(); 
-                stopFishing(); 
-            });
+
+            // Mobile — passive:false so preventDefault works, touchmove eats thumb drift
+            pondBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                pondBtn.style.transform = 'scale(0.9)';
+                if (!pondCastActive && !pondHolding) startFishing('pond');
+            }, { passive: false });
+
+            pondBtn.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
+            pondBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                pondBtn.style.transform = 'scale(1)';
+                stopFishing();
+            }, { passive: false });
+
+            pondBtn.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                pondBtn.style.transform = 'scale(1)';
+            }, { passive: false });
             
             // River: hold to start, release to stop
             const riverBtn = document.getElementById('cast-river');
