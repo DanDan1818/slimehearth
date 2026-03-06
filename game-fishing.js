@@ -183,21 +183,26 @@
         function startRiverFishing() {
             if (riverActive) return;
             
-            const bar = document.getElementById('fishing-bar-river');
+            const bar    = document.getElementById('fishing-bar-river');
             const target = document.getElementById('fishing-target-river');
-            const timer = document.getElementById('fishing-timer-river');
-            const castBtn = document.getElementById('cast-river');
+            const timer  = document.getElementById('fishing-timer-river');
             
-            riverActive = true;
-            riverBarPos = 0;
-            riverTargetPos = Math.random() * 200 + 20;
+            riverActive  = true;
+            riverBarPos  = 0;
+
+            // Target only between 40–100% of bar (bar is 280px, zone is 50px wide)
+            // 40% of 280 = 112. Max left so zone fits: 280 - 50 = 230. So range: 112–230
+            riverTargetPos = Math.random() * 118 + 112;
             
-            target.style.left = riverTargetPos + 'px';
-            timer.textContent = 'Release in green!';
+            target.style.left      = riverTargetPos + 'px';
+            target.style.visibility = 'visible';
+            bar.style.visibility    = 'visible';
+            bar.style.left          = '0px';
+            timer.textContent       = 'Release in the zone!';
             
-            // Start bar movement immediately
+            // 280px over ~10s = 0.84px per 30ms tick
             riverFishingInterval = setInterval(() => {
-                riverBarPos += 5;
+                riverBarPos += 0.84;
                 bar.style.left = riverBarPos + 'px';
                 
                 if (riverBarPos >= 270) {
@@ -212,8 +217,8 @@
             const bar = document.getElementById('fishing-bar-river');
             clearInterval(riverFishingInterval);
             
-            const barLeft = parseInt(bar.style.left) || 0;
-            const targetLeft = riverTargetPos;
+            const barLeft    = parseFloat(bar.style.left) || 0;
+            const targetLeft  = riverTargetPos;
             const targetRight = targetLeft + 50;
             
             const hit = barLeft >= targetLeft && barLeft <= targetRight;
@@ -299,6 +304,9 @@
             setTimeout(() => {
                 riverBarPos = 0;
                 bar.style.left = '0px';
+                bar.style.visibility    = 'hidden';
+                const tgt = document.getElementById('fishing-target-river');
+                if (tgt) tgt.style.visibility = 'hidden';
                 timer.textContent = '';
             }, 1500);
         }
