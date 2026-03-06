@@ -183,22 +183,25 @@
         function startRiverFishing() {
             if (riverActive) return;
             
-            const bar    = document.getElementById('fishing-bar-river');
-            const target = document.getElementById('fishing-target-river');
-            const timer  = document.getElementById('fishing-timer-river');
+            const bar       = document.getElementById('fishing-bar-river');
+            const container = document.getElementById('fishing-bar-container-river');
+            const target    = document.getElementById('fishing-target-river');
+            const timer     = document.getElementById('fishing-timer-river');
             
             riverActive  = true;
             riverBarPos  = 0;
 
             // Target only between 40–100% of bar (bar is 280px, zone is 50px wide)
-            // 40% of 280 = 112. Max left so zone fits: 280 - 50 = 230. So range: 112–230
             riverTargetPos = Math.random() * 118 + 112;
             
-            target.style.left      = riverTargetPos + 'px';
+            target.style.left       = riverTargetPos + 'px';
             target.style.visibility = 'visible';
             bar.style.visibility    = 'visible';
             bar.style.left          = '0px';
             timer.textContent       = 'Release in the zone!';
+
+            // Start gentle wave sway on the bar container
+            if (container) container.style.animation = 'pondWave 1.8s ease-in-out infinite';
             
             // 280px over ~10s = 0.84px per 30ms tick
             riverFishingInterval = setInterval(() => {
@@ -229,17 +232,23 @@
             riverActive = false;
             clearInterval(riverFishingInterval);
             
-            const bar = document.getElementById('fishing-bar-river');
-            const timer = document.getElementById('fishing-timer-river');
-            const castBtn = document.getElementById('cast-river');
+            const bar       = document.getElementById('fishing-bar-river');
+            const container = document.getElementById('fishing-bar-container-river');
+            const timer     = document.getElementById('fishing-timer-river');
             
             if (success) {
+                // Jump animation on the bar container
+                if (container) {
+                    container.style.animation = 'none';
+                    void container.offsetWidth;
+                    container.style.animation = 'pondBite 0.6s cubic-bezier(0.2,1.4,0.4,1) forwards';
+                }
                 // Burst river specks on catch
                 document.querySelectorAll('.rspeck').forEach(s => {
                     s.classList.remove('burst'); void s.offsetWidth; s.classList.add('burst');
                     s.addEventListener('animationend', () => s.classList.remove('burst'), { once: true });
                 });
-                // Splash + bobber sound like Pond
+                // Splash + bobber sound
                 const riverSplash = document.getElementById('river-splash');
                 if (riverSplash) {
                     riverSplash.style.display = 'block';
@@ -248,7 +257,7 @@
                     riverSplash.style.animation = 'splash 0.6s ease-out';
                     const bobberSound = document.getElementById('bobber-sound');
                     if (bobberSound) { bobberSound.currentTime = 0; bobberSound.volume = 0.5; bobberSound.play().catch(() => {}); }
-                    setTimeout(() => { riverSplash.style.display = 'none'; }, 600);
+                    setTimeout(() => { if (riverSplash) riverSplash.style.display = 'none'; }, 600);
                 }
                 // Fishing level scales loot
                 const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
@@ -270,13 +279,13 @@
                     const rareCut  = Math.min(0.10 + lvBonus,       0.35);
                     const uncomCut = Math.min(0.28 + lvBonus * 0.8, 0.50);
                     if (fishRand < epicCut) {
-                        caughtItem = 'fish8'; // Shark (Epic)
+                        caughtItem = 'fish8';
                     } else if (fishRand < rareCut) {
-                        caughtItem = 'fish7'; // Crab (Rare)
+                        caughtItem = 'fish7';
                     } else if (fishRand < uncomCut) {
-                        caughtItem = 'fish6'; // Shrimp (Uncommon)
+                        caughtItem = 'fish6';
                     } else {
-                        caughtItem = 'fish5'; // Lobster (Common)
+                        caughtItem = 'fish5';
                     }
                     catchMsg = `🎣 Caught ${ITEM_DATA[caughtItem].name}!`;
                     addSkillXP('fishing', 10);
@@ -285,14 +294,10 @@
                 timer.textContent = catchMsg;
                 if (/^fish\d+$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
 
-                
-                // 5% chance to find a Basket
                 if (Math.random() < 0.05) {
                     addItem('basket', 1);
                     notify('🧺 Found a Basket!');
                 }
-                
-                // 0.01% chance to find Blue Frog (if not already collected)
                 if (!gs.frogs.frog_blue && Math.random() < 0.0001) {
                     addItem('frog_blue', 1);
                     notify('🔵🐸 A Blue Frog leapt into your basket!', 'achievement');
@@ -304,7 +309,8 @@
             setTimeout(() => {
                 riverBarPos = 0;
                 bar.style.left = '0px';
-                bar.style.visibility    = 'hidden';
+                bar.style.visibility = 'hidden';
+                if (container) container.style.animation = 'none';
                 const tgt = document.getElementById('fishing-target-river');
                 if (tgt) tgt.style.visibility = 'hidden';
                 timer.textContent = '';

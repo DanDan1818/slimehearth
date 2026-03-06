@@ -4680,8 +4680,11 @@ function initKitchenGame() {
         
         riverBtn.addEventListener('mousedown', startRiverFishing);
         riverBtn.addEventListener('mouseup', stopRiverBar);
-        // Global safety — catches release even if cursor drifts off button
-        document.addEventListener('mouseup', () => { if (riverActive) stopRiverBar(); });
+        // Named handler so it only gets added once even if this block re-runs
+        if (!window._riverDocMouseUp) {
+            window._riverDocMouseUp = () => { if (riverActive) stopRiverBar(); };
+            document.addEventListener('mouseup', window._riverDocMouseUp);
+        }
         
         riverBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
