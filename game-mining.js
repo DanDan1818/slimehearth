@@ -290,24 +290,19 @@
             });
             
             // River: hold to start, release to stop
+            // setPointerCapture keeps pointer events on the button even if cursor leaves
             const riverBtn = document.getElementById('cast-river');
 
-            riverBtn.addEventListener('mousedown', (e) => {
-                startRiverFishing();
-                // Single-use global mouseup catches release even if cursor leaves button
-                document.addEventListener('mouseup', stopRiverBar, { once: true });
-            });
-
-            riverBtn.addEventListener('touchstart', (e) => {
+            riverBtn.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
+                riverBtn.setPointerCapture(e.pointerId);
                 startRiverFishing();
             });
-            riverBtn.addEventListener('touchend', (e) => {
+            riverBtn.addEventListener('pointerup', (e) => {
                 e.preventDefault();
                 stopRiverBar();
             });
-            riverBtn.addEventListener('touchcancel', (e) => {
-                e.preventDefault();
+            riverBtn.addEventListener('pointercancel', (e) => {
                 if (riverActive) stopRiverBar();
             });
 
