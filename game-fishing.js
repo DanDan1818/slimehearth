@@ -79,12 +79,28 @@
                             void barContainer.offsetWidth;
                             barContainer.style.animation = 'pondBite 0.6s cubic-bezier(0.2,1.4,0.4,1) forwards, pondWave 1.2s ease-in-out 0.6s infinite';
                         }
-                        // Bobber sinks and vanishes in sync with the bite jump
+                        // Bobber sinks INSTANTLY (0.12s) — before bar jumps
                         const pondBobberSink = document.getElementById('fishing-bar-pond-bobber');
                         if (pondBobberSink) {
                             pondBobberSink.style.animation = 'none';
                             void pondBobberSink.offsetWidth;
-                            pondBobberSink.style.animation = 'bobberSink 0.6s ease-in forwards';
+                            pondBobberSink.style.animation = 'bobberSink 0.12s ease-in forwards';
+                        }
+                        // Position splash at bobber's current left, then burst all particles
+                        const sinkSplash = document.getElementById('pond-sink-splash');
+                        if (sinkSplash && pondBobberSink) {
+                            const bobberLeft = parseFloat(pondBobberSink.style.left) || 0;
+                            sinkSplash.style.left = (bobberLeft + 13) + 'px'; // center of 26px bobber
+                            sinkSplash.style.top = '11px';
+                            sinkSplash.style.visibility = 'visible';
+                            // Force reflow then add burst class to all particles
+                            sinkSplash.querySelectorAll('.sink-drop, .sink-speck').forEach(el => {
+                                el.classList.remove('burst');
+                                void el.offsetWidth;
+                                el.classList.add('burst');
+                            });
+                            // Hide container after animation finishes
+                            setTimeout(() => { sinkSplash.style.visibility = 'hidden'; }, 500);
                         }
                         // Burst the outer specks
                         const specks = document.querySelectorAll('.pspeck');
@@ -173,6 +189,11 @@
                     pondBobberReset.style.transform = '';
                     pondBobberReset.style.visibility = 'hidden';
                     pondBobberReset.style.left = '0px';
+                }
+                const sinkSplashReset = document.getElementById('pond-sink-splash');
+                if (sinkSplashReset) {
+                    sinkSplashReset.style.visibility = 'hidden';
+                    sinkSplashReset.querySelectorAll('.sink-drop, .sink-speck').forEach(el => el.classList.remove('burst'));
                 }
             }, 1500);
         }

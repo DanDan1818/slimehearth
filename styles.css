@@ -1177,11 +1177,59 @@
         }
 
         /* Bobber sink — plunges down and fades on bite */
+        /* Instant sink — gone in 0.12s, BEFORE bar jumps */
         @keyframes bobberSink {
-            0%   { transform: translateY(0px);  opacity: 1; }
-            30%  { transform: translateY(6px);  opacity: 0.9; }
-            70%  { transform: translateY(18px); opacity: 0.4; }
-            100% { transform: translateY(26px); opacity: 0; }
+            0%   { transform: translateY(0px);  opacity: 1;   }
+            50%  { transform: translateY(10px); opacity: 0.6; }
+            100% { transform: translateY(22px); opacity: 0;   }
+        }
+
+        /* ===== SINK SPLASH PARTICLES ===== */
+        /* Water arc drops — teardrop shapes arcing outward */
+        .sink-drop {
+            position: absolute;
+            width: 4px;
+            height: 8px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: linear-gradient(180deg, #bae6fd 0%, #38bdf8 60%, #0284c7 100%);
+            border: 1px solid rgba(255,255,255,0.6);
+            top: 8px;
+            left: -2px;
+            opacity: 0;
+            transform-origin: center bottom;
+        }
+        .sink-drop.burst { animation: sinkDropBurst 0.45s cubic-bezier(0.2,1.5,0.4,1) forwards; }
+        .sd1.burst { --tx: -22px; --ty: -18px; --r: -40deg; animation-delay: 0s;    }
+        .sd2.burst { --tx: -12px; --ty: -24px; --r: -15deg; animation-delay: 0.02s; }
+        .sd3.burst { --tx:   0px; --ty: -28px; --r:   0deg; animation-delay: 0s;    }
+        .sd4.burst { --tx:  12px; --ty: -24px; --r:  15deg; animation-delay: 0.02s; }
+        .sd5.burst { --tx:  22px; --ty: -18px; --r:  40deg; animation-delay: 0s;    }
+        .sd6.burst { --tx:  -6px; --ty: -20px; --r: -10deg; animation-delay: 0.03s; }
+        @keyframes sinkDropBurst {
+            0%   { opacity: 1;   transform: translate(0,0) rotate(0deg) scaleY(1); }
+            60%  { opacity: 0.9; transform: translate(var(--tx), var(--ty)) rotate(var(--r)) scaleY(1.3); }
+            100% { opacity: 0;   transform: translate(calc(var(--tx)*1.3), calc(var(--ty)*0.3 + 8px)) rotate(var(--r)) scaleY(0.5); }
+        }
+
+        /* Colored specks — small dots scatter in all directions */
+        .sink-speck {
+            position: absolute;
+            border-radius: 50%;
+            top: 10px;
+            left: 0px;
+            opacity: 0;
+        }
+        .sink-speck.burst { animation: sinkSpeckBurst 0.4s cubic-bezier(0.15,1.6,0.3,1) forwards; }
+        .ss1.burst { width:5px; height:5px; background:#7dd3fc; --tx:-28px; --ty:-14px; animation-delay:0.01s; }
+        .ss2.burst { width:4px; height:4px; background:#fff;    --tx: 24px; --ty:-20px; animation-delay:0s;    }
+        .ss3.burst { width:6px; height:6px; background:#38bdf8; --tx:-16px; --ty:-26px; animation-delay:0.02s; }
+        .ss4.burst { width:3px; height:3px; background:#bae6fd; --tx: 18px; --ty:-12px; animation-delay:0s;    }
+        .ss5.burst { width:5px; height:5px; background:#0ea5e9; --tx:  6px; --ty:-28px; animation-delay:0.01s; }
+        .ss6.burst { width:4px; height:4px; background:#e0f2fe; --tx:-10px; --ty:-18px; animation-delay:0.02s; }
+        @keyframes sinkSpeckBurst {
+            0%   { opacity: 1;   transform: translate(0,0) scale(1.5); }
+            55%  { opacity: 1;   transform: translate(var(--tx), var(--ty)) scale(1); }
+            100% { opacity: 0;   transform: translate(calc(var(--tx)*1.2), calc(var(--ty)*1.1 + 6px)) scale(0.3); }
         }
 
         /* ===== POND BOBBER (rides on progress bar, same as river) ===== */
