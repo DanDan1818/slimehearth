@@ -964,52 +964,60 @@
             position: relative;
             width: 280px;
             height: 22px;
-            background: linear-gradient(180deg, #bae6fd 0%, #38bdf8 60%, #0284c7 100%);
-            border: 2px solid #1e3a5f;
+            background: linear-gradient(180deg, #0369a1 0%, #075985 50%, #0c4a6e 100%);
+            border: 2.5px solid #082f49;
             border-radius: 11px;
-            overflow: visible;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 2px rgba(255,255,255,0.3);
+            overflow: hidden;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), inset 0 -1px 3px rgba(255,255,255,0.1), 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        /* Cartoon wave overlay on the water bar */
+        /* Wave 1 — bright crest rolling left to right */
         #fishing-bar-container-river::before {
             content: '';
             position: absolute;
-            top: 2px;
-            left: -40px;
-            width: 360px;
-            height: 8px;
+            top: -6px;
+            left: -100%;
+            width: 200%;
+            height: 14px;
+            background: radial-gradient(ellipse 80px 8px at 25% 50%, rgba(125,211,252,0.55) 0%, transparent 70%),
+                        radial-gradient(ellipse 60px 7px at 75% 50%, rgba(125,211,252,0.4) 0%, transparent 70%);
             border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            animation: riverWaveShimmer 2.2s ease-in-out infinite;
+            animation: riverWave1 2.4s ease-in-out infinite;
             pointer-events: none;
         }
+        /* Wave 2 — deeper shimmer rolling right to left */
         #fishing-bar-container-river::after {
             content: '';
             position: absolute;
-            top: 10px;
-            left: -20px;
-            width: 320px;
-            height: 5px;
+            bottom: -4px;
+            left: -100%;
+            width: 200%;
+            height: 10px;
+            background: radial-gradient(ellipse 70px 6px at 35% 50%, rgba(186,230,253,0.3) 0%, transparent 70%),
+                        radial-gradient(ellipse 90px 7px at 70% 50%, rgba(186,230,253,0.25) 0%, transparent 70%);
             border-radius: 50%;
-            background: rgba(255,255,255,0.15);
-            animation: riverWaveShimmer 3s ease-in-out infinite reverse;
+            animation: riverWave2 3.1s ease-in-out infinite;
             pointer-events: none;
         }
-        @keyframes riverWaveShimmer {
-            0%,100% { transform: translateX(0px) scaleY(1); opacity: 0.6; }
-            50%      { transform: translateX(12px) scaleY(1.4); opacity: 1; }
+        @keyframes riverWave1 {
+            0%   { transform: translateX(0%)   scaleY(1);   opacity: 0.7; }
+            40%  { transform: translateX(30%)  scaleY(1.5); opacity: 1;   }
+            100% { transform: translateX(55%)  scaleY(0.8); opacity: 0.5; }
+        }
+        @keyframes riverWave2 {
+            0%   { transform: translateX(0%)   scaleY(1);   opacity: 0.5; }
+            50%  { transform: translateX(-25%) scaleY(1.6); opacity: 0.9; }
+            100% { transform: translateX(10%)  scaleY(0.9); opacity: 0.4; }
         }
 
-        /* Cartoon Bobber */
+        /* Cartoon Bobber — sits outside overflow:hidden container, sibling of it */
         #fishing-bar-river {
             position: absolute;
             left: 0;
-            top: -14px;
+            top: -3px;
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            /* Red top half */
             background: radial-gradient(circle at 38% 32%, #ff8080 0%, #ef4444 45%, #b91c1c 100%);
             border: 2.5px solid #111;
             box-sizing: border-box;
@@ -1017,8 +1025,9 @@
             animation: bobberBob 1.6s ease-in-out infinite;
             z-index: 3;
             overflow: visible;
+            pointer-events: none;
         }
-        /* White bottom half via pseudo */
+        /* White bottom half */
         #fishing-bar-river::before {
             content: '';
             position: absolute;
@@ -1031,7 +1040,6 @@
             border-top: 2px solid #111;
             box-sizing: border-box;
         }
-        /* Black equator line is handled by the border-top above */
         /* White glint */
         #fishing-bar-river::after {
             content: '';
@@ -1045,15 +1053,17 @@
             transform: rotate(-30deg);
         }
         @keyframes bobberBob {
-            0%,100% { top: -14px; }
-            50%      { top: -18px; }
+            0%,100% { top: -3px; }
+            50%      { top: -7px; }
         }
+
+        #fish-pond-btn:active {
             transform: scale(0.95);
             background: #0891b2 !important;
             box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3) !important;
             filter: brightness(0.85);
         }
-        
+
         #cast-river:active {
             transform: scale(0.95);
             background: #0891b2 !important;
@@ -1067,16 +1077,45 @@
             box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3) !important;
             filter: brightness(0.85);
         }
-        
+
+        /* Cartoon silver fish — body + tail via clip-path */
         #fishing-target-river {
             position: absolute;
-            width: 50px;
-            height: 100%;
-            background: linear-gradient(90deg,#4ade80,#16a34a);
-            border-radius: 11px;
-            border: 1px solid #000;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 18px;
+            background: radial-gradient(ellipse at 38% 42%, #fff 0%, #cbd5e1 40%, #94a3b8 100%);
+            border: 2px solid #334155;
+            border-radius: 50% 40% 40% 50% / 50% 50% 50% 50%;
+            clip-path: polygon(0% 50%, 18% 0%, 78% 0%, 100% 50%, 78% 100%, 18% 100%);
             box-sizing: border-box;
-            opacity: 0.85;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+        /* Fish eye */
+        #fishing-target-river::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 12px;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle at 35% 35%, #475569, #0f172a);
+            border-radius: 50%;
+            border: 1px solid #0f172a;
+        }
+        /* Fish glint */
+        #fishing-target-river::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 22px;
+            width: 10px;
+            height: 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            transform: rotate(-10deg);
         }
         
         #fishing-timer-river {
