@@ -964,11 +964,11 @@
             position: relative;
             width: 280px;
             height: 22px;
-            background: linear-gradient(180deg, #0369a1 0%, #075985 50%, #0c4a6e 100%);
-            border: 2.5px solid #082f49;
+            background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0284c7 100%);
+            border: 1.5px solid #000;
             border-radius: 11px;
             overflow: hidden;
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), inset 0 -1px 3px rgba(255,255,255,0.1), 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 2px rgba(255,255,255,0.2), 0 1px 3px rgba(0,0,0,0.2);
         }
 
         /* Wave 1 — bright crest rolling left to right */
@@ -1078,45 +1078,20 @@
             filter: brightness(0.85);
         }
 
-        /* Cartoon silver fish — body + tail via clip-path */
         #fishing-target-river {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 52px;
-            height: 18px;
-            background: radial-gradient(ellipse at 38% 42%, #fff 0%, #cbd5e1 40%, #94a3b8 100%);
-            border: 2px solid #334155;
-            border-radius: 50% 40% 40% 50% / 50% 50% 50% 50%;
-            clip-path: polygon(0% 50%, 18% 0%, 78% 0%, 100% 50%, 78% 100%, 18% 100%);
+            top: 0;
+            width: 50px;
+            height: 100%;
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 40%, #cbd5e1 100%);
+            border-radius: 11px;
+            border: 1px solid #000;
             box-sizing: border-box;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.6);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 1px 3px rgba(0,0,0,0.2);
             z-index: 2;
         }
-        /* Fish eye */
-        #fishing-target-river::before {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 12px;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle at 35% 35%, #475569, #0f172a);
-            border-radius: 50%;
-            border: 1px solid #0f172a;
-        }
-        /* Fish glint */
-        #fishing-target-river::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 22px;
-            width: 10px;
-            height: 4px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 50%;
-            transform: rotate(-10deg);
-        }
+        #fishing-target-river::before { content: none; }
+        #fishing-target-river::after  { content: none; }
         
         #fishing-timer-river {
             font-family: 'Righteous', sans-serif;
