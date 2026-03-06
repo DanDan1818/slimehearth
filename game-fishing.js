@@ -28,12 +28,11 @@
             
             const result = document.getElementById('fishing-result-pond');
             const bar = document.getElementById('fishing-bar-pond');
-            const pondBobber = document.getElementById('pond-bobber-wrap');
-            if (pondBobber) pondBobber.style.visibility = 'visible';
-            
             result.textContent = '';
             bar.style.width = '0%';
             bar.style.transition = 'none';
+            const pondBobber = document.getElementById('fishing-bar-pond-bobber');
+            if (pondBobber) { pondBobber.style.visibility = 'visible'; pondBobber.style.left = '0px'; }
             const castLabel = document.getElementById('fishing-bar-label');
             if (castLabel) castLabel.textContent = '🎣 Fishing...';
             // Gentle vertical sway on the whole container
@@ -57,7 +56,11 @@
             pondTimerInterval = setInterval(() => {
                 pondElapsedTime += 50;
                 const progress = (pondElapsedTime / totalTime) * 100;
-                bar.style.width = Math.min(100, progress) + '%';
+                const progressClamped = Math.min(100, progress);
+                bar.style.width = progressClamped + '%';
+                // Move bobber to leading edge of bar (bar is 200px wide)
+                const pondBobberTick = document.getElementById('fishing-bar-pond-bobber');
+                if (pondBobberTick) pondBobberTick.style.left = Math.min(174, (progressClamped / 100) * 200) + 'px';
                 
                 const splash = document.getElementById('pond-splash');
                 
@@ -169,8 +172,8 @@
                 const resetLabel = document.getElementById('fishing-bar-label');
                 if (resetLabel) resetLabel.textContent = '';
                 if (splash) splash.style.display = 'none';
-                const pondBobberReset = document.getElementById('pond-bobber-wrap');
-                if (pondBobberReset) pondBobberReset.style.visibility = 'hidden';
+                const pondBobberReset = document.getElementById('fishing-bar-pond-bobber');
+                if (pondBobberReset) { pondBobberReset.style.visibility = 'hidden'; pondBobberReset.style.left = '0px'; }
             }, 1500);
         }
         
