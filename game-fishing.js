@@ -28,6 +28,8 @@
             
             const result = document.getElementById('fishing-result-pond');
             const bar = document.getElementById('fishing-bar-pond');
+            const pondBobber = document.getElementById('pond-bobber-wrap');
+            if (pondBobber) pondBobber.style.visibility = 'visible';
             
             result.textContent = '';
             bar.style.width = '0%';
@@ -167,6 +169,8 @@
                 const resetLabel = document.getElementById('fishing-bar-label');
                 if (resetLabel) resetLabel.textContent = '';
                 if (splash) splash.style.display = 'none';
+                const pondBobberReset = document.getElementById('pond-bobber-wrap');
+                if (pondBobberReset) pondBobberReset.style.visibility = 'hidden';
             }, 1500);
         }
         

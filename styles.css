@@ -1115,6 +1115,55 @@
             50%      { top: -7px; }
         }
 
+        /* ===== POND BOBBER (same visual as river) ===== */
+        #pond-bobber-wrap {
+            position: relative;
+        }
+        #pond-bobber-inner {
+            position: relative;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 32%, #ff8080 0%, #ef4444 45%, #b91c1c 100%);
+            border: 2.5px solid #111;
+            box-sizing: border-box;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.45);
+            animation: bobberBob 1.6s ease-in-out infinite;
+            overflow: visible;
+        }
+        #pond-bobber-inner::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 50%;
+            background: radial-gradient(ellipse at 38% 60%, #fff 0%, #e2e8f0 100%);
+            border-radius: 0 0 50px 50px;
+            border-top: 2px solid #111;
+            box-sizing: border-box;
+        }
+        #pond-bobber-inner::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 5px;
+            width: 7px; height: 4px;
+            background: rgba(255,255,255,0.75);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+        #pond-bobber-tip {
+            position: absolute;
+            left: 50%;
+            bottom: 100%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: linear-gradient(180deg, #fff 0%, #ef4444 100%);
+            border-radius: 3px 3px 0 0;
+            border: 1.5px solid #111;
+            border-bottom: none;
+            box-sizing: border-box;
+        }
+
         #fish-pond-btn:active {
             transform: scale(0.95);
             background: #0891b2 !important;
