@@ -42,12 +42,15 @@
             // Bar is ALWAYS 20 seconds — only the bite timing changes
             const totalTime = 20000;
 
-            // Fishing level affects how early/frequent bites happen
+            // Fishing level affects bite timing — higher level = skewed earlier
             const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
-            // Higher level = bite can happen earlier (min as low as 5s at lv50+)
-            const earliestBite = Math.max(5000, 15000 - (fishLv - 1) * 200); // lv1=15s, lv50=5s
-            // Bite window starts randomly between earliestBite and 18s (always fits 2s window before 20s)
-            const catchWindowStart = earliestBite + Math.random() * Math.max(0, 18000 - earliestBite);
+            // All levels can bite anywhere from 5s–18s, but probability is skewed.
+            // Low level: heavily weighted toward the late end.
+            // High level: heavily weighted toward the early end.
+            // We do this by raising a 0–1 random to a power: high exponent = skews late.
+            const biteSkew = Math.max(0.3, 2.5 - (fishLv - 1) * 0.045); // lv1=2.5 (late), lv50=0.3 (early)
+            const biteRand = Math.pow(Math.random(), biteSkew);          // skewed 0–1
+            const catchWindowStart = 5000 + biteRand * 13000;            // maps to 5s–18s
             pondCatchStart = catchWindowStart;
             pondCatchEnd = catchWindowStart + 2000; // 2 second bite window
 
