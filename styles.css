@@ -994,13 +994,22 @@
         #fishing-bar-river {
             position: absolute;
             left: 0;
-            top: 0;
-            width: 30px;
-            height: 100%;
-            background: linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7);
-            border-radius: 11px;
-            border: 1px solid #000;
+            top: -11px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%,
+                #fff 0%, #fff 28%,
+                #ef4444 30%, #ef4444 100%);
+            border: 2px solid #111;
             box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            animation: bobberBob 1.6s ease-in-out infinite;
+            z-index: 3;
+        }
+        @keyframes bobberBob {
+            0%,100% { top: -11px; }
+            50%      { top: -14px; }
         }
         
         #fishing-target-river {
