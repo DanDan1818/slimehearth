@@ -184,6 +184,7 @@
             if (riverActive) return;
             
             const bar = document.getElementById('fishing-bar-river');
+            const tip = document.getElementById('river-bobber-tip');
             const target = document.getElementById('fishing-target-river');
             const timer = document.getElementById('fishing-timer-river');
             const castBtn = document.getElementById('cast-river');
@@ -199,6 +200,7 @@
             riverFishingInterval = setInterval(() => {
                 riverBarPos += 5;
                 bar.style.left = riverBarPos + 'px';
+                if (tip) tip.style.left = (riverBarPos + 10) + 'px';
                 
                 if (riverBarPos >= 270) {
                     endRiverFishing(false);
