@@ -719,14 +719,59 @@
         // Each species has a min/max kg range. Size rolls on a bell curve.
         // Size multiplier on sell: 0.5x (tiny) to 2.5x (massive).
         const FISH_SIZE_RANGES = {
-            'fish1': { min: 0.1, max: 1.2, label: 'Common Fish'   },
-            'fish2': { min: 0.2, max: 1.8, label: 'Blue Fish'     },
-            'fish3': { min: 0.4, max: 2.5, label: 'Tropical Fish' },
-            'fish4': { min: 0.8, max: 4.0, label: 'Golden Fish'   },
-            'fish5': { min: 0.3, max: 2.0, label: 'Lobster'       },
-            'fish6': { min: 0.05,max: 0.6, label: 'Shrimp'        },
-            'fish7': { min: 0.2, max: 1.6, label: 'Crab'          },
-            'fish8': { min: 2.0, max: 18.0,label: 'Shark'         },
+            // ── Pond (small, gentle) ──────────────────────────────────────
+            'p1':  { min: 0.02, max: 0.15,  label: 'Minnow'         },
+            'p2':  { min: 0.05, max: 0.40,  label: 'Mudfish'        },
+            'p3':  { min: 0.10, max: 0.80,  label: 'Sunfish'        },
+            'p4':  { min: 0.20, max: 1.20,  label: 'Tench'          },
+            'p5':  { min: 0.10, max: 0.60,  label: 'Clownfish'      },
+            'p6':  { min: 0.15, max: 0.90,  label: 'Rudd'           },
+            'p7':  { min: 0.30, max: 1.80,  label: 'Pond Perch'     },
+            'p8':  { min: 1.00, max: 8.00,  label: 'Carp'           },
+            'p9':  { min: 0.80, max: 5.00,  label: 'Pond Catfish'   },
+            'p10': { min: 0.50, max: 4.00,  label: 'Golden Koi'     },
+            // ── River (medium, feisty) ────────────────────────────────────
+            'r1':  { min: 0.05, max: 0.35,  label: 'Dace'           },
+            'r2':  { min: 0.20, max: 1.50,  label: 'Chub'           },
+            'r3':  { min: 0.05, max: 0.25,  label: 'Gudgeon'        },
+            'r4':  { min: 0.50, max: 4.00,  label: 'Bream'          },
+            'r5':  { min: 0.80, max: 6.00,  label: 'Barbel'         },
+            'r6':  { min: 0.20, max: 1.80,  label: 'Grayling'       },
+            'r7':  { min: 0.30, max: 3.50,  label: 'River Trout'    },
+            'r8':  { min: 1.50, max: 12.00, label: 'Pike'           },
+            'r9':  { min: 0.50, max: 3.00,  label: 'River Eel'      },
+            'r10': { min: 2.00, max: 14.00, label: 'Phantom Salmon' },
+            // ── Lake (medium-large, deep) ─────────────────────────────────
+            'l1':  { min: 0.05, max: 0.30,  label: 'Smelt'          },
+            'l2':  { min: 0.30, max: 2.50,  label: 'Whitefish'      },
+            'l3':  { min: 0.10, max: 0.50,  label: 'Vendace'        },
+            'l4':  { min: 0.20, max: 1.60,  label: 'Lake Perch'     },
+            'l5':  { min: 0.80, max: 8.00,  label: 'Lake Trout'     },
+            'l6':  { min: 0.50, max: 4.00,  label: 'Walleye'        },
+            'l7':  { min: 0.60, max: 5.00,  label: 'Burbot'         },
+            'l8':  { min: 1.00, max: 7.00,  label: 'Freshwater Drum'},
+            'l9':  { min: 5.00, max: 60.00, label: 'Lake Sturgeon'  },
+            'l10': { min: 1.50, max: 10.00, label: 'Sapphire Bass'  },
+            // ── Sea (large, powerful) ─────────────────────────────────────
+            's1':  { min: 0.05, max: 0.25,  label: 'Sardine'        },
+            's2':  { min: 0.20, max: 1.20,  label: 'Mackerel'       },
+            's3':  { min: 0.01, max: 0.15,  label: 'Shrimp'         },
+            's4':  { min: 0.40, max: 3.50,  label: 'Lobster'        },
+            's5':  { min: 0.30, max: 2.50,  label: 'Crab'           },
+            's6':  { min: 0.30, max: 2.00,  label: 'Pufferfish'     },
+            's7':  { min: 8.00, max: 60.00, label: 'Tuna'           },
+            's8':  { min: 5.00, max: 45.00, label: 'Swordfish'      },
+            's9':  { min: 3.00, max: 30.00, label: 'Giant Squid'    },
+            's10': { min: 20.00,max: 180.00,label: 'Shark'          },
+            // ── Legacy (save compatibility) ───────────────────────────────
+            'fish1': { min: 0.1, max: 1.2,  label: 'Common Fish'    },
+            'fish2': { min: 0.2, max: 1.8,  label: 'Blue Fish'      },
+            'fish3': { min: 0.4, max: 2.5,  label: 'Tropical Fish'  },
+            'fish4': { min: 0.8, max: 4.0,  label: 'Golden Fish'    },
+            'fish5': { min: 0.3, max: 2.0,  label: 'Lobster'        },
+            'fish6': { min: 0.05,max: 0.6,  label: 'Shrimp'         },
+            'fish7': { min: 0.2, max: 1.6,  label: 'Crab'           },
+            'fish8': { min: 2.0, max: 18.0, label: 'Shark'          },
         };
 
         function rollFishSize(fishId) {
@@ -813,7 +858,7 @@
             }
 
             // Mark fish as seen for Fish Collection
-            if (/^fish\d+$/.test(itemId)) {
+            if (/^(fish\d+|[prls]\d+)$/.test(itemId)) {
                 if (!gs.fishSeen) gs.fishSeen = {};
                 gs.fishSeen[itemId] = true;
             }
