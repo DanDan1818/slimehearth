@@ -37,9 +37,6 @@
             if (castLabel) castLabel.textContent = '🎣 Fishing...';
             // Gentle vertical sway on the whole container
             const barContainer = document.getElementById('fishing-progress-pond');
-            bar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
-            bar.style.backgroundSize = '';
-            bar.style.animation = 'none';
             if (barContainer) barContainer.style.animation = 'pondWave 1.8s ease-in-out infinite';
             
             // Random wait time 1-20 seconds
@@ -71,9 +68,6 @@
                 const barContainer = document.getElementById('fishing-progress-pond');
                 if (inCatch) {
                     // CATCH WINDOW — green
-                    bar.style.background = 'linear-gradient(90deg,#4ade80,#86efac,#16a34a)';
-                    bar.style.backgroundSize = '';
-                    bar.style.animation = 'none';
                     result.textContent = '';
                     const biteLabel = document.getElementById('fishing-bar-label');
                     if (biteLabel) biteLabel.textContent = '🐟 BITE! Release now!';
@@ -107,9 +101,6 @@
                     }
                 } else {
                     // Normal fishing — gentle vertical sway on whole container
-                    bar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
-                    bar.style.backgroundSize = '';
-                    bar.style.animation = 'none';
                     if (barContainer) barContainer.style.animation = 'pondWave 1.8s ease-in-out infinite';
                     const fishLabel = document.getElementById('fishing-bar-label');
                     if (fishLabel) fishLabel.textContent = '🎣 Fishing...';
@@ -162,12 +153,8 @@
                 if (result) result.textContent = '';
                 if (bar) {
                     bar.style.width = '0%';
-                bar.style.animation = 'none';
-                bar.style.backgroundSize = '';
                 const resetContainer = document.getElementById('fishing-progress-pond');
                 if (resetContainer) resetContainer.style.animation = 'none';
-                    bar.style.background = 'linear-gradient(90deg,#38bdf8,#0ea5e9,#0284c7)';
-                    bar.style.animation = 'none';
                 }
                 const resetLabel = document.getElementById('fishing-bar-label');
                 if (resetLabel) resetLabel.textContent = '';
