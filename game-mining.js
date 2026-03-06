@@ -290,21 +290,35 @@
             });
             
             // River: hold to start, release to stop
-            // setPointerCapture keeps pointer events on the button even if cursor leaves
-            const riverBtn = document.getElementById('cast-river');
+            // Clone button to strip any duplicate listeners added by other init blocks
+            const riverBtnOld = document.getElementById('cast-river');
+            const riverBtn = riverBtnOld.cloneNode(true);
+            riverBtnOld.parentNode.replaceChild(riverBtn, riverBtnOld);
 
-            riverBtn.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
-                riverBtn.setPointerCapture(e.pointerId);
+            riverBtn.addEventListener('mousedown', (e) => {
                 startRiverFishing();
+                document.addEventListener('mouseup', stopRiverBar, { once: true });
             });
-            riverBtn.addEventListener('pointerup', (e) => {
+
+            riverBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startRiverFishing();
+            }, { passive: false });
+
+            // Prevent thumb drift from triggering touchcancel/reset
+            riverBtn.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
+            riverBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 stopRiverBar();
-            });
-            riverBtn.addEventListener('pointercancel', (e) => {
-                if (riverActive) stopRiverBar();
-            });
+            }, { passive: false });
+
+            riverBtn.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                // Intentionally suppressed — touchmove guard prevents spurious cancels
+            }, { passive: false });
 
             // Lake: hold to accumulate time in green zone, release to pause, hold again to resume
             const lakeBtn = document.getElementById('cast-lake');
