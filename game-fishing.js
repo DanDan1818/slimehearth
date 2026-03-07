@@ -3,6 +3,7 @@
         let fishingProgress = 0;
         let fishingInterval = null;
         let fishingArea = 'pond';
+        let pondCatchMsgTimeout = null; // tracks catch message fade — independent of gameplay
         
         // ===== POND FISHING: Cast & Hold Timing =====
         let pondCastActive = false;
@@ -26,6 +27,8 @@
         function castPondLine() {
             // Cancel any pending UI reset from a previous cast
             if (pondResetTimeout) { clearTimeout(pondResetTimeout); pondResetTimeout = null; }
+            // Cancel any lingering catch message from a previous round
+            if (pondCatchMsgTimeout) { clearTimeout(pondCatchMsgTimeout); pondCatchMsgTimeout = null; }
             pondCastActive = true;
             pondElapsedTime = 0;
             
@@ -176,35 +179,40 @@
             clearInterval(pondTimerInterval);
             pondTimerInterval = null;
             if (pondResetTimeout) { clearTimeout(pondResetTimeout); pondResetTimeout = null; }
-            pondResetTimeout = setTimeout(() => {
-                const result = document.getElementById('fishing-result-pond');
-                const bar = document.getElementById('fishing-bar-pond');
-                const splash = document.getElementById('pond-splash');
-                
-                if (result) result.textContent = '';
-                if (bar) {
-                    bar.style.width = '0%';
+
+            // Reset UI immediately — no delay, so player can recast right away
+            const bar = document.getElementById('fishing-bar-pond');
+            const splash = document.getElementById('pond-splash');
+
+            if (bar) {
+                bar.style.width = '0%';
                 const resetContainer = document.getElementById('fishing-progress-pond');
                 if (resetContainer) resetContainer.style.animation = 'none';
-                }
-                const resetLabel = document.getElementById('fishing-bar-label');
-                if (resetLabel) resetLabel.textContent = 'Tap & Hold to Fish!';
-                if (splash) splash.style.display = 'none';
-                const pondBobberReset = document.getElementById('fishing-bar-pond-bobber');
-                if (pondBobberReset) {
-                    pondBobberReset.style.animation = 'none';
-                    pondBobberReset.style.opacity = '1';
-                    pondBobberReset.style.transform = '';
-                    pondBobberReset.style.visibility = 'hidden';
-                    pondBobberReset.style.left = '0px';
-                }
-                const sinkSplashReset = document.getElementById('pond-sink-splash');
-                if (sinkSplashReset) {
-                    sinkSplashReset.style.visibility = 'hidden';
-                    sinkSplashReset.querySelectorAll('.sink-drop, .sink-speck').forEach(el => el.classList.remove('burst'));
-                }
-                pondResetTimeout = null;
-            }, 1500);
+            }
+            const resetLabel = document.getElementById('fishing-bar-label');
+            if (resetLabel) resetLabel.textContent = 'Tap & Hold to Fish!';
+            if (splash) splash.style.display = 'none';
+            const pondBobberReset = document.getElementById('fishing-bar-pond-bobber');
+            if (pondBobberReset) {
+                pondBobberReset.style.animation = 'none';
+                pondBobberReset.style.opacity = '1';
+                pondBobberReset.style.transform = '';
+                pondBobberReset.style.visibility = 'hidden';
+                pondBobberReset.style.left = '0px';
+            }
+            const sinkSplashReset = document.getElementById('pond-sink-splash');
+            if (sinkSplashReset) {
+                sinkSplashReset.style.visibility = 'hidden';
+                sinkSplashReset.querySelectorAll('.sink-drop, .sink-speck').forEach(el => el.classList.remove('burst'));
+            }
+
+            // Fade catch/miss message after 800ms — independent, doesn't block replay
+            if (pondCatchMsgTimeout) clearTimeout(pondCatchMsgTimeout);
+            pondCatchMsgTimeout = setTimeout(() => {
+                pondCatchMsgTimeout = null;
+                const result = document.getElementById('fishing-result-pond');
+                if (result) result.textContent = '';
+            }, 800);
         }
         
         function updateFishingBar() {
