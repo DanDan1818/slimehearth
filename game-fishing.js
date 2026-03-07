@@ -8,6 +8,7 @@
         let pondCastActive = false;
         let pondHolding = false;
         let pondTimerInterval = null;
+        let pondResetTimeout = null;   // tracks pending UI-reset so new cast can cancel it
         let pondElapsedTime = 0;
         let pondCatchStart = 0;
         let pondCatchEnd = 0;
@@ -23,6 +24,8 @@
         }
         
         function castPondLine() {
+            // Cancel any pending UI reset from a previous cast
+            if (pondResetTimeout) { clearTimeout(pondResetTimeout); pondResetTimeout = null; }
             pondCastActive = true;
             pondElapsedTime = 0;
             
@@ -172,8 +175,8 @@
             pondElapsedTime = 0;
             clearInterval(pondTimerInterval);
             pondTimerInterval = null;
-            
-            setTimeout(() => {
+            if (pondResetTimeout) { clearTimeout(pondResetTimeout); pondResetTimeout = null; }
+            pondResetTimeout = setTimeout(() => {
                 const result = document.getElementById('fishing-result-pond');
                 const bar = document.getElementById('fishing-bar-pond');
                 const splash = document.getElementById('pond-splash');
@@ -200,6 +203,7 @@
                     sinkSplashReset.style.visibility = 'hidden';
                     sinkSplashReset.querySelectorAll('.sink-drop, .sink-speck').forEach(el => el.classList.remove('burst'));
                 }
+                pondResetTimeout = null;
             }, 1500);
         }
         

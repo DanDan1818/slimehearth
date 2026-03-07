@@ -34,7 +34,7 @@
             // Fish size info
             let fishSizeHtml = '';
             let displaySellValue = data.sellValue;
-            if (/^fish\d+$/.test(itemId) && itemKey && gs.fishSizes && gs.fishSizes[itemKey]) {
+            if (/^(fish\d+|[prls]\d+)$/.test(itemId) && itemKey && gs.fishSizes && gs.fishSizes[itemKey]) {
                 const kg = gs.fishSizes[itemKey];
                 const mult = fishSizeMult(kg, itemId);
                 const sLabel = fishSizeLabel(kg);
@@ -2087,7 +2087,7 @@
                         // Fish size sell multiplier
                         let fishMult = 1;
                         let fishSizeStr = '';
-                        if (itemData && /^fish\d+$/.test(body.itemId) && gs.fishSizes && gs.fishSizes[body.itemKey]) {
+                        if (itemData && /^(fish\d+|[prls]\d+)$/.test(body.itemId) && gs.fishSizes && gs.fishSizes[body.itemKey]) {
                             const kg = gs.fishSizes[body.itemKey];
                             fishMult = fishSizeMult(kg, body.itemId);
                             fishSizeStr = ` (${kg}kg)`;

@@ -2356,9 +2356,8 @@ function stopBasket() {
                 const fishLv = (gs.skills && gs.skills.fishing) ? gs.skills.fishing.level : 1;
                 const lvBonus = Math.min((fishLv - 1) * 0.015, 0.30); // up to +30% fish chance at lv21+
 
-                // Pond drop table (base rates, scaled by level)
-                // Trash shrinks as level rises; fish chances grow proportionally
-                const trashChance = Math.max(0.35 - lvBonus * 2, 0.05); // 35% → 5% min
+                // Pond drop table — new fish pool, level-scaled
+                const trashChance = Math.max(0.35 - lvBonus * 2, 0.05);
                 const rand = Math.random();
                 let caughtItem;
                 let catchMsg;
@@ -2372,26 +2371,22 @@ function stopBasket() {
                     catchMsg = '👢 Fished up an Old Boot...';
                     addSkillXP('fishing', 1);
                 } else {
-                    // Fish pool — scaled rates
                     const fishRand = Math.random();
-                    const epicCut   = Math.min(0.03 + lvBonus * 0.5, 0.18);  // 3%→18%
-                    const rareCut   = Math.min(0.10 + lvBonus,       0.35);  // 10%→35%
-                    const uncomCut  = Math.min(0.28 + lvBonus * 0.8, 0.50);  // 28%→50%
-                    if (fishRand < epicCut) {
-                        caughtItem = 'fish4'; // Golden Fish (Epic)
-                    } else if (fishRand < rareCut) {
-                        caughtItem = 'fish3'; // Tropical (Rare)
-                    } else if (fishRand < uncomCut) {
-                        caughtItem = 'fish2'; // Blue Fish (Uncommon)
-                    } else {
-                        caughtItem = 'fish1'; // Common Fish
-                    }
+                    const legCut  = Math.min(0.01 + lvBonus * 0.3,  0.08);
+                    const epicCut = Math.min(0.03 + lvBonus * 0.5,  0.15);
+                    const rareCut = Math.min(0.08 + lvBonus * 0.8,  0.28);
+                    const uncCut  = Math.min(0.25 + lvBonus,        0.50);
+                    if      (fishRand < legCut)  caughtItem = 'p10';
+                    else if (fishRand < epicCut) caughtItem = 'p9';
+                    else if (fishRand < rareCut) caughtItem = Math.random() < 0.5 ? 'p8' : 'p7';
+                    else if (fishRand < uncCut)  caughtItem = ['p4','p5','p6'][Math.floor(Math.random()*3)];
+                    else                         caughtItem = ['p1','p2','p3'][Math.floor(Math.random()*3)];
                     catchMsg = `🎣 Caught a ${ITEM_DATA[caughtItem].name}!`;
                     addSkillXP('fishing', 10);
                 }
 
                 result.textContent = catchMsg;
-                addItem(caughtItem, 1);
+                if (/^(fish\d+|[prls]\d+)$/.test(caughtItem)) addFish(caughtItem); else addItem(caughtItem, 1);
                 
                 // 10% chance to find Water Key (only if not already obtained)
                 if (!gs.keys.water_key && Math.random() < 0.10) {
@@ -2415,11 +2410,7 @@ function stopBasket() {
                 result.textContent = '❌ It got away!';
             }
             
-            setTimeout(() => {
-                fishingProgress = 0;
-                updateFishingBar();
-                result.textContent = '';
-            }, 1500);
+            // UI reset is handled by resetPondFishing() in game-fishing.js
         }
         
         
