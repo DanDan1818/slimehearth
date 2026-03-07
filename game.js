@@ -1,37 +1,12 @@
-        // Preload all game images
+        // Preload critical game images with iOS-safe timeout fallback
         (function() {
             const imagesToPreload = [
                 './slimehearth-assets/images/titlescreen-background.png',
                 './slimehearth-assets/images/egg1.png',
                 './slimehearth-assets/images/home-background.png',
-                './slimehearth-assets/images/activities-background.png',
-                './slimehearth-assets/images/shop-background.png',
-                './slimehearth-assets/images/shack-background.png',
-                './slimehearth-assets/images/pond-background.png',
-                './slimehearth-assets/images/river-background.png',
-                './slimehearth-assets/images/fishing-background.png',
-                './slimehearth-assets/images/hearth-background.png',
-                './slimehearth-assets/images/farm-background.png',
-                './slimehearth-assets/images/bag1.png',
-                './slimehearth-assets/images/sellbag1.png',
-                './slimehearth-assets/images/fish1.png',
-                './slimehearth-assets/images/fish2.png',
-                './slimehearth-assets/images/fish3.png',
-                './slimehearth-assets/images/fish4.png',
-                './slimehearth-assets/images/fish5.png',
-                './slimehearth-assets/images/fish6.png',
-                './slimehearth-assets/images/fish7.png',
-                './slimehearth-assets/images/fish8.png',
-                './slimehearth-assets/images/gem1.png',
-                './slimehearth-assets/images/geode1.png',
-                './slimehearth-assets/images/carrot1.png',
-                './slimehearth-assets/images/seeds1.png',
-                './slimehearth-assets/images/food1.png',
-                './slimehearth-assets/images/basket1.png',
                 './slimehearth-assets/images/slime1.png',
                 './slimehearth-assets/images/slime2.png',
                 './slimehearth-assets/images/slime3.png',
-                './slimehearth-assets/images/hat1.png'
             ];
             
             let loadedCount = 0;
@@ -39,28 +14,35 @@
             const loadingBar = document.getElementById('loading-bar');
             const loadingOverlay = document.getElementById('loading-overlay');
             const titleOverlay = document.getElementById('title-overlay');
+            let finished = false;
+
+            function showTitle() {
+                if (finished) return;
+                finished = true;
+                if (loadingBar) loadingBar.style.width = '100%';
+                setTimeout(() => {
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                    if (titleOverlay) titleOverlay.style.display = 'flex';
+                }, 300);
+            }
             
             function updateProgress() {
                 loadedCount++;
                 const percent = (loadedCount / totalImages) * 100;
                 if (loadingBar) loadingBar.style.width = percent + '%';
-                
-                if (loadedCount >= totalImages) {
-                    // All images loaded, show title screen
-                    setTimeout(() => {
-                        if (loadingOverlay) loadingOverlay.style.display = 'none';
-                        if (titleOverlay) titleOverlay.style.display = 'flex';
-                    }, 300);
-                }
+                if (loadedCount >= totalImages) showTitle();
             }
             
             // Preload each image
             imagesToPreload.forEach(src => {
                 const img = new Image();
                 img.onload = updateProgress;
-                img.onerror = updateProgress; // Continue even if image fails
+                img.onerror = updateProgress;
                 img.src = src;
             });
+
+            // iOS safety net: never hang longer than 4 seconds
+            setTimeout(showTitle, 4000);
         })();
 
         // ===== GAME STATE =====
@@ -4714,7 +4696,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.892');
+        console.log('Game version: v0.893');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
