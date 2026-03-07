@@ -428,7 +428,9 @@
                 }
                 setTimeout(() => {
                     addItem(recipe.result, 1);
-                    addSkillXP('cooking', 15);
+                    // XP scales with recipe level: lv1=20, lv50=500
+                    const recipeXP = Math.round(20 + (recipe.reqLevel || 1) * 9.6);
+                    addSkillXP('cooking', recipeXP);
                 }, 300);
                 
                 notify('✨ Cooked ' + recipe.name + '!');
@@ -452,7 +454,7 @@
                 }
                 setTimeout(() => {
                     addItem('burnt_food', 1);
-                    addSkillXP('cooking', 5);
+                    addSkillXP('cooking', 10);
                 }, 300);
                 
                 notify('💀 Burnt the food!');
@@ -1015,12 +1017,12 @@
             if (isBurnt) {
                 result.textContent = '🔥 OH NO! Food burnt! +1 Burnt Food';
                 addItem('burnt_food', 1); // Note: itemId is 'burnt_food'
-                addSkillXP('cooking', 5); // Half XP for burnt food
+                addSkillXP('cooking', 15); // Half XP for burnt food
                 notify('💀 Burnt the food!');
             } else {
                 result.textContent = '🎉 Cooked into food! +1 Food';
                 addItem('food', 1);
-                addSkillXP('cooking', 10);
+                addSkillXP('cooking', 30);
                 notify('✅ Perfectly cooked!');
             }
             
@@ -1152,7 +1154,7 @@ function initKitchenGame() {
             if (success) {
                 result.textContent = '🎉 Perfect dish! +1 Food';
                 addItem('food', 1);
-                addSkillXP('cooking', 10);
+                addSkillXP('cooking', 30);
                 clearKitchenIngredient();
                 notify('✅ Cooked ' + kitchenIngredientSlot + ' into food!');
             } else {
@@ -1246,7 +1248,7 @@ function initKitchenGame() {
             if (grillGoodTime >= 7.0) {
                 result.textContent = '🎉 Perfectly grilled! +1 Food';
                 addItem('food', 1);
-                addSkillXP('cooking', 15);
+                addSkillXP('cooking', 40);
             } else {
                 result.textContent = '❌ Over/undercooked! (' + grillGoodTime.toFixed(1) + 's/7s in zone)';
             }
