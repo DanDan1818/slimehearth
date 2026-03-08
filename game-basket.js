@@ -985,7 +985,7 @@
                             isStatic: true, 
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { visible: false }
+                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
                         }
                     );
                     
@@ -999,7 +999,7 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { visible: false }
+                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
                         }
                     );
                     
@@ -1013,11 +1013,11 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { visible: false }
+                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
                         }
                     );
                     
-                    // Invisible sensor box — just for sell detection, no visual
+                    // Visible green sensor box — shows sell area bounds
                     const greenBox = Bodies.rectangle(
                         sellBasketCenterX,
                         sellBasketBottom - sellWallHeight/2,
@@ -1026,7 +1026,7 @@
                         {
                             isStatic: true,
                             isSensor: true,
-                            render: { visible: false }
+                            render: { fillStyle: 'rgba(0,255,0,0.35)', strokeStyle: 'lime', lineWidth: 2, visible: true }
                         }
                     );
                     
