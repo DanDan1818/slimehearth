@@ -1,22 +1,11 @@
-        // Preload all background images with iOS-safe timeout fallback
+        // Preload only the most critical images — everything else is handled by
+        // <link rel="preload"> in the <head> which fetches in parallel at high priority.
+        // Keep this list SHORT so the loading screen dismisses fast on iOS.
         (function() {
             const imagesToPreload = [
                 './slimehearth-assets/images/titlescreen-background.png',
-                './slimehearth-assets/images/hatching-background.png',
-                './slimehearth-assets/images/egg1.png',
-                './slimehearth-assets/images/home-background.png',
-                './slimehearth-assets/images/activities-background.png',
-                './slimehearth-assets/images/shop-background.png',
-                './slimehearth-assets/images/shack-background.png',
-                './slimehearth-assets/images/pond-background.png',
-                './slimehearth-assets/images/river-background.png',
-                './slimehearth-assets/images/fishing-background.png',
-                './slimehearth-assets/images/farming-background.png',
-                './slimehearth-assets/images/hearth-background.png',
-                './slimehearth-assets/images/farm-background.png',
                 './slimehearth-assets/images/slime1.png',
                 './slimehearth-assets/images/slime2.png',
-                './slimehearth-assets/images/slime3.png',
             ];
             
             let loadedCount = 0;
@@ -51,8 +40,8 @@
                 img.src = src;
             });
 
-            // iOS safety net: never hang longer than 4 seconds
-            setTimeout(showTitle, 4000);
+            // iOS safety net: never hang longer than 2 seconds
+            setTimeout(showTitle, 2000);
         })();
 
         // ===== GAME STATE =====
@@ -4706,7 +4695,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.895');
+        console.log('Game version: v0.897');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {

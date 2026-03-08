@@ -1221,11 +1221,11 @@
                 }
             });
             
-            // Create basket walls (no top) - SHORTER walls so items can fly over
+            // Create basket walls (no top) - taller walls so items stack higher
             const basketCenterX = 90;  // Moved left to align with bag image
             const basketBottom = 1194;
             const basketWidth = 180;
-            const wallHeight = 60;  // Reduced from 112 to 60 - items can fly over!
+            const wallHeight = 220;  // Increased from 60 - items can stack much higher
             const wallThickness = 6;
             
             const leftWall = Bodies.rectangle(
@@ -1323,7 +1323,7 @@
             Events.on(basketEngine, 'afterUpdate', () => {
                 const basketLeft = basketCenterX - basketWidth/2;  // 90 - 90 = 0
                 const basketRight = basketCenterX + basketWidth/2; // 90 + 90 = 180
-                const basketTop = 1080;
+                const basketTop = 900;  // Raised to match taller walls (was 1080)
                 
                 basketBodies.forEach(body => {
                     const nearFloor = body.position.y > 1150;
