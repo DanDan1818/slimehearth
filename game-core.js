@@ -222,15 +222,43 @@
         };
         
         const ITEM_IMAGES = {
-            // Fish with assigned images
-            'p5':  './slimehearth-assets/images/fish1.png',  // Clownfish
-            'p8':  './slimehearth-assets/images/fish2.png',  // Carp
-            'p3':  './slimehearth-assets/images/fish3.png',  // Sunfish
-            's6':  './slimehearth-assets/images/fish4.png',  // Pufferfish
-            's4':  './slimehearth-assets/images/fish5.png',  // Lobster
-            's3':  './slimehearth-assets/images/fish6.png',  // Shrimp
-            's5':  './slimehearth-assets/images/fish7.png',  // Crab
-            's10': './slimehearth-assets/images/fish8.png',  // Shark
+            // Pond fish
+            'p1':  './slimehearth-assets/images/minnow.png',
+            'p2':  './slimehearth-assets/images/mudfish.png',
+            'p3':  './slimehearth-assets/images/sunfish.png',
+            'p4':  './slimehearth-assets/images/tench.png',
+            'p5':  './slimehearth-assets/images/fish1.png',       // Clownfish (no new image)
+            'p6':  './slimehearth-assets/images/rudd.png',
+            'p7':  './slimehearth-assets/images/perch.png',
+            'p8':  './slimehearth-assets/images/carp.png',
+            'p9':  './slimehearth-assets/images/cat.png',
+            'p10': './slimehearth-assets/images/koi.png',
+            // River fish
+            'r1':  './slimehearth-assets/images/dace.png',
+            'r2':  './slimehearth-assets/images/chub.png',
+            'r3':  './slimehearth-assets/images/gudgeon.png',
+            'r4':  './slimehearth-assets/images/bream.png',
+            'r5':  './slimehearth-assets/images/barbel.png',
+            'r6':  './slimehearth-assets/images/grayling.png',
+            'r7':  './slimehearth-assets/images/rivertrout.png',
+            'r8':  './slimehearth-assets/images/pike.png',
+            'r9':  './slimehearth-assets/images/rivereel.png',
+            'r10': './slimehearth-assets/images/phantomsalmon.png',
+            // Lake fish
+            'l1':  './slimehearth-assets/images/smelt.png',
+            'l2':  './slimehearth-assets/images/whitefish.png',
+            'l3':  './slimehearth-assets/images/vendance.png',
+            'l4':  './slimehearth-assets/images/lakeperch.png',
+            'l5':  './slimehearth-assets/images/trout.png',
+            'l6':  './slimehearth-assets/images/walleye.png',
+            'l7':  './slimehearth-assets/images/burbot.png',
+            'l8':  './slimehearth-assets/images/drum.png',
+            // Sea fish (existing images)
+            's3':  './slimehearth-assets/images/fish6.png',       // Shrimp
+            's4':  './slimehearth-assets/images/fish5.png',       // Lobster
+            's5':  './slimehearth-assets/images/fish7.png',       // Crab
+            's6':  './slimehearth-assets/images/fish4.png',       // Pufferfish
+            's10': './slimehearth-assets/images/fish8.png',       // Shark
             // Legacy entries kept for save compatibility
             'fish1': './slimehearth-assets/images/fish1.png',
             'fish2': './slimehearth-assets/images/fish2.png',
@@ -304,38 +332,38 @@
         
         const ITEM_DATA = {
             // ===== POND FISH (p1-p10) =====
-            'p1':  { name: 'Minnow',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'A tiny fish darting about.',         foodValue: 2,  sellValue: 2,  cookable: true, feedable: true },
-            'p2':  { name: 'Mudfish',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Loves murky pond bottoms.',           foodValue: 3,  sellValue: 3,  cookable: true, feedable: true },
-            'p3':  { name: 'Sunfish',        emoji: '🐟', image: 'fish3.png', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Catches rays near the surface.',      foodValue: 4,  sellValue: 4,  cookable: true, feedable: true },
-            'p4':  { name: 'Tench',          emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Slippery and hard to hold.',          foodValue: 6,  sellValue: 6,  cookable: true, feedable: true },
-            'p5':  { name: 'Clownfish',      emoji: '🐠', image: 'fish1.png', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Boldly striped and full of personality.', foodValue: 7, sellValue: 7,  cookable: true, feedable: true },
-            'p6':  { name: 'Rudd',           emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Shimmering red fins.',                foodValue: 8,  sellValue: 9,  cookable: true, feedable: true },
-            'p7':  { name: 'Pond Perch',     emoji: '🐟', rarity: 'Rare',      rarityColor: '#60a5fa', description: 'Striped and feisty.',                 foodValue: 10, sellValue: 14, cookable: true, feedable: true },
-            'p8':  { name: 'Carp',           emoji: '🐟', image: 'fish2.png', rarity: 'Rare',      rarityColor: '#60a5fa', description: 'A prized pond catch.',                foodValue: 12, sellValue: 18, cookable: true, feedable: true },
-            'p9':  { name: 'Pond Catfish',   emoji: '🐟', rarity: 'Epic',      rarityColor: '#a78bfa', description: 'Whiskered and wily.',                 foodValue: 15, sellValue: 28, cookable: true, feedable: true },
-            'p10': { name: 'Golden Koi',     emoji: '🐟', rarity: 'Legendary', rarityColor: '#f59e0b', description: 'Said to grant wishes. Truly rare.',   foodValue: 18, sellValue: 60, cookable: true, feedable: true },
+            'p1':  { name: 'Minnow',        emoji: '🐟', image: 'minnow.png',   rarity: 'Common',    rarityColor: '#9ca3af', description: 'A tiny fish darting about.',         foodValue: 2,  sellValue: 2,  cookable: true, feedable: true },
+            'p2':  { name: 'Mudfish',        emoji: '🐟', image: 'mudfish.png',  rarity: 'Common',    rarityColor: '#9ca3af', description: 'Loves murky pond bottoms.',           foodValue: 3,  sellValue: 3,  cookable: true, feedable: true },
+            'p3':  { name: 'Sunfish',        emoji: '🐟', image: 'sunfish.png',  rarity: 'Common',    rarityColor: '#9ca3af', description: 'Catches rays near the surface.',      foodValue: 4,  sellValue: 4,  cookable: true, feedable: true },
+            'p4':  { name: 'Tench',          emoji: '🐟', image: 'tench.png',    rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Slippery and hard to hold.',          foodValue: 6,  sellValue: 6,  cookable: true, feedable: true },
+            'p5':  { name: 'Clownfish',      emoji: '🐠', image: 'fish1.png',    rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Boldly striped and full of personality.', foodValue: 7, sellValue: 7,  cookable: true, feedable: true },
+            'p6':  { name: 'Rudd',           emoji: '🐟', image: 'rudd.png',     rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Shimmering red fins.',                foodValue: 8,  sellValue: 9,  cookable: true, feedable: true },
+            'p7':  { name: 'Pond Perch',     emoji: '🐟', image: 'perch.png',    rarity: 'Rare',      rarityColor: '#60a5fa', description: 'Striped and feisty.',                 foodValue: 10, sellValue: 14, cookable: true, feedable: true },
+            'p8':  { name: 'Carp',           emoji: '🐟', image: 'carp.png',     rarity: 'Rare',      rarityColor: '#60a5fa', description: 'A prized pond catch.',                foodValue: 12, sellValue: 18, cookable: true, feedable: true },
+            'p9':  { name: 'Pond Catfish',   emoji: '🐟', image: 'cat.png',      rarity: 'Epic',      rarityColor: '#a78bfa', description: 'Whiskered and wily.',                 foodValue: 15, sellValue: 28, cookable: true, feedable: true },
+            'p10': { name: 'Golden Koi',     emoji: '🐟', image: 'koi.png',      rarity: 'Legendary', rarityColor: '#f59e0b', description: 'Said to grant wishes. Truly rare.',   foodValue: 18, sellValue: 60, cookable: true, feedable: true },
 
             // ===== RIVER FISH (r1-r10) =====
-            'r1':  { name: 'Dace',           emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Quick and slippery in the current.',  foodValue: 10, sellValue: 5,  cookable: true, feedable: true },
-            'r2':  { name: 'Chub',           emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Thick-bodied river dweller.',         foodValue: 12, sellValue: 7,  cookable: true, feedable: true },
-            'r3':  { name: 'Gudgeon',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Bottom-feeder with a big appetite.',  foodValue: 14, sellValue: 8,  cookable: true, feedable: true },
-            'r4':  { name: 'Bream',          emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#60a5fa', description: 'Flat-sided and meaty.',               foodValue: 18, sellValue: 12, cookable: true, feedable: true },
-            'r5':  { name: 'Barbel',         emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#60a5fa', description: 'Fights hard against the current.',    foodValue: 21, sellValue: 15, cookable: true, feedable: true },
-            'r6':  { name: 'Grayling',       emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#60a5fa', description: 'A jewel of the river.',               foodValue: 24, sellValue: 18, cookable: true, feedable: true },
-            'r7':  { name: 'River Trout',    emoji: '🐟', rarity: 'Rare',      rarityColor: '#818cf8', description: 'Spotted and swift.',                  foodValue: 28, sellValue: 25, cookable: true, feedable: true },
-            'r8':  { name: 'Pike',           emoji: '🐟', rarity: 'Rare',      rarityColor: '#818cf8', description: 'The apex predator of the river.',     foodValue: 34, sellValue: 32, cookable: true, feedable: true },
-            'r9':  { name: 'River Eel',      emoji: '🐟', rarity: 'Epic',      rarityColor: '#a78bfa', description: 'Slithers through the deep currents.', foodValue: 38, sellValue: 45, cookable: true, feedable: true },
-            'r10': { name: 'Phantom Salmon', emoji: '🐟', rarity: 'Legendary', rarityColor: '#c084fc', description: 'Leaps upstream in a silver flash.',   foodValue: 45, sellValue: 90, cookable: true, feedable: true },
+            'r1':  { name: 'Dace',           emoji: '🐟', image: 'dace.png',         rarity: 'Common',    rarityColor: '#9ca3af', description: 'Quick and slippery in the current.',  foodValue: 10, sellValue: 5,  cookable: true, feedable: true },
+            'r2':  { name: 'Chub',           emoji: '🐟', image: 'chub.png',         rarity: 'Common',    rarityColor: '#9ca3af', description: 'Thick-bodied river dweller.',         foodValue: 12, sellValue: 7,  cookable: true, feedable: true },
+            'r3':  { name: 'Gudgeon',        emoji: '🐟', image: 'gudgeon.png',      rarity: 'Common',    rarityColor: '#9ca3af', description: 'Bottom-feeder with a big appetite.',  foodValue: 14, sellValue: 8,  cookable: true, feedable: true },
+            'r4':  { name: 'Bream',          emoji: '🐟', image: 'bream.png',        rarity: 'Uncommon',  rarityColor: '#60a5fa', description: 'Flat-sided and meaty.',               foodValue: 18, sellValue: 12, cookable: true, feedable: true },
+            'r5':  { name: 'Barbel',         emoji: '🐟', image: 'barbel.png',       rarity: 'Uncommon',  rarityColor: '#60a5fa', description: 'Fights hard against the current.',    foodValue: 21, sellValue: 15, cookable: true, feedable: true },
+            'r6':  { name: 'Grayling',       emoji: '🐟', image: 'grayling.png',     rarity: 'Uncommon',  rarityColor: '#60a5fa', description: 'A jewel of the river.',               foodValue: 24, sellValue: 18, cookable: true, feedable: true },
+            'r7':  { name: 'River Trout',    emoji: '🐟', image: 'rivertrout.png',   rarity: 'Rare',      rarityColor: '#818cf8', description: 'Spotted and swift.',                  foodValue: 28, sellValue: 25, cookable: true, feedable: true },
+            'r8':  { name: 'Pike',           emoji: '🐟', image: 'pike.png',         rarity: 'Rare',      rarityColor: '#818cf8', description: 'The apex predator of the river.',     foodValue: 34, sellValue: 32, cookable: true, feedable: true },
+            'r9':  { name: 'River Eel',      emoji: '🐟', image: 'rivereel.png',     rarity: 'Epic',      rarityColor: '#a78bfa', description: 'Slithers through the deep currents.', foodValue: 38, sellValue: 45, cookable: true, feedable: true },
+            'r10': { name: 'Phantom Salmon', emoji: '🐟', image: 'phantomsalmon.png',rarity: 'Legendary', rarityColor: '#c084fc', description: 'Leaps upstream in a silver flash.',   foodValue: 45, sellValue: 90, cookable: true, feedable: true },
 
             // ===== LAKE FISH (l1-l10) =====
-            'l1':  { name: 'Smelt',          emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Small, silvery, and plentiful.',      foodValue: 80,  sellValue: 8,  cookable: true, feedable: true },
-            'l2':  { name: 'Whitefish',      emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Clean white flesh, mild flavour.',    foodValue: 90,  sellValue: 10, cookable: true, feedable: true },
-            'l3':  { name: 'Vendace',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'A cold-water delicacy.',              foodValue: 100, sellValue: 11, cookable: true, feedable: true },
-            'l4':  { name: 'Lake Perch',     emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#34d399', description: 'Bold stripes, bold flavour.',         foodValue: 115, sellValue: 18, cookable: true, feedable: true },
-            'l5':  { name: 'Lake Trout',     emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#34d399', description: 'Deep and cold-blooded.',              foodValue: 125, sellValue: 24, cookable: true, feedable: true },
-            'l6':  { name: 'Walleye',        emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#34d399', description: 'Glowing golden eyes.',                foodValue: 135, sellValue: 28, cookable: true, feedable: true },
-            'l7':  { name: 'Burbot',         emoji: '🐟', rarity: 'Rare',      rarityColor: '#a78bfa', description: 'Strange bottom-dweller, prized meat.', foodValue: 150, sellValue: 38, cookable: true, feedable: true },
-            'l8':  { name: 'Freshwater Drum',emoji: '🐟', rarity: 'Rare',      rarityColor: '#a78bfa', description: 'Rumbles when caught.',                foodValue: 165, sellValue: 48, cookable: true, feedable: true },
+            'l1':  { name: 'Smelt',          emoji: '🐟', image: 'smelt.png',     rarity: 'Common',    rarityColor: '#9ca3af', description: 'Small, silvery, and plentiful.',      foodValue: 80,  sellValue: 8,  cookable: true, feedable: true },
+            'l2':  { name: 'Whitefish',      emoji: '🐟', image: 'whitefish.png', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Clean white flesh, mild flavour.',    foodValue: 90,  sellValue: 10, cookable: true, feedable: true },
+            'l3':  { name: 'Vendace',        emoji: '🐟', image: 'vendance.png',  rarity: 'Common',    rarityColor: '#9ca3af', description: 'A cold-water delicacy.',              foodValue: 100, sellValue: 11, cookable: true, feedable: true },
+            'l4':  { name: 'Lake Perch',     emoji: '🐟', image: 'lakeperch.png', rarity: 'Uncommon',  rarityColor: '#34d399', description: 'Bold stripes, bold flavour.',         foodValue: 115, sellValue: 18, cookable: true, feedable: true },
+            'l5':  { name: 'Lake Trout',     emoji: '🐟', image: 'trout.png',     rarity: 'Uncommon',  rarityColor: '#34d399', description: 'Deep and cold-blooded.',              foodValue: 125, sellValue: 24, cookable: true, feedable: true },
+            'l6':  { name: 'Walleye',        emoji: '🐟', image: 'walleye.png',   rarity: 'Uncommon',  rarityColor: '#34d399', description: 'Glowing golden eyes.',                foodValue: 135, sellValue: 28, cookable: true, feedable: true },
+            'l7':  { name: 'Burbot',         emoji: '🐟', image: 'burbot.png',    rarity: 'Rare',      rarityColor: '#a78bfa', description: 'Strange bottom-dweller, prized meat.', foodValue: 150, sellValue: 38, cookable: true, feedable: true },
+            'l8':  { name: 'Freshwater Drum',emoji: '🐟', image: 'drum.png',      rarity: 'Rare',      rarityColor: '#a78bfa', description: 'Rumbles when caught.',                foodValue: 165, sellValue: 48, cookable: true, feedable: true },
             'l9':  { name: 'Lake Sturgeon',  emoji: '🐟', rarity: 'Epic',      rarityColor: '#7c3aed', description: 'Ancient armoured giant.',             foodValue: 180, sellValue: 75, cookable: true, feedable: true },
             'l10': { name: 'Sapphire Bass',  emoji: '🐟', rarity: 'Legendary', rarityColor: '#3b82f6', description: 'Its scales shimmer like gemstones.',  foodValue: 200, sellValue: 140, cookable: true, feedable: true },
 
