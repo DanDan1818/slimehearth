@@ -972,7 +972,7 @@
                     const sellBasketWidth = sellMaxX - sellMinX;
                     
                     const sellBasketBottom = 1194;
-                    const sellWallHeight = 60;  // Shorter walls
+                    const sellWallHeight = 160;  // Match main bag height
                     const sellWallThickness = 6;
                     
                     // Create LEFT wall
@@ -985,7 +985,7 @@
                             isStatic: true, 
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
+                            render: { visible: false }
                         }
                     );
                     
@@ -999,7 +999,7 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
+                            render: { visible: false }
                         }
                     );
                     
@@ -1013,11 +1013,11 @@
                             isStatic: true,
                             friction: 0.8,
                             restitution: 0.3,
-                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
+                            render: { visible: false }
                         }
                     );
                     
-                    // Create BIG VISIBLE GREEN BACKGROUND BOX (for visibility)
+                    // Invisible sensor box — just for sell detection, no visual
                     const greenBox = Bodies.rectangle(
                         sellBasketCenterX,
                         sellBasketBottom - sellWallHeight/2,
@@ -1025,14 +1025,8 @@
                         sellWallHeight - 10,
                         {
                             isStatic: true,
-                            isSensor: true,  // Doesn't block items
-                            render: { 
-                                fillStyle: 'rgba(0, 255, 0, 0.6)',  // Brighter green
-                                strokeStyle: 'lime', 
-                                lineWidth: 3,
-                                visible: true,
-                                zIndex: 9999  // Over everything
-                            }
+                            isSensor: true,
+                            render: { visible: false }
                         }
                     );
                     
@@ -1225,7 +1219,7 @@
             const basketCenterX = 90;  // Moved left to align with bag image
             const basketBottom = 1194;
             const basketWidth = 180;
-            const wallHeight = 220;  // Increased from 60 - items can stack much higher
+            const wallHeight = 160;  // Tall enough to stack 8+ items, not so tall they can't return
             const wallThickness = 6;
             
             const leftWall = Bodies.rectangle(
@@ -1323,7 +1317,7 @@
             Events.on(basketEngine, 'afterUpdate', () => {
                 const basketLeft = basketCenterX - basketWidth/2;  // 90 - 90 = 0
                 const basketRight = basketCenterX + basketWidth/2; // 90 + 90 = 180
-                const basketTop = 900;  // Raised to match taller walls (was 1080)
+                const basketTop = 980;  // Matches 160px wall height (was 900)
                 
                 basketBodies.forEach(body => {
                     const nearFloor = body.position.y > 1150;
