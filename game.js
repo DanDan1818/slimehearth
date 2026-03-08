@@ -4695,7 +4695,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.901');
+        console.log('Game version: v0.902');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {

@@ -981,46 +981,46 @@
                     const sellBasketWidth = sellMaxX - sellMinX;
                     const sellBasketBottom = 1194;
                     const sellWallHeight = 160;
-                    const sellWallThickness = 6;
+                    const sellWallThickness = 8;
 
-                    // LEFT wall — bright green, visible
+                    // LEFT wall — invisible, blocks items escaping left
                     const sellLeftWall = Bodies.rectangle(
-                        sellMinX + sellWallThickness/2,
-                        sellBasketBottom - sellWallHeight/2,
+                        sellMinX + sellWallThickness / 2,
+                        sellBasketBottom - sellWallHeight / 2,
                         sellWallThickness,
                         sellWallHeight,
                         { isStatic: true, friction: 0.8, restitution: 0.3,
-                          render: { fillStyle: '#00ff00', strokeStyle: '#00ff00', lineWidth: 3, visible: true } }
+                          render: { visible: false } }
                     );
 
-                    // RIGHT wall — bright green, visible
+                    // RIGHT wall — invisible, blocks items escaping right
                     const sellRightWall = Bodies.rectangle(
-                        sellMaxX - sellWallThickness/2,
-                        sellBasketBottom - sellWallHeight/2,
+                        sellMaxX - sellWallThickness / 2,
+                        sellBasketBottom - sellWallHeight / 2,
                         sellWallThickness,
                         sellWallHeight,
                         { isStatic: true, friction: 0.8, restitution: 0.3,
-                          render: { fillStyle: '#00ff00', strokeStyle: '#00ff00', lineWidth: 3, visible: true } }
+                          render: { visible: false } }
                     );
 
-                    // BOTTOM bar — bright green, visible
+                    // BOTTOM bar — invisible, items rest on it inside the sell area
                     const sellBottom = Bodies.rectangle(
                         sellBasketCenterX,
                         sellBasketBottom - 10,
                         sellBasketWidth,
                         20,
                         { isStatic: true, friction: 0.8, restitution: 0.3,
-                          render: { fillStyle: '#00ff00', strokeStyle: '#00ff00', lineWidth: 3, visible: true } }
+                          render: { visible: false } }
                     );
 
-                    // FILL BOX — semi-transparent green so you can see the whole area
+                    // Invisible sensor — used for sell detection only
                     const greenBox = Bodies.rectangle(
                         sellBasketCenterX,
-                        sellBasketBottom - sellWallHeight/2,
+                        sellBasketBottom - sellWallHeight / 2,
                         sellBasketWidth - 12,
                         sellWallHeight - 10,
                         { isStatic: true, isSensor: true,
-                          render: { fillStyle: 'rgba(0,255,0,0.4)', strokeStyle: '#00ff00', lineWidth: 2, visible: true } }
+                          render: { visible: false } }
                     );
                     
                     sellWalls = [sellLeftWall, sellRightWall, sellBottom, greenBox];
