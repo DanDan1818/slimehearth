@@ -961,73 +961,66 @@
                 
                 // Add sell walls only if in shop
                 if (roomId === 'shop-room') {
-                    // Recreate sell walls with current position
                     const { Bodies } = Matter;
-                    
-                    // Use same position for all devices now that canvas is 700px
-                    // Right side: 550-676 (126px wide)
-                    const sellMinX = 550;
-                    const sellMaxX = 676;
+
+                    // Read sell box position from the DOM element (same source as sell detection)
+                    const greenSellBoxEl = document.getElementById('green-sell-box');
+                    const basketCanvas = document.getElementById('basket-canvas');
+                    let sellMinX = 370, sellMaxX = 510; // fallback canvas coords
+
+                    if (greenSellBoxEl && basketCanvas) {
+                        const boxRect = greenSellBoxEl.getBoundingClientRect();
+                        const containerEl = document.getElementById('basket-container');
+                        const containerRect = containerEl ? containerEl.getBoundingClientRect() : basketCanvas.getBoundingClientRect();
+                        const scaleX = 700 / basketCanvas.offsetWidth;
+                        sellMinX = (boxRect.left - containerRect.left) * scaleX;
+                        sellMaxX = (boxRect.right - containerRect.left) * scaleX;
+                    }
+
                     const sellBasketCenterX = (sellMinX + sellMaxX) / 2;
                     const sellBasketWidth = sellMaxX - sellMinX;
-                    
                     const sellBasketBottom = 1194;
-                    const sellWallHeight = 160;  // Match main bag height
+                    const sellWallHeight = 160;
                     const sellWallThickness = 6;
-                    
-                    // Create LEFT wall
+
+                    // LEFT wall — bright green, visible
                     const sellLeftWall = Bodies.rectangle(
                         sellMinX + sellWallThickness/2,
                         sellBasketBottom - sellWallHeight/2,
                         sellWallThickness,
                         sellWallHeight,
-                        { 
-                            isStatic: true, 
-                            friction: 0.8,
-                            restitution: 0.3,
-                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
-                        }
+                        { isStatic: true, friction: 0.8, restitution: 0.3,
+                          render: { fillStyle: '#00ff00', strokeStyle: '#00ff00', lineWidth: 3, visible: true } }
                     );
-                    
-                    // Create RIGHT wall
+
+                    // RIGHT wall — bright green, visible
                     const sellRightWall = Bodies.rectangle(
                         sellMaxX - sellWallThickness/2,
                         sellBasketBottom - sellWallHeight/2,
                         sellWallThickness,
                         sellWallHeight,
-                        { 
-                            isStatic: true,
-                            friction: 0.8,
-                            restitution: 0.3,
-                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
-                        }
+                        { isStatic: true, friction: 0.8, restitution: 0.3,
+                          render: { fillStyle: '#00ff00', strokeStyle: '#00ff00', lineWidth: 3, visible: true } }
                     );
-                    
-                    // Create BOTTOM bar
+
+                    // BOTTOM bar — bright green, visible
                     const sellBottom = Bodies.rectangle(
                         sellBasketCenterX,
                         sellBasketBottom - 10,
                         sellBasketWidth,
                         20,
-                        { 
-                            isStatic: true,
-                            friction: 0.8,
-                            restitution: 0.3,
-                            render: { fillStyle: 'lime', strokeStyle: 'lime', lineWidth: 3, visible: true }
-                        }
+                        { isStatic: true, friction: 0.8, restitution: 0.3,
+                          render: { fillStyle: '#00ff00', strokeStyle: '#00ff00', lineWidth: 3, visible: true } }
                     );
-                    
-                    // Visible green sensor box — shows sell area bounds
+
+                    // FILL BOX — semi-transparent green so you can see the whole area
                     const greenBox = Bodies.rectangle(
                         sellBasketCenterX,
                         sellBasketBottom - sellWallHeight/2,
                         sellBasketWidth - 12,
                         sellWallHeight - 10,
-                        {
-                            isStatic: true,
-                            isSensor: true,
-                            render: { fillStyle: 'rgba(0,255,0,0.35)', strokeStyle: 'lime', lineWidth: 2, visible: true }
-                        }
+                        { isStatic: true, isSensor: true,
+                          render: { fillStyle: 'rgba(0,255,0,0.4)', strokeStyle: '#00ff00', lineWidth: 2, visible: true } }
                     );
                     
                     sellWalls = [sellLeftWall, sellRightWall, sellBottom, greenBox];
