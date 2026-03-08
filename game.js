@@ -1,9 +1,19 @@
-        // Preload critical game images with iOS-safe timeout fallback
+        // Preload all background images with iOS-safe timeout fallback
         (function() {
             const imagesToPreload = [
                 './slimehearth-assets/images/titlescreen-background.png',
+                './slimehearth-assets/images/hatching-background.png',
                 './slimehearth-assets/images/egg1.png',
                 './slimehearth-assets/images/home-background.png',
+                './slimehearth-assets/images/activities-background.png',
+                './slimehearth-assets/images/shop-background.png',
+                './slimehearth-assets/images/shack-background.png',
+                './slimehearth-assets/images/pond-background.png',
+                './slimehearth-assets/images/river-background.png',
+                './slimehearth-assets/images/fishing-background.png',
+                './slimehearth-assets/images/farming-background.png',
+                './slimehearth-assets/images/hearth-background.png',
+                './slimehearth-assets/images/farm-background.png',
                 './slimehearth-assets/images/slime1.png',
                 './slimehearth-assets/images/slime2.png',
                 './slimehearth-assets/images/slime3.png',
@@ -4696,7 +4706,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.894');
+        console.log('Game version: v0.895');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
