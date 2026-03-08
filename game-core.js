@@ -306,12 +306,12 @@
             // ===== POND FISH (p1-p10) =====
             'p1':  { name: 'Minnow',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'A tiny fish darting about.',         foodValue: 2,  sellValue: 2,  cookable: true, feedable: true },
             'p2':  { name: 'Mudfish',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Loves murky pond bottoms.',           foodValue: 3,  sellValue: 3,  cookable: true, feedable: true },
-            'p3':  { name: 'Sunfish',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Catches rays near the surface.',      foodValue: 4,  sellValue: 4,  cookable: true, feedable: true },
+            'p3':  { name: 'Sunfish',        emoji: '🐟', image: 'fish3.png', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Catches rays near the surface.',      foodValue: 4,  sellValue: 4,  cookable: true, feedable: true },
             'p4':  { name: 'Tench',          emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Slippery and hard to hold.',          foodValue: 6,  sellValue: 6,  cookable: true, feedable: true },
-            'p5':  { name: 'Clownfish',      emoji: '🐠', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Boldly striped and full of personality.', foodValue: 7, sellValue: 7,  cookable: true, feedable: true },
+            'p5':  { name: 'Clownfish',      emoji: '🐠', image: 'fish1.png', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Boldly striped and full of personality.', foodValue: 7, sellValue: 7,  cookable: true, feedable: true },
             'p6':  { name: 'Rudd',           emoji: '🐟', rarity: 'Uncommon',  rarityColor: '#4ade80', description: 'Shimmering red fins.',                foodValue: 8,  sellValue: 9,  cookable: true, feedable: true },
             'p7':  { name: 'Pond Perch',     emoji: '🐟', rarity: 'Rare',      rarityColor: '#60a5fa', description: 'Striped and feisty.',                 foodValue: 10, sellValue: 14, cookable: true, feedable: true },
-            'p8':  { name: 'Carp',           emoji: '🐟', rarity: 'Rare',      rarityColor: '#60a5fa', description: 'A prized pond catch.',                foodValue: 12, sellValue: 18, cookable: true, feedable: true },
+            'p8':  { name: 'Carp',           emoji: '🐟', image: 'fish2.png', rarity: 'Rare',      rarityColor: '#60a5fa', description: 'A prized pond catch.',                foodValue: 12, sellValue: 18, cookable: true, feedable: true },
             'p9':  { name: 'Pond Catfish',   emoji: '🐟', rarity: 'Epic',      rarityColor: '#a78bfa', description: 'Whiskered and wily.',                 foodValue: 15, sellValue: 28, cookable: true, feedable: true },
             'p10': { name: 'Golden Koi',     emoji: '🐟', rarity: 'Legendary', rarityColor: '#f59e0b', description: 'Said to grant wishes. Truly rare.',   foodValue: 18, sellValue: 60, cookable: true, feedable: true },
 
@@ -342,14 +342,14 @@
             // ===== SEA FISH (s1-s10) =====
             's1':  { name: 'Sardine',        emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Packed tight, rich in flavour.',      foodValue: 250, sellValue: 10, cookable: true, feedable: true },
             's2':  { name: 'Mackerel',       emoji: '🐟', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Oily and delicious.',                 foodValue: 280, sellValue: 14, cookable: true, feedable: true },
-            's3':  { name: 'Shrimp',         emoji: '🦐', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Tiny but tasty sea crustacean.',      foodValue: 260, sellValue: 12, cookable: true, feedable: true },
-            's4':  { name: 'Lobster',        emoji: '🦞', rarity: 'Uncommon',  rarityColor: '#f97316', description: 'A prized catch from the deep.',       foodValue: 380, sellValue: 30, cookable: true, feedable: true },
-            's5':  { name: 'Crab',           emoji: '🦀', rarity: 'Uncommon',  rarityColor: '#f97316', description: 'Claws snapping, very tasty.',         foodValue: 400, sellValue: 32, cookable: true, feedable: true },
-            's6':  { name: 'Pufferfish',     emoji: '🐡', rarity: 'Uncommon',  rarityColor: '#f97316', description: 'Inflates when startled. Handle with care!', foodValue: 420, sellValue: 36, cookable: true, feedable: true },
+            's3':  { name: 'Shrimp',         emoji: '🦐', image: 'fish6.png', rarity: 'Common',    rarityColor: '#9ca3af', description: 'Tiny but tasty sea crustacean.',      foodValue: 260, sellValue: 12, cookable: true, feedable: true },
+            's4':  { name: 'Lobster',        emoji: '🦞', image: 'fish5.png', rarity: 'Uncommon',  rarityColor: '#f97316', description: 'A prized catch from the deep.',       foodValue: 380, sellValue: 30, cookable: true, feedable: true },
+            's5':  { name: 'Crab',           emoji: '🦀', image: 'fish7.png', rarity: 'Uncommon',  rarityColor: '#f97316', description: 'Claws snapping, very tasty.',         foodValue: 400, sellValue: 32, cookable: true, feedable: true },
+            's6':  { name: 'Pufferfish',     emoji: '🐡', image: 'fish4.png', rarity: 'Uncommon',  rarityColor: '#f97316', description: 'Inflates when startled. Handle with care!', foodValue: 420, sellValue: 36, cookable: true, feedable: true },
             's7':  { name: 'Tuna',           emoji: '🐟', rarity: 'Rare',      rarityColor: '#ef4444', description: 'Powerful and fast. A serious catch.', foodValue: 530, sellValue: 60, cookable: true, feedable: true },
             's8':  { name: 'Swordfish',      emoji: '🐟', rarity: 'Rare',      rarityColor: '#ef4444', description: 'Its bill cuts through the waves.',    foodValue: 600, sellValue: 80, cookable: true, feedable: true },
             's9':  { name: 'Giant Squid',    emoji: '🦑', rarity: 'Epic',      rarityColor: '#dc2626', description: 'Dragged from the crushing deep.',     foodValue: 700, sellValue: 120, cookable: true, feedable: true },
-            's10': { name: 'Shark',          emoji: '🦈', rarity: 'Legendary', rarityColor: '#991b1b', description: 'The terror of the open sea.',         foodValue: 800, sellValue: 200, cookable: true, feedable: true },
+            's10': { name: 'Shark',          emoji: '🦈', image: 'fish8.png', rarity: 'Legendary', rarityColor: '#991b1b', description: 'The terror of the open sea.',         foodValue: 800, sellValue: 200, cookable: true, feedable: true },
 
             // ===== LEGACY FISH (kept for save-game compatibility) =====
             'fish1': { name: 'Common Fish',  emoji: '🐟', rarity: 'Common',   rarityColor: '#9ca3af', description: 'An old pond fish.',  foodValue: 2,  sellValue: 3,  cookable: true, feedable: true },
