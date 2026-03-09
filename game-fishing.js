@@ -524,7 +524,7 @@
             lakeNudgeT   = 15;
             lakeDartT    = 60;
             lakeHoldMs   = 0;
-            lakeHolding  = true;
+            lakeHolding  = false;   // Player must hold button to activate
             lakeActive   = { fish };
 
             if (timer)   timer.textContent = 'Hold to reel in — keep pill in green!';

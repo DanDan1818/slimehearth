@@ -344,18 +344,18 @@
                 // Suppressed — touchmove guard prevents spurious cancels
             }, { passive: false });
 
-            // Lake: hold to accumulate time in green zone, release to pause, hold again to resume
+            // Lake: hold button to push pill left, release to let it drift right
             const lakeBtn = document.getElementById('cast-lake');
             lakeBtn.addEventListener('mousedown', () => {
                 if (!lakeActive) startLakeFishing();
-                else holdLakeButton();
+                holdLakeButton();
             });
             lakeBtn.addEventListener('mouseup', releaseLakeButton);
             lakeBtn.addEventListener('mouseleave', releaseLakeButton);
             lakeBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 if (!lakeActive) startLakeFishing();
-                else holdLakeButton();
+                holdLakeButton();
             });
             lakeBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
