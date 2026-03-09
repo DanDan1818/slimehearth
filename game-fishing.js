@@ -470,6 +470,8 @@
         let lakeInterval = null;
 
         function lakeOrganicTick(fish) {
+            // Green zone stays in 30–100% of bar (px: ~84 to LAKE_BAR_W - LAKE_TARGET_W)
+            const minPos = Math.floor(LAKE_BAR_W * 0.30);
             const maxPos = LAKE_BAR_W - LAKE_TARGET_W;
 
             lakeNudgeT--;
@@ -490,8 +492,8 @@
             lakeZoneVel *= 0.96;
             lakeZonePos += lakeZoneVel;
 
-            if (lakeZonePos <= 0) {
-                lakeZonePos = 0;
+            if (lakeZonePos <= minPos) {
+                lakeZonePos = minPos;
                 lakeZoneVel = Math.abs(lakeZoneVel) * (0.6 + Math.random() * 0.3);
                 lakeNudgeT  = 5;
             }
@@ -515,7 +517,8 @@
             const fish    = LAKE_FISH[pickWeighted(weights, lvShift)];
 
             lakePillPos  = Math.random() < 0.5 ? 0 : LAKE_BAR_W - LAKE_PILL_W;
-            lakeZonePos  = 40 + Math.random() * (LAKE_BAR_W - LAKE_TARGET_W - 80);
+            const lakeZoneMin = Math.floor(LAKE_BAR_W * 0.30);
+            lakeZonePos  = lakeZoneMin + Math.random() * (LAKE_BAR_W - LAKE_TARGET_W - lakeZoneMin);
             lakeZoneVel  = (Math.random() < 0.5 ? 1 : -1) * fish.baseSpeed;
             lakeZoneAcc  = 0;
             lakeNudgeT   = 15;
@@ -539,13 +542,11 @@
                 const target = document.getElementById('fishing-target-lake');
                 if (!pill || !target) return;
 
+                // Holding = push pill LEFT fast; releasing = drift slowly RIGHT
                 if (lakeHolding) {
-                    const diff = LAKE_CENTER - lakePillPos;
-                    lakePillPos += Math.sign(diff) * Math.min(fish.reelSpeed, Math.abs(diff));
+                    lakePillPos -= fish.reelSpeed * 2.2;  // Move left while holding
                 } else {
-                    const toLeft  = lakePillPos;
-                    const toRight = LAKE_BAR_W - LAKE_PILL_W - lakePillPos;
-                    lakePillPos  += (toLeft <= toRight ? -1 : 1) * fish.driftSpeed;
+                    lakePillPos += fish.driftSpeed * 0.7; // Drift right slowly when released
                 }
                 lakePillPos = Math.max(0, Math.min(LAKE_BAR_W - LAKE_PILL_W, lakePillPos));
 
@@ -554,11 +555,14 @@
                 pill.style.left   = lakePillPos + 'px';
                 target.style.left = lakeZonePos + 'px';
 
-                const pillCenter = lakePillPos + LAKE_PILL_W / 2;
-                const inZone = pillCenter >= lakeZonePos && pillCenter <= lakeZonePos + LAKE_TARGET_W;
+                const pillCenter   = lakePillPos + LAKE_PILL_W / 2;
+                const zoneLeft     = lakeZonePos;
+                const zoneRight    = lakeZonePos + LAKE_TARGET_W;
+                const inZone = pillCenter >= zoneLeft && pillCenter <= zoneRight;
                 pill.classList.toggle('in-zone', inZone);
 
-                if (lakeHolding && inZone) {
+                // Progress counts ANY time the pill overlaps the green zone
+                if (inZone) {
                     lakeHoldMs += TICK;
                     const pct = Math.min(100, (lakeHoldMs / fish.holdMs) * 100);
                     if (holdBar) holdBar.style.width = pct + '%';
