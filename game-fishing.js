@@ -516,7 +516,7 @@
             const lvShift = Math.min(Math.floor((fishLv - 1) / 5), 4);
             const fish    = LAKE_FISH[pickWeighted(weights, lvShift)];
 
-            lakePillPos  = Math.random() < 0.5 ? 0 : LAKE_BAR_W - LAKE_PILL_W;
+            lakePillPos  = 0;  // Start at left — hold to push right into green zone
             const lakeZoneMin = Math.floor(LAKE_BAR_W * 0.30);
             lakeZonePos  = lakeZoneMin + Math.random() * (LAKE_BAR_W - LAKE_TARGET_W - lakeZoneMin);
             lakeZoneVel  = (Math.random() < 0.5 ? 1 : -1) * fish.baseSpeed;
@@ -542,11 +542,11 @@
                 const target = document.getElementById('fishing-target-lake');
                 if (!pill || !target) return;
 
-                // Holding = push pill LEFT fast; releasing = drift slowly RIGHT
+                // Holding = push pill RIGHT; releasing = drift slowly LEFT
                 if (lakeHolding) {
-                    lakePillPos -= fish.reelSpeed * 2.2;  // Move left while holding
+                    lakePillPos += fish.reelSpeed * 2.2;  // Move right while holding
                 } else {
-                    lakePillPos += fish.driftSpeed * 0.7; // Drift right slowly when released
+                    lakePillPos -= fish.driftSpeed * 0.7; // Drift left slowly when released
                 }
                 lakePillPos = Math.max(0, Math.min(LAKE_BAR_W - LAKE_PILL_W, lakePillPos));
 
