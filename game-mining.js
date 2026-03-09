@@ -346,21 +346,40 @@
 
             // Lake: hold button to push pill left, release to let it drift right
             const lakeBtn = document.getElementById('cast-lake');
+            lakeBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+
             lakeBtn.addEventListener('mousedown', () => {
+                lakeBtn.style.transform = 'scale(0.9)';
                 if (!lakeActive) startLakeFishing();
                 holdLakeButton();
+                document.addEventListener('mouseup', () => {
+                    lakeBtn.style.transform = 'scale(1)';
+                    releaseLakeButton();
+                }, { once: true });
             });
-            lakeBtn.addEventListener('mouseup', releaseLakeButton);
-            lakeBtn.addEventListener('mouseleave', releaseLakeButton);
+
             lakeBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
+                lakeBtn.style.transform = 'scale(0.9)';
                 if (!lakeActive) startLakeFishing();
                 holdLakeButton();
-            });
+            }, { passive: false });
+
+            lakeBtn.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
             lakeBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
+                lakeBtn.style.transform = 'scale(1)';
                 releaseLakeButton();
-            });
+            }, { passive: false });
+
+            lakeBtn.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                lakeBtn.style.transform = 'scale(1)';
+                releaseLakeButton();
+            }, { passive: false });
 
             // Sea: hold to lower lines, release to stop and score
             const seaBtn = document.getElementById('cast-sea');
