@@ -140,7 +140,7 @@
                 fishing:      ['#93c5fd','#60a5fa','#3b82f6','#1d4ed8','#bfdbfe','#e0f2fe'],
                 farming:      ['#86efac','#4ade80','#16a34a','#166534','#bbf7d0','#dcfce7'],
                 cooking:      ['#fdba74','#fb923c','#ea580c','#fef08a','#fde68a','#fff7ed'],
-                mining:       ['#d4a96a','#a16207','#78350f','#fbbf24','#fde68a','#d97706'],
+                mining:       ['#fbbf24','#f59e0b','#b45309','#fef3c7','#fde68a','#d97706'],
                 prospecting:  ['#d8b4fe','#c084fc','#9333ea','#6b21a8','#f3e8ff','#e9d5ff'],
                 smelting:     ['#fed7aa','#fb923c','#ea580c','#92400e','#fef3c7','#ffedd5'],
                 jewelcrafting:['#f0abfc','#e879f9','#a855f7','#7c3aed','#fde68a','#ffd700'],

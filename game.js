@@ -948,7 +948,7 @@
                 'fishing': '#4dd0e1',
                 'farming': '#8bc34a',
                 'cooking': '#ff9800',
-                'mining':  '#78716c',
+                'mining':  'linear-gradient(90deg,#b45309,#fbbf24)',
                 'prospecting': '#a78bfa'
             };
             const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
@@ -4695,7 +4695,7 @@ function initKitchenGame() {
         };
         
         console.log('Debug console initialized');
-        console.log('Game version: v0.908');
+        console.log('Game version: v0.910');
         
         // ===== TROPHIES (TOOLS) =====
         function displayTrophies() {
