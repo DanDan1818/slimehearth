@@ -621,7 +621,7 @@
             
             const skillColors = {
                 'fishing': '#4dd0e1', 'farming': '#8bc34a', 'cooking': '#ff9800',
-                'mining': '#78716c', 'prospecting': '#a78bfa',
+                'mining': 'linear-gradient(90deg,#b45309,#fbbf24)', 'prospecting': '#a78bfa',
                 'smelting': '#f97316', 'jewelcrafting': '#c084fc'
             };
             const color = skillColors[gs.lastSkillUsed] || '#9c27b0';
